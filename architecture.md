@@ -1,0 +1,192 @@
+# UdyamSetu AI — System Architecture
+
+## 1. System Overview & Data Flow
+
+UdyamSetu AI is organized as a decoupled, multi-tiered application adhering to strict separation of concerns:
+
+```
+┌────────────────────────────────────────────────────────┐
+│               React Frontend Presentation              │
+│       (Components, Layouts, Navigation, Pages)         │
+└──────────────────────────┬─────────────────────────────┘
+                           │
+                           ▼
+┌────────────────────────────────────────────────────────┐
+│             Frontend Service & Client Layer            │
+│         (apiConfig.js, domain services, hooks)         │
+└──────────────────────────┬─────────────────────────────┘
+                           │ HTTP / JSON
+                           ▼
+┌────────────────────────────────────────────────────────┐
+│                FastAPI Application Tier                │
+│             (app/main.py, app/api/router.py)           │
+└──────────────────────────┬─────────────────────────────┘
+                           │
+                           ▼
+┌────────────────────────────────────────────────────────┐
+│               Backend Service / Data Layer             │
+│        (DataService abstraction, Pydantic Models)      │
+└──────────────────────────┬─────────────────────────────┘
+                           │
+                           ▼
+┌────────────────────────────────────────────────────────┐
+│              Independent Business Engines              │
+│   (market, feasibility, financial, scheme, advisory)   │
+└──────────────────────────┬─────────────────────────────┘
+                           │
+                           ▼
+┌────────────────────────────────────────────────────────┐
+│                 Prototype Data Stores                  │
+│       (sectors_db.py, districts_db.py, schemes_db.py)  │
+└────────────────────────────────────────────────────────┘
+```
+
+---
+
+## 2. Technology Stack
+
+### 2.1 Frontend Tier
+- **Framework**: React 19 (`react`, `react-dom`)
+- **Build Tool**: Vite 8
+- **Styling**: Tailwind CSS v4 (`@tailwindcss/vite`, `tailwindcss`)
+- **Routing**: React Router v7 (`react-router-dom`)
+- **Data Visualization**: Recharts (`recharts`)
+- **Iconography**: Lucide React (`lucide-react`)
+
+### 2.2 Backend Tier
+- **Language**: Python 3.10+
+- **API Framework**: FastAPI (`fastapi`)
+- **ASGI Server**: Uvicorn (`uvicorn`)
+- **Data Validation & Schemas**: Pydantic v2 (`pydantic`)
+- **Configuration**: python-dotenv (`python-dotenv`)
+
+---
+
+## 3. Repository Structure
+
+The actual file tree discovered across the repository is structured as follows:
+
+```text
+UdyamSetu AI/
+├── backend/
+│   ├── app/
+│   │   ├── api/
+│   │   │   ├── __init__.py
+│   │   │   └── router.py                 # FastAPI APIRouter registering /v1 endpoints
+│   │   ├── data/                         # Modular demo repositories
+│   │   │   ├── __init__.py
+│   │   │   ├── districts_db.py           # District demographics, tiers & state mappings
+│   │   │   ├── schemes_db.py             # Scheme criteria, subsidies & limits
+│   │   │   └── sectors_db.py             # Micro sectors, investment ranges & parameters
+│   │   ├── engines/                      # Domain-specific computational engines
+│   │   │   ├── __init__.py
+│   │   │   ├── advisory_engine.py        # 90-day plan & synthesis generation
+│   │   │   ├── feasibility_engine.py     # Viability scoring & risk matrix
+│   │   │   ├── financial_engine.py       # CapEx, OpEx, EMI, DSCR, 3-Yr projections
+│   │   │   ├── market_engine.py          # Competition, demand, pricing index
+│   │   │   └── scheme_engine.py          # Eligibility & subsidy calculation
+│   │   ├── models/
+│   │   │   ├── __init__.py
+│   │   │   └── schemas.py                # Pydantic request & response schemas
+│   │   ├── services/
+│   │   │   ├── __init__.py
+│   │   │   └── data_service.py           # Data access abstraction
+│   │   ├── __init__.py
+│   │   └── main.py                       # FastAPI entry point & CORS configuration
+│   ├── requirements.txt
+│   └── .env.example
+│
+├── frontend/
+│   ├── src/
+│   │   ├── assets/                       # Static SVGs and icons
+│   │   ├── components/                   # Presentation components
+│   │   │   └── common/
+│   │   │       ├── Footer.jsx            # Application footer
+│   │   │       ├── MetricCard.jsx        # Data visualization card
+│   │   │       ├── Navbar.jsx            # Responsive navigation bar
+│   │   │       └── VoiceAssistantModal.jsx# Vernacular voice prompt modal
+│   │   ├── data/                         # Resilient client fallback datasets
+│   │   ├── hooks/                        # React hooks for API lifecycle management
+│   │   ├── layouts/
+│   │   │   └── RootLayout.jsx            # Master shell layout with header & footer
+│   │   ├── pages/                        # Route page views
+│   │   │   ├── FeasibilityPage.jsx       # /feasibility
+│   │   │   ├── FinancialsPage.jsx        # /financial-plan & /financials
+│   │   │   ├── FullAdvisoryPage.jsx      # /business-plan & /advisory
+│   │   │   ├── HomePage.jsx              # / (Dashboard)
+│   │   │   ├── MarketIntelligencePage.jsx# /market-analysis & /market-intelligence
+│   │   │   ├── NewAnalysisPage.jsx       # /new-analysis
+│   │   │   └── NotFoundPage.jsx          # Catch-all 404
+│   │   ├── services/                     # Decoupled API service layer
+│   │   │   ├── advisoryService.js        # Advisory API calls with fallback
+│   │   │   ├── apiConfig.js              # Base API configuration & client
+│   │   │   ├── feasibilityService.js     # Feasibility API calls with fallback
+│   │   │   ├── financialService.js       # Financial calculations API calls with fallback
+│   │   │   ├── marketService.js          # Market intelligence API calls with fallback
+│   │   │   ├── schemeService.js          # Scheme router API calls with fallback
+│   │   │   └── sectorService.js          # Sector & district metadata API calls with fallback
+│   │   ├── utils/                        # Currency and number formatters
+│   │   ├── App.css
+│   │   ├── App.jsx                       # Route provider & shell mapping
+│   │   ├── index.css                     # Global styles and design system variables
+│   │   └── main.jsx                      # React 19 entry point
+│   ├── package.json
+│   └── vite.config.js
+│
+├── AGENTS.md                             # AI Agent operating directives
+├── architecture.md                       # Current system architecture documentation
+├── memory.md                             # Persistent project memory & decision log
+├── prd.md                                # Product Requirements Document
+├── README.md
+└── .gitignore
+```
+
+---
+
+## 4. Backend Engines Specification
+
+1. **`market_engine.py` (`MarketIntelligenceEngine`)**:
+   - Evaluates local competition, raw material access, demand level, and mandi price ranges based on district tier and target sector.
+2. **`feasibility_engine.py` (`FeasibilityEngine`)**:
+   - Assesses operational viability (0–100 score), infrastructure readiness, regulatory hurdles, and risk mitigation strategies.
+3. **`financial_engine.py` (`FinancialCalculationEngine`)**:
+   - Computes CapEx (machinery, civil, licensing), monthly OpEx, required working capital, EMI, DSCR, and 3-year cash flow forecast.
+4. **`scheme_engine.py` (`SchemeRoutingEngine`)**:
+   - Matches candidate profile with government credit schemes (PMEGP, Mudra Shishu/Kishor/Tarun, PMFME, Stand-Up India), factoring in social category and gender bonuses.
+5. **`advisory_engine.py` (`AdvisoryGenerationEngine`)**:
+   - Compiles executive findings, SWOT analysis, and a structured 90-day phase-by-phase implementation blueprint.
+
+---
+
+## 5. Frontend Service Layer
+
+All backend interactions are strictly abstracted through dedicated frontend services:
+- **`apiConfig.js`**: Centralized Axios/fetch client handling base URL configuration (`VITE_API_BASE_URL`), timeout handling, and network status checks.
+- **`sectorService.js`**: Fetches active micro sectors and supported districts.
+- **`marketService.js`**: Calls `/api/v1/market-intelligence/analyze`.
+- **`feasibilityService.js`**: Calls `/api/v1/feasibility/assess`.
+- **`financialService.js`**: Calls `/api/v1/financials/calculate`.
+- **`schemeService.js`**: Calls `/api/v1/schemes/route`.
+- **`advisoryService.js`**: Calls `/api/v1/advisory/generate`.
+
+Each service includes a local fallback to ensure high presentation resilience even if the local backend server is inactive during evaluation.
+
+---
+
+## 6. Critical Architecture Rules
+
+1. **Presentation Focus**: React components strictly handle user input, state transitions, layout, and visualization.
+2. **No Duplicated Business Rules**: Financial formulas (EMI, DSCR, CapEx ratios, subsidy percentages) must never be re-implemented inside React components.
+3. **Engine Independence**: Backend engines remain pure Python modules that do not depend on HTTP frameworks or database connections directly; they interface solely via typed Pydantic models.
+4. **Service Abstraction**: Frontend pages never call `fetch()` directly; all API calls route through the service layer.
+
+---
+
+## 7. Future Scalability Roadmap
+
+The current prototype is designed to transition smoothly to a full production deployment:
+- **Relational Storage**: Replace in-memory dictionaries with a managed PostgreSQL database using SQLAlchemy / Alembic migrations.
+- **Government Portals**: Direct integration with API Setu, Udyam, and JanSamarth via OAuth2 and mutual TLS.
+- **Dynamic Geospatial Data**: Integration of GIS boundary layers and Agmarknet live price feeds.
+- **Real LLM Integration**: Orchestration layer (LangChain / LlamaIndex) querying fine-tuned models for vernacular conversational advisory.
+- **Authentication**: JWT-based session security with Aadhaar / mobile OTP verification.
