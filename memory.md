@@ -199,3 +199,32 @@ The core financial structuring logic is derived from the official Smart India Ha
   4. **Illustrative Prototype Assumption**: Asset turnover heuristics, EBITDA margins, ramp rates, DSCR benchmark bands.
 - Synthetic assumptions are strictly quarantined from SIH statutory parameters.
 
+---
+
+## 6. Task 6 — Smart Scheme Router & Government Financing Guidance
+
+### 6.1 Deterministic Scheme Routing Engine
+- **Module**: `frontend/src/utils/schemeRouterEngine.js`
+- **Architecture**: `SchemeRouterPage` → `useSchemeRouter` → `schemeService` → `schemeRouterEngine` / API.
+- **SIH 26091 Framework Rules**:
+  - **Rule A (Micro Finance Track)**: Project cost $\le ₹1.40\text{ Lakh}$. Max loan $₹1.25\text{ Lakh}$, $6.5\%$ interest, $3$-year tenure ($36$ months), $3$-month moratorium.
+  - **Rule B (Term Loan Track)**: Project cost $> ₹1.40\text{ Lakh}$ to $\le ₹50\text{ Lakh}$. Max loan $₹45.00\text{ Lakh}$, $8.0\%$ interest, $7$-year tenure ($84$ months), $6$-month moratorium.
+  - **Rule C (Above ₹50 Lakh)**: Project cost $> ₹50\text{ Lakh}$. Flagged as outside prototype financing bounds; requires separate commercial banking consortium appraisal.
+- **Loan Ceiling Mismatch Handling**: When calculated $90\%$ debt exceeds the stated loan ceiling (e.g. at upper boundary of Micro Finance where $90\%$ of $₹1.40\text{L} = ₹1.26\text{L} > ₹1.25\text{L}$), the indicative routed loan is explicitly capped at the documented ceiling ($₹1.25\text{L}$), accompanied by an explicit disclosure.
+- **Zero AI / Determinism**: 100% deterministic rules, zero `Math.random()`, zero LLM calls, confidence explicitly labeled as `"Prototype Rule Match"`.
+
+### 6.2 Prototype-Only Eligibility Language & Disclosures
+- Avoids claims of "Eligible", "Approved", "Guaranteed loan", or "Government has approved this".
+- Uses careful prototype terminology: `"Potentially Applicable"`, `"Prototype Rule Match"`, `"Based on the provided inputs"`, `"Indicative financing path"`, `"Requires official verification"`.
+- Official statutory disclosure prominently presented:
+  *"UdyamSetu AI provides prototype decision support based on the SIH 26091 problem-statement framework. It does not determine government eligibility or loan approval. Final scheme eligibility, financing terms, documentation and sanction are subject to current official rules and lender/authority appraisal."*
+
+### 6.3 Structured Checklists & Warnings
+- **Before Applying Verification Checklist**: 6 practical pre-application checks (current circulars, lending bank interest rates, promoter equity mandate, moratorium interest treatment, social category subventions, official application portal).
+- **Potential Document Checklist**: 5 categorized tiers (Identity, Residence, Banking, Business/DPR, Statutory/NOC) with explicit notice that not all documents are mandatory.
+- **Actionable Warnings**: Dedicated alerts for loan ceiling mismatches, $>₹50\text{L}$ boundary overflows, sparse intake ideas, and prototype disclaimers.
+
+### 6.4 Buyer Functionality Quarantine
+- In accordance with SIH scope directives, buyer/B2B marketplace functionality remains strictly future scope and is quarantined from the entrepreneur flow.
+
+

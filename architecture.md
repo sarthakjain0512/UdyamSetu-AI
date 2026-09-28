@@ -124,6 +124,17 @@ UdyamSetu AI/
 │   │   │   │   ├── MarketFitSection.jsx
 │   │   │   │   ├── OperationalReadinessSection.jsx
 │   │   │   │   └── ResourceRequirementsSection.jsx
+│   │   │   ├── schemes/                  # Smart Scheme Router components (Task 6)
+│   │   │   │   ├── AnalysisContextBanner.jsx
+│   │   │   │   ├── DocumentChecklistSection.jsx
+│   │   │   │   ├── FinancingSummaryCard.jsx
+│   │   │   │   ├── NodalSchemesSection.jsx
+│   │   │   │   ├── OfficialDisclaimerCard.jsx
+│   │   │   │   ├── PrototypeRouteCard.jsx
+│   │   │   │   ├── SchemeTaxonomyPanel.jsx
+│   │   │   │   ├── SchemeWarningsSection.jsx
+│   │   │   │   ├── VerificationChecklistSection.jsx
+│   │   │   │   └── WhyThisRouteSection.jsx
 │   │   │   ├── market/                   # Hyper-local Market Intelligence components
 │   │   │   │   ├── CompetitionSection.jsx
 │   │   │   │   ├── DataMethodologyPanel.jsx
@@ -150,6 +161,7 @@ UdyamSetu AI/
 │   │   │   ├── useFeasibility.js
 │   │   │   ├── useFinancials.js
 │   │   │   ├── useMarketIntelligence.js
+│   │   │   ├── useSchemeRouter.js        # Deterministic scheme routing hook (Task 6)
 │   │   │   ├── useSchemes.js
 │   │   │   └── useSectors.js
 │   │   ├── layouts/
@@ -174,7 +186,8 @@ UdyamSetu AI/
 │   │   ├── utils/                        # Utilities & formatters
 │   │   │   ├── financialCalculator.js    # Deterministic SIH 26091 financial planning engine
 │   │   │   ├── financialPreview.js       # Sizing preview calculator (SIH 26091)
-│   │   │   └── formatters.js             # Currency and number formatters
+│   │   │   ├── formatters.js             # Currency and number formatters
+│   │   │   └── schemeRouterEngine.js     # Deterministic SIH 26091 scheme routing engine (Task 6)
 │   │   ├── App.css
 │   │   ├── App.jsx                       # Route provider & shell mapping
 │   │   ├── index.css                     # Global styles and design system variables
@@ -215,7 +228,7 @@ All backend interactions are strictly abstracted through dedicated frontend serv
 - **`marketService.js`**: Calls `/api/v1/market-intelligence/analyze`.
 - **`feasibilityService.js`**: Calls `/api/v1/feasibility/assess`.
 - **`financialService.js`**: Calls `/api/v1/financials/calculate`.
-- **`schemeService.js`**: Calls `/api/v1/schemes/route`.
+- **`schemeService.js`**: Executes deterministic SIH 26091 scheme routing (`schemeRouterEngine.js`) and retrieves contextual nodal schemes via `/api/v1/schemes/route`.
 - **`advisoryService.js`**: Calls `/api/v1/advisory/generate`.
 - **`sessionService.js`**: Manages client-side analysis session persistence under `udyamsetu_analysis_session`, enforcing normalized schema across all downstream advisory stages.
 
