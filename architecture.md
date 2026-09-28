@@ -102,6 +102,16 @@ UdyamSetu AI/
 │   │   ├── components/                   # Presentation components
 │   │   │   ├── analysis/
 │   │   │   │   └── AnalysisSummaryCard.jsx# Live intake summary card
+│   │   │   ├── financials/               # Financial Planning & Structuring components (Task 5)
+│   │   │   │   ├── CashFlowDscrSection.jsx
+│   │   │   │   ├── EmiMoratoriumCard.jsx
+│   │   │   │   ├── FinancialAssumptionsPanel.jsx
+│   │   │   │   ├── FinancialChartsSection.jsx
+│   │   │   │   ├── FinancialOverviewSection.jsx
+│   │   │   │   ├── FinancialRecommendationsSection.jsx
+│   │   │   │   ├── FinancialRisksSection.jsx
+│   │   │   │   ├── FinancialSensitivitySection.jsx
+│   │   │   │   └── RepaymentScheduleSection.jsx
 │   │   │   ├── feasibility/              # Feasibility Analysis components (Task 4)
 │   │   │   │   ├── BreakEvenInsightSection.jsx
 │   │   │   │   ├── FeasibilityDimensionsGrid.jsx
@@ -162,6 +172,7 @@ UdyamSetu AI/
 │   │   │   ├── sectorService.js          # Sector & district metadata API calls with fallback
 │   │   │   └── sessionService.js         # Client-side analysis session persistence & schema
 │   │   ├── utils/                        # Utilities & formatters
+│   │   │   ├── financialCalculator.js    # Deterministic SIH 26091 financial planning engine
 │   │   │   ├── financialPreview.js       # Sizing preview calculator (SIH 26091)
 │   │   │   └── formatters.js             # Currency and number formatters
 │   │   ├── App.css

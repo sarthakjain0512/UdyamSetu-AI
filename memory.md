@@ -5,7 +5,7 @@
 - **SIH Problem Statement**: SIH 26091 — AI-Driven Hyper-Local Business Advisory and Financial Structuring Assistant for Rural Micro-Entrepreneurs
 - **Tagline**: From Local Insight to Sustainable Enterprise
 - **Nodal Ministry**: Ministry of Social Justice and Empowerment
-- **Current Development Stage**: Task 4 — Business Feasibility Analysis
+- **Current Development Stage**: Task 5 — Financial Planning & Financial Structuring
 
 ---
 
@@ -55,7 +55,27 @@
        - Status: 75–100 (Potentially Feasible), 60–74 (Needs Validation), 45–59 (Needs Significant Preparation), 0–44 (High Risk).
        - Letter Grade: 90–100 (A+), 75–89 (A), 60–74 (B), 45–59 (C), 0–44 (D).
 
-4. **Analysis Session & State Persistence (Task 2)**:
+4. **Financial Planning & Debt Structuring Module (Task 5)**:
+   - Implemented `/financial-plan` as a comprehensive, bankable debt structuring and cash flow modeling engine adhering to SIH 26091 rules.
+   - Consumes `udyamsetu_analysis_session` directly. Enforces two-tier Session & Missing Margin Capital Guard directing user to `/new-analysis` without assuming any fallback values.
+   - Sizing Equations: Project Cost = Margin Capital / 0.10, Sized Loan = Project Cost × 0.90.
+   - Financing Tracks:
+     - Micro Finance: Project Cost $\le$ ₹1.40L, max loan ₹1.25L, 6.5% p.a., 3-year tenure (36 months), 3-month moratorium.
+     - Term Loan: Project Cost > ₹1.40L and $\le$ ₹50L, max loan ₹45L, 8.0% p.a., 7-year tenure (84 months), 6-month moratorium.
+     - Beyond Prototype Framework: Project Cost > ₹50L flagged with explicit warning banner; does not silently route into Term Loan.
+   - Distinctive Feature Architecture:
+     1. Financial Overview (`FinancialOverviewSection`): Sizing, ceilings, tracks, and non-sanction disclaimers.
+     2. EMI & Moratorium Card (`EmiMoratoriumCard`): Standard reducing-balance EMI formula where active repayment months $n = \text{Tenure} - \text{Moratorium}$. Models simple interest during moratorium without compounding penalties.
+     3. Visual Analytics (`FinancialChartsSection`): Donut chart for Principal vs. Interest, AreaChart for Balance Trajectory, Stacked BarChart for Annual Split, with textual accessibility summaries.
+     4. Amortization Schedule (`RepaymentScheduleSection`): Annual summary table + expandable month-by-month table with year filters and responsive horizontal scroll.
+     5. Indicative Cash Flow & DSCR (`CashFlowDscrSection`): Multi-year operating scenario, DSCR formula = Cash available / Debt service, qualitative benchmarks (> 1.50 Strong, 1.20–1.49 Moderate, 1.00–1.19 Tight, < 1.00 Insufficient).
+     6. Sensitivity Stress Test (`FinancialSensitivitySection`): 80%, 100%, 120% revenue scenarios showing DSCR impact.
+     7. Financial Risks (`FinancialRisksSection`): 6 classified risks (High debt, low margin, debt service burden, credit receivables, floating rate, post-moratorium cliff) with rural mitigations.
+     8. Financial Recommendations (`FinancialRecommendationsSection`): 6 actionable pre-sanction guidelines.
+     9. Assumptions & Methodology (`FinancialAssumptionsPanel`): Full disclosure distinguishing User Input, SIH Parameters, Calculated Estimates, and Prototype Assumptions.
+     10. Bottom Navigation Bar: Primary CTA $\rightarrow$ `/scheme-router`, Secondary CTA $\rightarrow$ `/feasibility`.
+
+5. **Analysis Session & State Persistence (Task 2)**:
    - Analysis Session is standardized across the multi-stage pipeline via `frontend/src/services/sessionService.js` and `frontend/src/hooks/useAnalysisSession.js`.
    - Persistence uses `localStorage` under key `udyamsetu_analysis_session`.
    - Session schema:
@@ -151,3 +171,31 @@ The core financial structuring logic is derived from the official Smart India Ha
 - **Preserve Task-0 Backend**: All 5 engines (`market_engine.py`, `feasibility_engine.py`, `financial_engine.py`, `scheme_engine.py`, `advisory_engine.py`), `main.py`, `router.py`, and supporting services remain functional and backward-compatible.
 - **Maintain Route Compatibility**: Ensure both legacy routes (`/market-intelligence`, `/financials`, `/schemes`, `/advisory`) and standard Task-1 routes (`/new-analysis`, `/market-analysis`, `/feasibility`, `/financial-plan`, `/scheme-router`, `/business-plan`) work cleanly.
 - **Document Changes**: Any change to API contracts or financial thresholds must be logged in `memory.md` and `architecture.md`.
+
+---
+
+## 5. Task 5 Patch — Financial Model Transparency & Disclosures
+
+### 5.1 Centralized Prototype Financial Assumptions
+- Centralized all synthetic/demo parameters in `PROTOTYPE_FINANCIAL_ASSUMPTIONS` inside `frontend/src/utils/financialCalculator.js`:
+  - `assetTurnover`: Micro Finance (1.6×), Term Loan (1.35×)
+  - `ebitdaOperatingMargin`: Micro Finance (28%), Term Loan (25%)
+  - `revenueRampMultiplier`: Year 1 (1.0), Year 2 (1.15), Year 3+ (1.25)
+  - `dscrBenchmarks`: Strong (> 1.50), Moderate (1.20–1.49), Tight (1.00–1.19)
+  - `sensitivityFactors`: Conservative (0.8), Base (1.0), Optimistic (1.2)
+- Presentation components import or receive assumptions dynamically from this service/calculator tier; zero magic numbers remain in presentation JSX.
+
+### 5.2 Cash Flow & DSCR Disclosures
+- Explicitly labeled Cash Flow Section: `"Illustrative Prototype Scenario — Not Actual Market Data"`.
+- Clarified that revenue and EBITDA margins are synthetic prototype heuristics, NOT government financial benchmarks or revenue predictions, and must be replaced with validated local enterprise operating data in production.
+- Explicitly disclosed: `"Prototype DSCR uses modeled Operating Profit as a proxy for Cash Available for Debt Service."`
+- Disclaimed that DSCR benchmarks are illustrative indicators, NOT official government/bank eligibility thresholds.
+
+### 5.3 Assumption Taxonomy
+- Enforced strict 4-tier categorization:
+  1. **User Input**: Margin capital, business sector.
+  2. **SIH 26091 Parameter**: 90/10 financing, Micro Finance vs. Term Loan brackets, interest rates, tenure, moratorium.
+  3. **Calculated Estimate**: Project cost ($M / 0.10$), loan sizing ($90\%$), reducing-balance EMI.
+  4. **Illustrative Prototype Assumption**: Asset turnover heuristics, EBITDA margins, ramp rates, DSCR benchmark bands.
+- Synthetic assumptions are strictly quarantined from SIH statutory parameters.
+
