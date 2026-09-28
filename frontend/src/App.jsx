@@ -8,6 +8,7 @@ import { FeasibilityPage } from './pages/FeasibilityPage';
 import { FinancialsPage } from './pages/FinancialsPage';
 import { SchemeRouterPage } from './pages/SchemeRouterPage';
 import { AdvisoryPage } from './pages/AdvisoryPage';
+import { BusinessPlanPage } from './pages/BusinessPlanPage';
 import { FullAdvisoryPage } from './pages/FullAdvisoryPage';
 import { NotFoundPage } from './pages/NotFoundPage';
 
@@ -41,7 +42,8 @@ export default function App() {
           <Route path="advisory" element={<AdvisoryPage />} />
           
           {/* Module 6: Business Launch Plan */}
-          <Route path="business-plan" element={<FullAdvisoryPage />} />
+          <Route path="business-plan" element={<BusinessPlanPage />} />
+          <Route path="full-advisory" element={<FullAdvisoryPage />} />
           
           {/* 404 Catch-All */}
           <Route path="*" element={<NotFoundPage />} />

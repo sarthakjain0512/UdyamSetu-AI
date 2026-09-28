@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { NavLink, Link } from 'react-router-dom';
 import { 
   Building2, LayoutDashboard, PlusCircle, TrendingUp, ShieldCheck, 
-  Calculator, Landmark, FileText, Mic, Menu, X, Globe, Award 
+  Calculator, Landmark, FileText, Mic, Menu, X, Globe, Award, Sparkles 
 } from 'lucide-react';
 import { VoiceAssistantModal } from './VoiceAssistantModal';
 
@@ -18,6 +18,7 @@ export function Navbar() {
     { label: 'Feasibility', path: '/feasibility', icon: ShieldCheck },
     { label: 'Financial Plan', path: '/financial-plan', icon: Calculator },
     { label: 'Scheme Router', path: '/scheme-router', icon: Landmark },
+    { label: 'Advisory', path: '/advisory', icon: Sparkles },
     { label: 'Business Plan', path: '/business-plan', icon: FileText },
   ];
 

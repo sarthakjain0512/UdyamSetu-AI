@@ -277,7 +277,11 @@ export function AdvisoryPage() {
               to="/business-plan"
               state={{ 
                 session: activeSession,
-                advisoryPlan: advisoryPlan
+                advisoryPlan: advisoryPlan,
+                marketData: marketData,
+                feasibilityData: feasibilityData,
+                financialPlan: financialData,
+                schemeRoute: schemeRouteData
               }}
               className="inline-flex items-center gap-2 px-7 py-3.5 rounded-xl bg-gradient-to-r from-orange-600 via-amber-600 to-emerald-700 hover:from-orange-500 hover:via-amber-500 hover:to-emerald-600 text-white font-bold text-xs sm:text-sm shadow-xl shadow-orange-950/40 transition-all transform hover:-translate-y-0.5 w-full sm:w-auto justify-center"
             >
