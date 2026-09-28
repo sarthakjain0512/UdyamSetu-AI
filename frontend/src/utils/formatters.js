@@ -21,3 +21,5 @@ export function formatPercentage(val) {
   if (val === null || val === undefined) return '0%';
   return `${Number(val).toFixed(1)}%`;
 }
+
+export const formatCurrency = formatCurrencyINR;

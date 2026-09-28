@@ -102,6 +102,18 @@ UdyamSetu AI/
 │   │   ├── components/                   # Presentation components
 │   │   │   ├── analysis/
 │   │   │   │   └── AnalysisSummaryCard.jsx# Live intake summary card
+│   │   │   ├── feasibility/              # Feasibility Analysis components (Task 4)
+│   │   │   │   ├── BreakEvenInsightSection.jsx
+│   │   │   │   ├── FeasibilityDimensionsGrid.jsx
+│   │   │   │   ├── FeasibilityExplainabilityPanel.jsx
+│   │   │   │   ├── FeasibilityOverviewCard.jsx
+│   │   │   │   ├── FeasibilityRecommendationsSection.jsx
+│   │   │   │   ├── FeasibilityRiskMatrix.jsx
+│   │   │   │   ├── FinancialReadinessSection.jsx
+│   │   │   │   ├── KeyGapsSection.jsx
+│   │   │   │   ├── MarketFitSection.jsx
+│   │   │   │   ├── OperationalReadinessSection.jsx
+│   │   │   │   └── ResourceRequirementsSection.jsx
 │   │   │   ├── market/                   # Hyper-local Market Intelligence components
 │   │   │   │   ├── CompetitionSection.jsx
 │   │   │   │   ├── DataMethodologyPanel.jsx
@@ -119,6 +131,7 @@ UdyamSetu AI/
 │   │   │       └── VoiceAssistantModal.jsx# Vernacular voice prompt modal
 │   │   ├── data/                         # Resilient client fallback datasets
 │   │   │   ├── fallbackDistricts.js
+│   │   │   ├── fallbackFeasibilityData.js # Deterministic feasibility readiness & scoring
 │   │   │   ├── fallbackMarketData.js     # Deterministic market SWOT, threats & metrics
 │   │   │   └── fallbackSectors.js
 │   │   ├── hooks/                        # React hooks for API lifecycle management
