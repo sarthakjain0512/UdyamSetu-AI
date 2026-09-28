@@ -102,12 +102,25 @@ UdyamSetu AI/
 │   │   ├── components/                   # Presentation components
 │   │   │   ├── analysis/
 │   │   │   │   └── AnalysisSummaryCard.jsx# Live intake summary card
+│   │   │   ├── market/                   # Hyper-local Market Intelligence components
+│   │   │   │   ├── CompetitionSection.jsx
+│   │   │   │   ├── DataMethodologyPanel.jsx
+│   │   │   │   ├── DemandOpportunitySection.jsx
+│   │   │   │   ├── MarketInsightSummary.jsx
+│   │   │   │   ├── MarketSnapshotCard.jsx
+│   │   │   │   ├── MarketThreatsSection.jsx
+│   │   │   │   ├── OpportunityFactorsSection.jsx
+│   │   │   │   ├── ProductMarketValueSection.jsx
+│   │   │   │   └── SWOTSection.jsx
 │   │   │   └── common/
 │   │   │       ├── Footer.jsx            # Application footer
 │   │   │       ├── MetricCard.jsx        # Data visualization card
 │   │   │       ├── Navbar.jsx            # Responsive navigation bar
 │   │   │       └── VoiceAssistantModal.jsx# Vernacular voice prompt modal
 │   │   ├── data/                         # Resilient client fallback datasets
+│   │   │   ├── fallbackDistricts.js
+│   │   │   ├── fallbackMarketData.js     # Deterministic market SWOT, threats & metrics
+│   │   │   └── fallbackSectors.js
 │   │   ├── hooks/                        # React hooks for API lifecycle management
 │   │   │   ├── useAnalysisSession.js     # Analysis session access & persistence hook
 │   │   │   ├── useAdvisory.js
