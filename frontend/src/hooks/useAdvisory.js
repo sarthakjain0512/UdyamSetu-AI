@@ -1,12 +1,36 @@
-import { useState } from 'react';
-import { generateAdvisory } from '../services/advisoryService';
+import { useState, useCallback } from 'react';
+import { getBusinessAdvisory, generateAdvisory } from '../services/advisoryService';
 
+/**
+ * Custom hook to manage the lifecycle of the business advisory synthesis.
+ */
 export function useAdvisory() {
   const [data, setData] = useState(null);
+  const [advisoryPlan, setAdvisoryPlan] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  const generateFullPlan = async (params) => {
+  // Task 7 Primary Method
+  const fetchAdvisory = useCallback(async (context) => {
+    try {
+      setLoading(true);
+      setError(null);
+      const plan = await getBusinessAdvisory(context);
+      setAdvisoryPlan(plan);
+      setData(plan);
+      return plan;
+    } catch (err) {
+      const errMsg = err.message || 'Failed to synthesize business advisory.';
+      setError(errMsg);
+      setAdvisoryPlan(null);
+      throw err;
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  // Task 0 Legacy Method (Preserved for backward compatibility)
+  const generateFullPlan = useCallback(async (params) => {
     try {
       setLoading(true);
       setError(null);
@@ -18,7 +42,14 @@ export function useAdvisory() {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
-  return { data, loading, error, generateFullPlan };
+  return { 
+    data, 
+    advisoryPlan, 
+    loading, 
+    error, 
+    fetchAdvisory, 
+    generateFullPlan 
+  };
 }

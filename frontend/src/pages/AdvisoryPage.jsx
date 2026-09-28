@@ -1,38 +1,37 @@
 import React, { useEffect, useMemo } from 'react';
 import { useLocation, Link, useNavigate } from 'react-router-dom';
 import { 
-  Landmark, 
+  Sparkles, 
   ArrowRight, 
   ArrowLeft, 
-  AlertCircle, 
   Compass, 
+  IndianRupee, 
   RefreshCw, 
-  IndianRupee,
-  ShieldCheck,
-  ExternalLink
+  AlertCircle,
+  Cpu,
+  Layers,
+  ShieldCheck 
 } from 'lucide-react';
 
-import { useSchemeRouter } from '../hooks/useSchemeRouter';
-import { useSectors } from '../hooks/useSectors';
+import { useAdvisory } from '../hooks/useAdvisory';
 import { getAnalysisSession } from '../services/sessionService';
 
-// Module Components
-import AnalysisContextBanner from '../components/schemes/AnalysisContextBanner';
-import PrototypeRouteCard from '../components/schemes/PrototypeRouteCard';
-import FinancingSummaryCard from '../components/schemes/FinancingSummaryCard';
-import WhyThisRouteSection from '../components/schemes/WhyThisRouteSection';
-import SchemeWarningsSection from '../components/schemes/SchemeWarningsSection';
-import VerificationChecklistSection from '../components/schemes/VerificationChecklistSection';
-import DocumentChecklistSection from '../components/schemes/DocumentChecklistSection';
-import SchemeTaxonomyPanel from '../components/schemes/SchemeTaxonomyPanel';
-import NodalSchemesSection from '../components/schemes/NodalSchemesSection';
-import OfficialDisclaimerCard from '../components/schemes/OfficialDisclaimerCard';
+// Module Presentation Components
+import AdvisoryContextBanner from '../components/advisory/AdvisoryContextBanner';
+import AdvisorySummaryCard from '../components/advisory/AdvisorySummaryCard';
+import AnalysisCoverageCard from '../components/advisory/AnalysisCoverageCard';
+import AdvisoryStrengthsSection from '../components/advisory/AdvisoryStrengthsSection';
+import AdvisoryRisksSection from '../components/advisory/AdvisoryRisksSection';
+import AdvisoryRecommendationsSection from '../components/advisory/AdvisoryRecommendationsSection';
+import AdvisoryActionPlanSection from '../components/advisory/AdvisoryActionPlanSection';
+import ValidationQuestionsSection from '../components/advisory/ValidationQuestionsSection';
+import AdvisoryAssumptionsPanel from '../components/advisory/AdvisoryAssumptionsPanel';
+import AdvisoryDisclaimerCard from '../components/advisory/AdvisoryDisclaimerCard';
 
-export function SchemeRouterPage() {
+export function AdvisoryPage() {
   const location = useLocation();
   const navigate = useNavigate();
-  const { sectors, districts } = useSectors();
-  const { routingPlan, loading, error, routeSession } = useSchemeRouter();
+  const { advisoryPlan, loading, error, fetchAdvisory } = useAdvisory();
 
   // 1. Session Retrieval (State or LocalStorage)
   const activeSession = useMemo(() => {
@@ -40,7 +39,13 @@ export function SchemeRouterPage() {
     return getAnalysisSession();
   }, [location.state]);
 
-  // 2. Guard Checks
+  // 2. Upstream Module Context (From navigation state if available)
+  const marketData = location.state?.marketData || null;
+  const feasibilityData = location.state?.feasibilityData || null;
+  const financialData = location.state?.financialPlan || null;
+  const schemeRouteData = location.state?.schemeRoute || null;
+
+  // 3. Guard Checks
   const hasValidSession = Boolean(
     activeSession || 
     (location.state?.sector_id && location.state?.district_id)
@@ -49,49 +54,21 @@ export function SchemeRouterPage() {
   const rawMargin = activeSession?.finance?.marginCapital ?? location.state?.proposed_capital;
   const parsedMargin = Number(rawMargin);
   const hasValidMargin = !isNaN(parsedMargin) && parsedMargin > 0;
-  const marginCapital = hasValidMargin ? parsedMargin : null;
 
-  // Extract Context
-  const sectorId = activeSession?.business?.sectorId === 'other'
-    ? 'dairy-processing'
-    : (activeSession?.business?.sectorId || location.state?.sector_id || 'dairy-processing');
-
-  const districtId = activeSession?.location?.districtId || location.state?.district_id || 'varanasi-up';
-  const businessIdea = activeSession?.business?.idea || '';
-  const gender = activeSession?.entrepreneurContext?.gender || location.state?.gender || 'general';
-  const socialCategory = activeSession?.entrepreneurContext?.socialCategory || location.state?.social_category || 'general';
-
-  // Resolved context labels
-  const sectorInfo = sectors.find(s => s.id === sectorId);
-  const districtInfo = districts.find(d => d.id === districtId);
-
-  const displayLocation = districtInfo 
-    ? `${districtInfo.name}, ${districtInfo.state}` 
-    : (activeSession?.location?.districtName || activeSession?.location?.district || 'Varanasi, Uttar Pradesh');
-
-  const displayCategory = sectorInfo 
-    ? sectorInfo.name 
-    : (activeSession?.business?.sectorName || activeSession?.business?.category || 'Dairy & Food Processing');
-
-  const displayIdea = businessIdea || (sectorInfo ? sectorInfo.description : 'Rural Value-Added Enterprise');
-
-  // 3. Trigger Deterministic Scheme Routing
+  // 4. Trigger Advisory Synthesis
   useEffect(() => {
     if (hasValidSession && hasValidMargin) {
-      routeSession({
-        marginCapital,
-        sectorId,
-        districtId,
-        businessIdea: displayIdea,
-        gender,
-        socialCategory,
-        sectorName: displayCategory,
-        locationDisplay: displayLocation
+      fetchAdvisory({
+        session: activeSession,
+        market: marketData,
+        feasibility: feasibilityData,
+        financial: financialData,
+        scheme: schemeRouteData
       }).catch(err => {
-        console.error('[SchemeRouterPage] Routing calculation error:', err);
+        console.error('[AdvisoryPage] Synthesis error:', err);
       });
     }
-  }, [hasValidSession, hasValidMargin, marginCapital, sectorId, districtId, displayIdea, gender, socialCategory, displayCategory, displayLocation, routeSession]);
+  }, [hasValidSession, hasValidMargin, activeSession, marketData, feasibilityData, financialData, schemeRouteData, fetchAdvisory]);
 
   // GUARD A: NO SESSION
   if (!hasValidSession) {
@@ -104,13 +81,13 @@ export function SchemeRouterPage() {
 
           <div className="space-y-2 max-w-lg mx-auto">
             <span className="text-xs font-semibold px-3 py-1 rounded-full bg-emerald-950 text-emerald-300 border border-emerald-800">
-              Module 4 • Scheme Guidance
+              Module 5 • Business Advisory
             </span>
             <h2 className="text-2xl font-bold text-white font-serif">
               Start a business analysis first.
             </h2>
             <p className="text-xs sm:text-sm text-emerald-200/70 leading-relaxed">
-              Scheme routing requires an active business profile with geographic location, enterprise category, and equity capital.
+              Business advisory synthesizes your target market, feasibility analysis, capital structure, and scheme guidance into actionable recommendations.
             </p>
           </div>
 
@@ -142,10 +119,10 @@ export function SchemeRouterPage() {
               Equity Parameter Required
             </span>
             <h2 className="text-2xl font-bold text-white font-serif">
-              Margin capital is required for scheme routing.
+              Margin capital is required for business advisory.
             </h2>
             <p className="text-xs sm:text-sm text-emerald-200/70 leading-relaxed">
-              SIH 26091 scheme tracks (Micro Finance vs. Term Loan) are determined deterministically from your available margin capital.
+              Advisory debt sizing, financial risk exposure, and repayment mitigations depend directly on your available promoter equity.
             </p>
           </div>
 
@@ -170,26 +147,39 @@ export function SchemeRouterPage() {
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-[#18533e] pb-6">
         <div>
           <div className="inline-flex items-center gap-2 text-xs font-semibold px-3 py-1 rounded-full bg-amber-950 text-amber-300 border border-amber-800 mb-2">
-            <Landmark className="w-3.5 h-3.5" />
-            <span>Module 4: Smart Scheme Router & Financing Guidance</span>
+            <Sparkles className="w-3.5 h-3.5" />
+            <span>Module 5: AI-Assisted Business Advisory Layer</span>
           </div>
           <h1 className="text-2xl sm:text-4xl font-extrabold text-white tracking-tight font-serif">
-            Government Scheme Routing & Financing Track
+            Strategic Business Advisory & Next Steps
           </h1>
           <p className="text-xs sm:text-sm text-emerald-200/80 mt-1 max-w-2xl">
-            SIH 26091 deterministic track matching, statutory parameters, loan ceiling disclosures, and application verification checklists.
+            Synthesized multi-module intelligence providing explainable recommendations, risk mitigations, validation questions, and a phased execution roadmap.
           </p>
         </div>
 
         <div className="flex items-center gap-3">
           <Link
-            to="/financial-plan"
+            to="/scheme-router"
             state={{ session: activeSession }}
             className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-[#0c241b] hover:bg-[#12382b] text-emerald-300 text-xs font-semibold border border-[#18533e] transition-colors"
           >
             <ArrowLeft className="w-3.5 h-3.5" />
-            <span>Review Financials</span>
+            <span>Review Schemes</span>
           </Link>
+        </div>
+      </div>
+
+      {/* Prototype Advisory Notice Banner (Section 15) */}
+      <div className="p-4 rounded-2xl bg-[#071913] border border-amber-800/80 flex items-start gap-3 text-xs text-emerald-200/90 shadow-md">
+        <Cpu className="w-4 h-4 text-amber-400 shrink-0 mt-0.5" />
+        <div className="space-y-1">
+          <strong className="text-amber-300 uppercase tracking-wider text-[11px] block">
+            Prototype Advisory Engine • AI Transparency Notice
+          </strong>
+          <p className="text-[11px] leading-relaxed text-emerald-100/90">
+            Recommendations are generated from deterministic prototype rules using available analysis outputs. No real-time AI model or live government decision engine is used in this prototype. Future production architecture can connect this advisory layer to an authorized LLM/NLP service.
+          </p>
         </div>
       </div>
 
@@ -198,10 +188,10 @@ export function SchemeRouterPage() {
         <div className="bg-[#0c241b] rounded-3xl p-12 border border-[#18533e] text-center space-y-4 shadow-xl">
           <RefreshCw className="w-8 h-8 text-amber-400 mx-auto animate-spin" />
           <p className="text-sm font-semibold text-white">
-            Evaluating SIH 26091 scheme rules and retrieving nodal reference data...
+            Synthesizing multi-module advisory roadmap...
           </p>
           <span className="text-xs text-emerald-300/60 block">
-            Matching equity capital to Micro Finance and Term Loan brackets
+            Evaluating feasibility, debt metrics, and scheme track parameters
           </span>
         </div>
       )}
@@ -210,97 +200,88 @@ export function SchemeRouterPage() {
       {error && !loading && (
         <div className="bg-rose-950/40 rounded-3xl p-8 border border-rose-800 text-center space-y-4">
           <AlertCircle className="w-8 h-8 text-rose-400 mx-auto" />
-          <h3 className="text-base font-bold text-white">Scheme Routing Interrupted</h3>
+          <h3 className="text-base font-bold text-white">Advisory Synthesis Interrupted</h3>
           <p className="text-xs text-rose-200/80 max-w-md mx-auto">{error}</p>
         </div>
       )}
 
       {/* Main Content Area */}
-      {routingPlan && !loading && (
+      {advisoryPlan && !loading && (
         <div className="space-y-8 animate-fadeIn">
           
           {/* 2. Analysis Context Banner */}
-          <AnalysisContextBanner
-            locationDisplay={displayLocation}
-            categoryDisplay={displayCategory}
-            ideaDisplay={displayIdea}
-            marginCapital={routingPlan.financingSummary.availableMarginCapital}
-            projectCost={routingPlan.financingSummary.calculatedProjectCost}
+          <AdvisoryContextBanner
+            profile={advisoryPlan.profile}
           />
 
-          {/* 3. Prototype Route Result */}
-          <PrototypeRouteCard
-            route={routingPlan.route}
-            parameters={routingPlan.parameters}
-            isAbove50L={routingPlan.explanation.isAbove50L}
+          {/* 3. Executive Advisory Summary */}
+          <AdvisorySummaryCard
+            executiveSummary={advisoryPlan.executiveSummary}
+            advisoryStatus={advisoryPlan.advisoryStatus}
+            statusBadge={advisoryPlan.statusBadge}
+            profile={advisoryPlan.profile}
           />
 
-          {/* 4. Financing Structure Summary */}
-          <FinancingSummaryCard
-            financingSummary={routingPlan.financingSummary}
-            ceilingMismatch={routingPlan.ceilingMismatch}
+          {/* 4. Analysis Coverage Audit */}
+          <AnalysisCoverageCard
+            coverage={advisoryPlan.coverage}
           />
 
-          {/* 5. Why This Route? */}
-          <WhyThisRouteSection
-            explanation={routingPlan.explanation}
+          {/* 5. Identified Key Strengths */}
+          <AdvisoryStrengthsSection
+            strengths={advisoryPlan.strengths}
           />
 
-          {/* 6. Loan Ceiling / Boundary Warnings */}
-          <SchemeWarningsSection
-            warnings={routingPlan.warnings}
-            ceilingMismatch={routingPlan.ceilingMismatch}
-            isAbove50L={routingPlan.explanation.isAbove50L}
+          {/* 6. Identified Operational & Financial Risks */}
+          <AdvisoryRisksSection
+            risks={advisoryPlan.risks}
           />
 
-          {/* 7. Verification Checklist */}
-          <VerificationChecklistSection
-            checklist={routingPlan.verificationChecklist}
+          {/* 7. Priority Strategic Recommendations */}
+          <AdvisoryRecommendationsSection
+            recommendations={advisoryPlan.recommendations}
           />
 
-          {/* 8. Potential Documents */}
-          <DocumentChecklistSection
-            documentCategories={routingPlan.documentChecklist}
+          {/* 8. Phased Action Plan (Now, Before Financing, Before Launch) */}
+          <AdvisoryActionPlanSection
+            actionPlan={advisoryPlan.actionPlan}
           />
 
-          {/* 9. Nodal Schemes Reference (Central & State) */}
-          <NodalSchemesSection
-            contextualSchemes={routingPlan.contextualSchemes}
+          {/* 9. Pre-Commitment Validation Questions */}
+          <ValidationQuestionsSection
+            questions={advisoryPlan.validationQuestions}
           />
 
-          {/* 10. Transparency & Methodology Taxonomy */}
-          <SchemeTaxonomyPanel
-            taxonomy={routingPlan.taxonomy}
+          {/* 10. Assumptions, Architecture & Methodology Panel */}
+          <AdvisoryAssumptionsPanel
+            transparency={advisoryPlan.transparency}
           />
 
-          {/* 11. Official Verification Disclaimer */}
-          <OfficialDisclaimerCard
-            customDisclaimer={routingPlan.officialDisclaimer}
+          {/* 11. Official Verification / Prototype Disclaimer */}
+          <AdvisoryDisclaimerCard
+            customDisclaimer={advisoryPlan.transparency?.disclaimer}
           />
 
           {/* 12. Navigation Controls */}
           <div className="pt-6 border-t border-[#18533e]/50 flex flex-col sm:flex-row items-center justify-between gap-4">
             <Link
-              to="/financial-plan"
+              to="/scheme-router"
               state={{ session: activeSession }}
               className="inline-flex items-center gap-2 px-5 py-3 rounded-xl bg-[#0c241b] hover:bg-[#12382b] text-emerald-300 text-xs font-semibold border border-[#18533e] transition-colors w-full sm:w-auto justify-center"
             >
               <ArrowLeft className="w-4 h-4" />
-              <span>Back to Financial Plan</span>
+              <span>Back to Scheme Guidance</span>
             </Link>
 
             <Link
-              to="/advisory"
+              to="/business-plan"
               state={{ 
                 session: activeSession,
-                schemeRoute: routingPlan,
-                financialPlan: location.state?.financialPlan || null,
-                marketData: location.state?.marketData || null,
-                feasibilityData: location.state?.feasibilityData || null
+                advisoryPlan: advisoryPlan
               }}
               className="inline-flex items-center gap-2 px-7 py-3.5 rounded-xl bg-gradient-to-r from-orange-600 via-amber-600 to-emerald-700 hover:from-orange-500 hover:via-amber-500 hover:to-emerald-600 text-white font-bold text-xs sm:text-sm shadow-xl shadow-orange-950/40 transition-all transform hover:-translate-y-0.5 w-full sm:w-auto justify-center"
             >
-              <span>Continue to AI Advisory</span>
+              <span>Continue to Business Launch Plan</span>
               <ArrowRight className="w-4 h-4" />
             </Link>
           </div>
@@ -311,4 +292,5 @@ export function SchemeRouterPage() {
     </div>
   );
 }
-export default SchemeRouterPage;
+
+export default AdvisoryPage;

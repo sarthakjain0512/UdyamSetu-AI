@@ -1,9 +1,19 @@
+/**
+ * UdyamSetu AI — Business Advisory Service
+ * Coordinates multi-tier business advisory synthesis adhering to:
+ * Page -> Hook -> Service -> Engine / API architecture.
+ */
+
 import { apiClient } from './apiConfig';
+import { generateAdvisoryPlan } from '../utils/advisoryEngine';
 import { assessFeasibility } from './feasibilityService';
 import { analyzeMarketIntelligence } from './marketService';
 import { calculateFinancials } from './financialService';
 import { routeSchemes } from './schemeService';
 
+/**
+ * Task-0 legacy generator preserved for backward compatibility.
+ */
 export async function generateAdvisory(payload) {
   try {
     return await apiClient('/advisory/generate', {
@@ -64,4 +74,43 @@ export async function generateAdvisory(payload) {
       }
     };
   }
+}
+
+/**
+ * Task 7 Unified Business Advisory Generator.
+ * Executes deterministic advisory engine and enriches with backend synthesis if available.
+ *
+ * @param {Object} context - Multi-module analysis inputs
+ * @returns {Promise<Object>} Synthesized advisory plan
+ */
+export async function getBusinessAdvisory(context) {
+  // 1. Compute deterministic advisory plan
+  const deterministicPlan = generateAdvisoryPlan(context);
+
+  // 2. Safely attempt to fetch backend advisory details (e.g. compliance checklist / voice summary)
+  let backendData = null;
+  try {
+    const rawMargin = context.session?.finance?.marginCapital || context.financial?.financing?.marginCapital || 30000;
+    backendData = await apiClient('/advisory/generate', {
+      method: 'POST',
+      body: JSON.stringify({
+        sector_id: context.session?.business?.sectorId || 'dairy-processing',
+        district_id: context.session?.location?.districtId || 'varanasi-up',
+        proposed_capital: Number(rawMargin),
+        experience_years: 2,
+        entrepreneur_name: context.session?.entrepreneurContext?.name || 'Entrepreneur',
+        gender: context.session?.entrepreneurContext?.gender || 'general',
+        social_category: context.session?.entrepreneurContext?.socialCategory || 'general'
+      })
+    });
+  } catch (err) {
+    // Graceful fallback to deterministic plan
+    console.warn('[AdvisoryService] Backend advisory generation offline, relying on deterministic advisory plan:', err);
+  }
+
+  return {
+    ...deterministicPlan,
+    backendData,
+    isBackendConnected: Boolean(backendData)
+  };
 }
