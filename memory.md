@@ -5,7 +5,7 @@
 - **SIH Problem Statement**: SIH 26091 — AI-Driven Hyper-Local Business Advisory and Financial Structuring Assistant for Rural Micro-Entrepreneurs
 - **Tagline**: From Local Insight to Sustainable Enterprise
 - **Nodal Ministry**: Ministry of Social Justice and Empowerment
-- **Current Development Stage**: Task 1 — Application Shell and Project Documentation
+- **Current Development Stage**: Task 2 — Entrepreneur Input & Analysis Session Workflow
 
 ---
 
@@ -17,22 +17,62 @@
    - Strict UI presentation focus: UI components do not contain financial formulas, lending math, or business domain rules.
    - Visual identity uses professional government/startup styling: Deep green primary, white/cream surfaces, restrained orange accent.
 
-2. **Backend Architecture**:
+2. **Analysis Session & State Persistence (Task 2)**:
+   - Analysis Session is standardized across the multi-stage pipeline via `frontend/src/services/sessionService.js` and `frontend/src/hooks/useAnalysisSession.js`.
+   - Persistence uses `localStorage` under key `udyamsetu_analysis_session`.
+   - Session schema:
+     ```json
+     {
+       "sessionId": "session_timestamp_random",
+       "createdAt": "ISO-8601",
+       "updatedAt": "ISO-8601",
+       "status": "ACTIVE_INTAKE",
+       "location": {
+         "state": "Uttar Pradesh",
+         "district": "Varanasi",
+         "districtId": "varanasi-up",
+         "blockOrLocality": "Kashi Vidyapeeth",
+         "tier": "Tier-2 / Peri-Urban"
+       },
+       "business": {
+         "category": "Agri & Allied",
+         "sectorId": "dairy-processing",
+         "sectorName": "Dairy & Milk Value Addition",
+         "idea": "Village cold storage & chilling center",
+         "isCustom": false
+       },
+       "finance": {
+         "marginCapital": 300000,
+         "estimatedProjectCost": 3000000,
+         "estimatedLoanAmount": 2700000,
+         "financingTrack": "Term Loan"
+       },
+       "entrepreneurContext": {
+         "name": "Ramesh Sharma",
+         "gender": "general",
+         "socialCategory": "obc",
+         "areaContext": "rural"
+       }
+     }
+     ```
+   - Downstream route guards: Direct navigation to `/market-analysis` without an active session presents an informative empty-state ("Start a business analysis first") with CTA to `/new-analysis`.
+
+3. **Backend Architecture**:
    - Python FastAPI application serving clean RESTful endpoints over `/api/v1`.
    - Modular engine pattern: `market_engine.py`, `feasibility_engine.py`, `financial_engine.py`, `scheme_engine.py`, and `advisory_engine.py`.
    - Strict schema validation using Pydantic v2.
    - Abstracted `DataService` decoupling engine logic from the storage layer.
 
-3. **Service Layer Contract**:
+4. **Service Layer Contract**:
    - Frontend components access backend data exclusively through `services/*.js`.
    - Built-in resilient client fallback allows offline demonstration and graceful degradation.
 
-4. **Data Fidelity & Integrity Principles**:
+5. **Data Fidelity & Integrity Principles**:
    - Demo, synthetic, and representative benchmarks are strictly marked as such.
    - Never fabricate or present demo data as live official government statistics.
    - Clear disclaimers indicating that actual loan sanction and subsidy disbursals require formal verification with official nodal portals.
 
-5. **Version Control Protocol**:
+6. **Version Control Protocol**:
    - All Git actions (init, add, commit, push, branch, reset) are under manual user control.
    - AI agents are strictly prohibited from executing automatic git operations.
 

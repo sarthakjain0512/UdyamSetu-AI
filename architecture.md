@@ -100,6 +100,8 @@ UdyamSetu AI/
 │   ├── src/
 │   │   ├── assets/                       # Static SVGs and icons
 │   │   ├── components/                   # Presentation components
+│   │   │   ├── analysis/
+│   │   │   │   └── AnalysisSummaryCard.jsx# Live intake summary card
 │   │   │   └── common/
 │   │   │       ├── Footer.jsx            # Application footer
 │   │   │       ├── MetricCard.jsx        # Data visualization card
@@ -107,6 +109,13 @@ UdyamSetu AI/
 │   │   │       └── VoiceAssistantModal.jsx# Vernacular voice prompt modal
 │   │   ├── data/                         # Resilient client fallback datasets
 │   │   ├── hooks/                        # React hooks for API lifecycle management
+│   │   │   ├── useAnalysisSession.js     # Analysis session access & persistence hook
+│   │   │   ├── useAdvisory.js
+│   │   │   ├── useFeasibility.js
+│   │   │   ├── useFinancials.js
+│   │   │   ├── useMarketIntelligence.js
+│   │   │   ├── useSchemes.js
+│   │   │   └── useSectors.js
 │   │   ├── layouts/
 │   │   │   └── RootLayout.jsx            # Master shell layout with header & footer
 │   │   ├── pages/                        # Route page views
@@ -115,7 +124,7 @@ UdyamSetu AI/
 │   │   │   ├── FullAdvisoryPage.jsx      # /business-plan & /advisory
 │   │   │   ├── HomePage.jsx              # / (Dashboard)
 │   │   │   ├── MarketIntelligencePage.jsx# /market-analysis & /market-intelligence
-│   │   │   ├── NewAnalysisPage.jsx       # /new-analysis
+│   │   │   ├── NewAnalysisPage.jsx       # /new-analysis (Intake flow)
 │   │   │   └── NotFoundPage.jsx          # Catch-all 404
 │   │   ├── services/                     # Decoupled API service layer
 │   │   │   ├── advisoryService.js        # Advisory API calls with fallback
@@ -124,8 +133,11 @@ UdyamSetu AI/
 │   │   │   ├── financialService.js       # Financial calculations API calls with fallback
 │   │   │   ├── marketService.js          # Market intelligence API calls with fallback
 │   │   │   ├── schemeService.js          # Scheme router API calls with fallback
-│   │   │   └── sectorService.js          # Sector & district metadata API calls with fallback
-│   │   ├── utils/                        # Currency and number formatters
+│   │   │   ├── sectorService.js          # Sector & district metadata API calls with fallback
+│   │   │   └── sessionService.js         # Client-side analysis session persistence & schema
+│   │   ├── utils/                        # Utilities & formatters
+│   │   │   ├── financialPreview.js       # Sizing preview calculator (SIH 26091)
+│   │   │   └── formatters.js             # Currency and number formatters
 │   │   ├── App.css
 │   │   ├── App.jsx                       # Route provider & shell mapping
 │   │   ├── index.css                     # Global styles and design system variables
@@ -168,6 +180,7 @@ All backend interactions are strictly abstracted through dedicated frontend serv
 - **`financialService.js`**: Calls `/api/v1/financials/calculate`.
 - **`schemeService.js`**: Calls `/api/v1/schemes/route`.
 - **`advisoryService.js`**: Calls `/api/v1/advisory/generate`.
+- **`sessionService.js`**: Manages client-side analysis session persistence under `udyamsetu_analysis_session`, enforcing normalized schema across all downstream advisory stages.
 
 Each service includes a local fallback to ensure high presentation resilience even if the local backend server is inactive during evaluation.
 
