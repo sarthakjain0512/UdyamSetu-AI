@@ -1,36 +1,33 @@
 /**
  * API Configuration and Base Fetch Utility
  * Reads VITE_API_BASE_URL from environment variables.
- * Abstracted so React components never call raw fetch or hardcode URLs.
+ * Forwards requests to apiClient.js for unified error handling and timeout protection.
  */
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000/api/v1';
+import { apiClient, getBaseUrl, buildEndpointUrl } from './apiClient.js';
 
 export const getApiUrl = (endpoint) => {
-  const cleanBase = API_BASE_URL.replace(/\/$/, '');
-  const cleanEndpoint = endpoint.startsWith('/') ? endpoint : `/${endpoint}`;
-  return `${cleanBase}${cleanEndpoint}`;
+  return buildEndpointUrl(endpoint);
 };
 
-export async function apiClient(endpoint, options = {}) {
-  const url = getApiUrl(endpoint);
-  const config = {
-    headers: {
-      'Content-Type': 'application/json',
-      ...options.headers,
-    },
-    ...options,
-  };
+export async function legacyApiClient(endpoint, options = {}) {
+  const method = (options.method || 'GET').toUpperCase();
+  const cleanEndpoint = endpoint.startsWith('/') ? endpoint : `/${endpoint}`;
 
-  try {
-    const response = await fetch(url, config);
-    if (!response.ok) {
-      const errorData = await response.json().catch(() => ({}));
-      throw new Error(errorData.detail || `HTTP Error ${response.status}: ${response.statusText}`);
+  if (method === 'POST') {
+    let bodyData = {};
+    if (options.body) {
+      try {
+        bodyData = typeof options.body === 'string' ? JSON.parse(options.body) : options.body;
+      } catch {
+        bodyData = options.body;
+      }
     }
-    return await response.json();
-  } catch (err) {
-    console.warn(`[UdyamSetu API] Request to ${url} failed or offline. Falling back to local data layer service.`, err.message);
-    throw err;
+    return apiClient.post(cleanEndpoint, bodyData, options);
   }
+
+  return apiClient.get(cleanEndpoint, options);
 }
+
+export { apiClient };
+export default apiClient;

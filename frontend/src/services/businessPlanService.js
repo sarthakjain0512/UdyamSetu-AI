@@ -5,6 +5,7 @@
  * Page -> Hook -> Service -> Engine / API architecture.
  */
 
+import { apiClient } from './apiClient.js';
 import { generateBusinessLaunchPlan } from '../utils/businessPlanEngine';
 import { calculateFinancialPlan } from '../utils/financialCalculator';
 import { calculateSchemeRoute } from '../utils/schemeRouterEngine';
@@ -88,7 +89,29 @@ export async function getBusinessLaunchPlan(context = {}) {
     }
   }
 
-  // 7. Generate complete launch plan using deterministic engine
+  // 7. Attempt backend synthesis first
+  let source = "prototype-fallback";
+  try {
+    const backendData = await apiClient.post('/api/business-plan/generate', {
+      session: resolvedSession,
+      market: resolvedMarket,
+      feasibility: resolvedFeasibility,
+      financial: resolvedFinancial,
+      scheme: resolvedScheme,
+      advisory: resolvedAdvisory
+    });
+    if (backendData && backendData.overview) {
+      return {
+        ...backendData,
+        is_fallback: false,
+        source: "backend"
+      };
+    }
+  } catch (err) {
+    console.warn('[BusinessPlanService] Backend launch plan API unavailable or failed. Using deterministic fallback:', err.message);
+  }
+
+  // 8. Generate complete launch plan using deterministic engine
   // Market and Feasibility remain strictly null if not completed — never fabricated!
   const launchPlan = generateBusinessLaunchPlan({
     session: resolvedSession,
@@ -99,5 +122,9 @@ export async function getBusinessLaunchPlan(context = {}) {
     advisory: resolvedAdvisory
   });
 
-  return launchPlan;
+  return {
+    ...launchPlan,
+    is_fallback: true,
+    source: "prototype-fallback"
+  };
 }

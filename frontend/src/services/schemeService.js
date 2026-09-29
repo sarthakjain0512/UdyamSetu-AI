@@ -1,25 +1,29 @@
 /**
  * UdyamSetu AI — Smart Scheme Service
+ *
  * Bridges client intake session, deterministic SIH 26091 scheme routing engine,
- * and the backend scheme matching API (`/schemes/route`).
+ * and the backend scheme matching API (`/api/scheme/route`).
  *
  * Adheres strictly to the Page -> Hook -> Service -> Engine architecture.
  */
 
-import { apiClient } from './apiConfig';
+import { apiClient } from './apiClient.js';
 import { calculateSchemeRoute } from '../utils/schemeRouterEngine';
 
 /**
- * Legacy/Task-0 compatible scheme query function.
- * Queries backend `/schemes/route` with resilient local fallback.
+ * Queries backend `/api/scheme/route` with resilient local fallback.
  */
 export async function routeSchemes(payload) {
   try {
-    return await apiClient('/schemes/route', {
-      method: 'POST',
-      body: JSON.stringify(payload),
-    });
+    const res = await apiClient.post('/api/scheme/route', payload);
+    return {
+      ...res,
+      is_fallback: false,
+      source: "backend"
+    };
   } catch (err) {
+    console.warn('[SchemeService] Backend unavailable or failed. Using fallback scheme list:', err.message);
+
     const list = [
       {
         scheme_code: "PMEGP-2026",
@@ -58,7 +62,7 @@ export async function routeSchemes(payload) {
         required_documents: [
           "Mudra Application Form",
           "Machinery Pro-forma Quotation",
-          "KYC Identity Documents"
+          "6 Months Bank Statement"
         ],
         application_portal_url: "https://www.mudra.org.in/"
       }
@@ -68,7 +72,8 @@ export async function routeSchemes(payload) {
       recommended_schemes: list,
       best_matching_scheme: list[0],
       total_potential_subsidy: 175000.0,
-      is_fallback: true
+      is_fallback: true,
+      source: "prototype-fallback"
     };
   }
 }
@@ -93,16 +98,21 @@ export async function getSchemeRoutingPlan(payload) {
 
   // 2. Fetch Contextual Nodal Schemes (PMEGP, Mudra, etc.) from backend
   let contextualSchemes = null;
+  let source = "prototype-fallback";
   try {
     const backendData = await routeSchemes({
       sector_id: payload.sectorId || payload.sector_id || 'dairy-processing',
       district_id: payload.districtId || payload.district_id || 'varanasi-up',
+      margin_capital: marginCapital,
       investment_amount: deterministicPlan.financingSummary.calculatedProjectCost,
       gender: payload.gender || 'general',
       social_category: payload.socialCategory || 'general',
       is_rural: payload.isRural ?? true
     });
     contextualSchemes = backendData;
+    if (!backendData.is_fallback) {
+      source = "backend";
+    }
   } catch (err) {
     console.warn('[SchemeService] Backend scheme matching encountered error, relying on deterministic plan:', err);
   }
@@ -110,6 +120,8 @@ export async function getSchemeRoutingPlan(payload) {
   return {
     ...deterministicPlan,
     contextualSchemes,
-    isBackendConnected: Boolean(contextualSchemes && !contextualSchemes.is_fallback)
+    is_fallback: source === "prototype-fallback",
+    source,
+    isBackendConnected: source === "backend"
   };
 }

@@ -1,10 +1,11 @@
 /**
  * UdyamSetu AI — Business Advisory Service
+ *
  * Coordinates multi-tier business advisory synthesis adhering to:
  * Page -> Hook -> Service -> Engine / API architecture.
  */
 
-import { apiClient } from './apiConfig';
+import { apiClient } from './apiClient.js';
 import { generateAdvisoryPlan } from '../utils/advisoryEngine';
 import { assessFeasibility } from './feasibilityService';
 import { analyzeMarketIntelligence } from './marketService';
@@ -17,10 +18,7 @@ import { getModuleOutput } from './analysisStateService';
  */
 export async function generateAdvisory(payload) {
   try {
-    return await apiClient('/advisory/generate', {
-      method: 'POST',
-      body: JSON.stringify(payload),
-    });
+    return await apiClient.post('/api/advisory/generate', payload);
   } catch (err) {
     const feasibility = await assessFeasibility({
       sector_id: payload.sector_id,
@@ -72,7 +70,9 @@ export async function generateAdvisory(payload) {
       voice_script_summary: {
         hi: `नमस्ते ${payload.entrepreneur_name || 'उद्यमी'} जी! ${feasibility.district_name} में ${feasibility.sector_name} का उद्योग शुरू करने के लिए आपकी योजना बहुत उत्तम है। इसका फ़िजिबिलिटी स्कोर ${feasibility.feasibility_score} प्रतिशत है।`,
         en: `Hello ${payload.entrepreneur_name || 'Entrepreneur'}! Starting your ${feasibility.sector_name} unit in ${feasibility.district_name} shows high viability with a feasibility score of ${feasibility.feasibility_score}%.`
-      }
+      },
+      is_fallback: true,
+      source: "prototype-fallback"
     };
   }
 }
@@ -102,30 +102,34 @@ export async function getBusinessAdvisory(context) {
   // 2. Compute deterministic advisory plan
   const deterministicPlan = generateAdvisoryPlan(resolvedContext);
 
-  // 3. Safely attempt to fetch backend advisory details (e.g. compliance checklist / voice summary)
+  // 3. Attempt to fetch from backend API
   let backendData = null;
+  let source = "prototype-fallback";
+
   try {
-    const rawMargin = context.session?.finance?.marginCapital || resolvedFinancial?.financing?.marginCapital || 30000;
-    backendData = await apiClient('/advisory/generate', {
-      method: 'POST',
-      body: JSON.stringify({
-        sector_id: context.session?.business?.sectorId || 'dairy-processing',
-        district_id: context.session?.location?.districtId || 'varanasi-up',
-        proposed_capital: Number(rawMargin),
-        experience_years: 2,
-        entrepreneur_name: context.session?.entrepreneurContext?.name || 'Entrepreneur',
-        gender: context.session?.entrepreneurContext?.gender || 'general',
-        social_category: context.session?.entrepreneurContext?.socialCategory || 'general'
-      })
+    const rawMargin = context.session?.finance?.marginCapital || resolvedFinancial?.financing?.marginCapital || 300000;
+    backendData = await apiClient.post('/api/advisory/generate', {
+      session: context.session,
+      market: resolvedMarket,
+      feasibility: resolvedFeasibility,
+      financial: resolvedFinancial,
+      scheme: resolvedScheme,
+      sector_id: context.session?.business?.sectorId || 'dairy-processing',
+      district_id: context.session?.location?.districtId || 'varanasi-up',
+      proposed_capital: rawMargin,
+      gender: context.session?.entrepreneurContext?.gender || 'general',
+      social_category: context.session?.entrepreneurContext?.socialCategory || 'general'
     });
+    source = "backend";
   } catch (err) {
-    // Graceful fallback to deterministic plan
-    console.warn('[AdvisoryService] Backend advisory generation offline, relying on deterministic advisory plan:', err);
+    console.warn('[AdvisoryService] Backend advisory generation encountered error, relying on deterministic plan:', err.message);
   }
 
   return {
     ...deterministicPlan,
-    backendData,
-    isBackendConnected: Boolean(backendData)
+    backendSummary: backendData?.executive_summary || null,
+    is_fallback: source === "prototype-fallback",
+    source,
+    isBackendConnected: source === "backend"
   };
 }
