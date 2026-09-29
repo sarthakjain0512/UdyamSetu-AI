@@ -2,7 +2,7 @@ import React, { useEffect, useState, useMemo } from 'react';
 import { useLocation, Link } from 'react-router-dom';
 import { 
   TrendingUp, Compass, ArrowRight, MapPin, Building2, 
-  IndianRupee, Edit3, AlertCircle, RefreshCw, Layers 
+  IndianRupee, Edit3, AlertCircle, RefreshCw, Layers, Info 
 } from 'lucide-react';
 import { useMarketIntelligence } from '../hooks/useMarketIntelligence';
 import { useSectors } from '../hooks/useSectors';
@@ -41,7 +41,7 @@ export function MarketIntelligencePage() {
     (location.state?.sector_id && location.state?.district_id)
   );
 
-  // Configurable radius: default 5 km (Step 4 & 17)
+  // Configurable radius: default 5 km
   const [radiusKm, setRadiusKm] = useState(5);
 
   const sectorId = activeSession?.business?.sectorId === 'other'
@@ -49,7 +49,7 @@ export function MarketIntelligencePage() {
     : (activeSession?.business?.sectorId || location.state?.sector_id || 'dairy-processing');
 
   const districtId = activeSession?.location?.districtId || location.state?.district_id || 'varanasi-up';
-  const investment = activeSession?.finance?.marginCapital || location.state?.proposed_capital || 300000;
+  const investment = activeSession?.finance?.marginCapital || location.state?.proposed_capital || 100000;
   const businessIdea = activeSession?.business?.idea || '';
 
   // Trigger analysis when session exists and no data is stored yet
@@ -95,19 +95,19 @@ export function MarketIntelligencePage() {
   if (!hasValidSession) {
     return (
       <div className="max-w-3xl mx-auto py-12 px-4 space-y-8">
-        <div className="bg-[#0c241b] rounded-3xl p-8 sm:p-12 border border-[#18533e] text-center space-y-6 shadow-2xl">
-          <div className="w-16 h-16 rounded-2xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-amber-400 mx-auto">
+        <div className="bg-white rounded-2xl p-8 sm:p-12 border border-[#DDE5DD] text-center space-y-6 shadow-sm">
+          <div className="w-16 h-16 rounded-2xl bg-emerald-50 border border-emerald-200 flex items-center justify-center text-[#14532D] mx-auto">
             <Compass className="w-8 h-8" />
           </div>
 
           <div className="space-y-2 max-w-lg mx-auto">
-            <span className="text-xs font-semibold px-3 py-1 rounded-full bg-emerald-950 text-emerald-300 border border-emerald-800">
+            <span className="text-xs font-semibold px-3 py-1 rounded-full bg-emerald-50 text-[#14532D] border border-emerald-200">
               Session Required
             </span>
-            <h1 className="text-2xl sm:text-3xl font-black text-white tracking-tight">
+            <h1 className="text-2xl sm:text-3xl font-black text-[#14532D] tracking-tight">
               Start a business analysis first
             </h1>
-            <p className="text-sm text-emerald-100/70 leading-relaxed">
+            <p className="text-sm text-[#647067] leading-relaxed">
               Hyper-local market intelligence requires a defined enterprise location, margin capital, and venture category to analyze mandi pricing, competition density, and local buying patterns.
             </p>
           </div>
@@ -115,25 +115,25 @@ export function MarketIntelligencePage() {
           <div className="pt-2">
             <Link
               to="/new-analysis"
-              className="inline-flex items-center gap-2 py-3.5 px-8 rounded-2xl bg-gradient-to-r from-orange-600 via-amber-600 to-emerald-700 hover:from-orange-500 hover:via-amber-500 hover:to-emerald-600 text-white font-bold text-sm shadow-xl shadow-orange-950/40 transition-all transform hover:-translate-y-0.5"
+              className="inline-flex items-center gap-2 py-3.5 px-8 rounded-xl bg-[#E58A24] hover:bg-[#c87512] text-white font-bold text-sm shadow-md transition-all transform hover:-translate-y-0.5"
             >
               <span>Create New Analysis</span>
               <ArrowRight className="w-4 h-4" />
             </Link>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-left pt-6 border-t border-[#144233] text-xs">
-            <div className="p-3 rounded-xl bg-[#071913] border border-[#134232]">
-              <span className="text-[10px] text-amber-400 font-mono block">1. Location</span>
-              <p className="text-emerald-100/80 mt-1">District, State & rural tier to assess mandi benchmarks</p>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-left pt-6 border-t border-[#DDE5DD] text-xs">
+            <div className="p-3 rounded-xl bg-stone-50 border border-[#DDE5DD]">
+              <span className="text-[11px] text-[#C87512] font-semibold block">1. Location</span>
+              <p className="text-[#647067] mt-1">District, State & rural tier to assess mandi benchmarks</p>
             </div>
-            <div className="p-3 rounded-xl bg-[#071913] border border-[#134232]">
-              <span className="text-[10px] text-amber-400 font-mono block">2. Category / Idea</span>
-              <p className="text-emerald-100/80 mt-1">Standardized sector or custom rural enterprise idea</p>
+            <div className="p-3 rounded-xl bg-stone-50 border border-[#DDE5DD]">
+              <span className="text-[11px] text-[#C87512] font-semibold block">2. Category / Idea</span>
+              <p className="text-[#647067] mt-1">Standardized sector or custom rural enterprise idea</p>
             </div>
-            <div className="p-3 rounded-xl bg-[#071913] border border-[#134232]">
-              <span className="text-[10px] text-amber-400 font-mono block">3. Margin Capital</span>
-              <p className="text-emerald-100/80 mt-1">Own equity to project total project cost and debt sizing</p>
+            <div className="p-3 rounded-xl bg-stone-50 border border-[#DDE5DD]">
+              <span className="text-[11px] text-[#C87512] font-semibold block">3. Margin Capital</span>
+              <p className="text-[#647067] mt-1">Own equity to project total project cost and debt sizing</p>
             </div>
           </div>
         </div>
@@ -143,7 +143,7 @@ export function MarketIntelligencePage() {
 
   // Active Session Page Content
   return (
-    <div className="space-y-8 max-w-7xl mx-auto">
+    <div className="space-y-6 max-w-7xl mx-auto pb-12">
       
       {/* Workflow Progress Tracker */}
       <WorkflowProgressTracker moduleStatuses={moduleStatuses} currentStage="market" />
@@ -157,27 +157,27 @@ export function MarketIntelligencePage() {
         />
       )}
 
-      {/* Step 1: Compact "Your Analysis" Summary Header with Return Action */}
-      <div className="bg-[#0c241b] border border-[#18533e] rounded-2xl p-4 sm:p-5 shadow-lg flex flex-col md:flex-row md:items-center justify-between gap-4">
+      {/* Compact Analysis Context Card */}
+      <div className="bg-white border border-[#DDE5DD] rounded-2xl p-4 sm:p-5 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div className="space-y-1">
           <div className="flex items-center gap-2">
-            <span className="text-[10px] font-bold text-amber-400 font-mono bg-amber-500/10 px-2 py-0.5 rounded border border-amber-500/20">
+            <span className="text-[10px] font-bold text-[#C87512] bg-amber-50 px-2.5 py-0.5 rounded-full border border-amber-200">
               Active Analysis Session
             </span>
-            <span className="text-xs text-emerald-300/80">Stage 1 of 5</span>
+            <span className="text-xs text-[#647067]">Stage 1 of 6</span>
           </div>
           <div className="flex flex-wrap items-center gap-2 text-sm">
-            <span className="text-white font-bold">
+            <span className="text-[#17211B] font-bold">
               {activeSession?.business?.idea || activeSession?.business?.sectorName || 'Rural Micro Enterprise'}
             </span>
-            <span className="text-emerald-400">•</span>
-            <span className="text-emerald-200 flex items-center gap-1 text-xs">
-              <MapPin className="w-3.5 h-3.5 text-rose-400" />
+            <span className="text-[#DDE5DD]">•</span>
+            <span className="text-[#647067] flex items-center gap-1 text-xs">
+              <MapPin className="w-3.5 h-3.5 text-[#0F766E]" />
               {activeSession?.location?.district || 'District'}, {activeSession?.location?.state || 'State'}
               {activeSession?.location?.blockOrLocality ? ` (${activeSession.location.blockOrLocality})` : ''}
             </span>
-            <span className="text-emerald-400">•</span>
-            <span className="text-emerald-300 font-mono text-xs font-semibold">
+            <span className="text-[#DDE5DD]">•</span>
+            <span className="text-[#14532D] font-mono text-xs font-bold">
               Margin: {formatCurrencyINR(activeSession?.finance?.marginCapital || investment)}
             </span>
           </div>
@@ -185,48 +185,48 @@ export function MarketIntelligencePage() {
 
         <Link
           to="/new-analysis"
-          className="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl bg-[#071913] hover:bg-[#0a231b] border border-[#1d5c46] text-amber-400 hover:text-amber-300 font-semibold text-xs transition-colors self-start md:self-auto"
+          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-stone-50 hover:bg-stone-100 border border-[#DDE5DD] text-[#0F766E] font-semibold text-xs transition-colors self-start md:self-auto"
         >
           <Edit3 className="w-3.5 h-3.5" />
-          <span>Edit Analysis Inputs</span>
+          <span>Edit Inputs</span>
         </Link>
       </div>
 
-      {/* Page Title & Subheading (Step 3) */}
-      <div className="border-b border-[#144233] pb-4 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+      {/* Page Title & Subheading */}
+      <div className="border-b border-[#DDE5DD] pb-4 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
         <div>
-          <div className="inline-flex items-center gap-2 text-xs font-semibold px-3 py-1 rounded-full bg-emerald-950 text-emerald-300 border border-emerald-800 mb-2">
-            <TrendingUp className="w-3.5 h-3.5 text-amber-400" />
+          <div className="inline-flex items-center gap-2 text-xs font-semibold px-3 py-1 rounded-full bg-emerald-50 text-[#14532D] border border-emerald-200 mb-2">
+            <TrendingUp className="w-3.5 h-3.5 text-[#E58A24]" />
             Module 1: Hyper-Local Market Intelligence
           </div>
-          <h1 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
+          <h1 className="text-2xl sm:text-3xl font-black text-[#14532D] tracking-tight">
             Hyper-Local Market Intelligence
           </h1>
-          <p className="text-xs text-emerald-100/70 mt-0.5">
-            Understand the opportunity around your selected location.
+          <p className="text-xs text-[#647067] mt-0.5">
+            Understand demand patterns, competitor saturation, and pricing benchmarks within your target catchment area.
           </p>
         </div>
 
-        <div className="flex items-center gap-2 text-[11px] text-amber-300 bg-amber-500/10 px-3 py-1.5 rounded-xl border border-amber-500/20">
-          <AlertCircle className="w-3.5 h-3.5 text-amber-400 flex-shrink-0" />
-          <span>Prototype Demo Data • 5–10 km Reach</span>
+        <div className="flex items-center gap-2 text-[11px] text-[#C87512] bg-amber-50 px-3 py-1.5 rounded-xl border border-amber-200 self-start sm:self-auto">
+          <AlertCircle className="w-3.5 h-3.5 text-[#C87512] shrink-0" />
+          <span>Illustrative Prototype Data • 5–10 km Reach</span>
         </div>
       </div>
 
-      {/* Loading State (Step 20) */}
+      {/* Loading State */}
       {loading && (
-        <div className="bg-[#0c241b] rounded-2xl p-12 border border-[#18533e] text-center space-y-3">
-          <RefreshCw className="w-8 h-8 text-emerald-400 animate-spin mx-auto" />
-          <p className="text-sm text-emerald-200 font-medium">Analyzing local market opportunity...</p>
-          <p className="text-xs text-emerald-300/60">Evaluating demographic demand, competition density, and pricing benchmarks.</p>
+        <div className="bg-white rounded-2xl p-12 border border-[#DDE5DD] text-center space-y-3 shadow-sm">
+          <RefreshCw className="w-8 h-8 text-[#14532D] animate-spin mx-auto" />
+          <p className="text-sm text-[#14532D] font-bold">Analyzing local market opportunity...</p>
+          <p className="text-xs text-[#647067]">Evaluating demographic demand, competition density, and pricing benchmarks.</p>
         </div>
       )}
 
-      {/* Error State (Step 20) */}
+      {/* Error State */}
       {error && !loading && (
-        <div className="bg-red-950/80 rounded-2xl p-6 border border-red-800 text-center space-y-4 text-xs text-red-200">
-          <AlertCircle className="w-6 h-6 text-red-400 mx-auto" />
-          <p className="text-sm font-bold text-white">Market analysis could not be generated.</p>
+        <div className="bg-red-50 rounded-2xl p-6 border border-red-200 text-center space-y-3 text-xs text-[#C2413A]">
+          <AlertCircle className="w-6 h-6 text-[#C2413A] mx-auto" />
+          <p className="text-sm font-bold text-[#17211B]">Market analysis could not be generated.</p>
           <p>{error}</p>
           <button
             onClick={() => runAnalysis({
@@ -235,18 +235,18 @@ export function MarketIntelligencePage() {
               investment_amount: Number(investment),
               radius_km: radiusKm
             })}
-            className="px-4 py-2 bg-red-900 hover:bg-red-800 text-white rounded-xl font-bold transition-colors"
+            className="px-4 py-2 bg-[#C2413A] hover:bg-[#a6342e] text-white rounded-xl font-bold transition-colors"
           >
             Retry Analysis
           </button>
         </div>
       )}
 
-      {/* Analytical Modules (Step 3 through Step 12) */}
+      {/* Analytical Modules */}
       {data && !loading && (
-        <div className="space-y-8">
+        <div className="space-y-6">
           
-          {/* 1. Local Market Snapshot (Step 4) */}
+          {/* 1. Local Market Snapshot */}
           <MarketSnapshotCard
             snapshot={data.snapshot}
             locationName={data.district_name}
@@ -256,49 +256,69 @@ export function MarketIntelligencePage() {
             onRadiusChange={handleRadiusChange}
           />
 
-          {/* 2. Demand Opportunity (Step 5) */}
+          {/* 2. Demand Opportunity */}
           <DemandOpportunitySection
             demandDetails={data.demand_details}
             demographics={data.target_demographics}
             radiusKm={radiusKm}
           />
 
-          {/* 3. Competition Landscape (Step 6) */}
+          {/* 3. Competition Landscape */}
           <CompetitionSection
             competitors={data.competitors}
             competitionDensity={data.competition_density}
             pricingBenchmarks={data.pricing_benchmarks}
           />
 
-          {/* 4. Product Market Value (Step 7) */}
+          {/* 4. Product Market Value */}
           <ProductMarketValueSection
             productMarketValue={data.product_market_value}
           />
 
-          {/* 5. Local Opportunity Factors (Step 8) */}
+          {/* 5. Local Opportunity Factors */}
           <OpportunityFactorsSection
             opportunityFactors={data.opportunity_factors}
             locationContext={data.district_name}
           />
 
-          {/* 6. SWOT Analysis (Step 9) */}
+          {/* 6. SWOT Analysis */}
           <SWOTSection
             swot={data.swot}
           />
 
-          {/* 7. Market Threats & Risks (Step 10) */}
+          {/* 7. Market Threats & Risks */}
           <MarketThreatsSection
             threats={data.threats_matrix}
           />
 
-          {/* 8. Market Insight Summary (Step 11) */}
+          {/* 8. Market Insight Summary */}
           <MarketInsightSummary
             summary={data.summary}
             activeSession={activeSession}
           />
 
-          {/* 9. Data Source & Transparency Panel (Step 12) */}
+          {/* 9. Data Source & Transparency Panel */}
           <DataMethodologyPanel />
+
+          {/* Navigation Controls */}
+          <div className="pt-4 border-t border-[#DDE5DD] flex flex-col sm:flex-row items-center justify-between gap-4">
+            <Link
+              to="/new-analysis"
+              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-stone-100 hover:bg-stone-200 text-[#17211B] text-xs font-semibold border border-[#DDE5DD] transition-colors w-full sm:w-auto justify-center"
+            >
+              <Compass className="w-4 h-4 text-[#14532D]" />
+              <span>Back to New Analysis</span>
+            </Link>
+
+            <Link
+              to="/feasibility"
+              state={{ session: activeSession, marketData: data }}
+              className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-[#E58A24] hover:bg-[#c87512] text-white font-bold text-xs uppercase tracking-wider shadow-md transition-all transform hover:-translate-y-0.5 w-full sm:w-auto justify-center"
+            >
+              <span>Continue to Feasibility Assessment</span>
+              <ArrowRight className="w-4 h-4" />
+            </Link>
+          </div>
 
         </div>
       )}
@@ -306,3 +326,5 @@ export function MarketIntelligencePage() {
     </div>
   );
 }
+
+export default MarketIntelligencePage;

@@ -2,7 +2,7 @@ import React, { useEffect, useMemo } from 'react';
 import { useLocation, Link, useNavigate } from 'react-router-dom';
 import { 
   Briefcase, Sparkles, Printer, ArrowLeft, ArrowRight, 
-  IndianRupee, ShieldCheck, Download, RefreshCw 
+  IndianRupee, ShieldCheck, Download, RefreshCw, AlertCircle 
 } from 'lucide-react';
 import { useBusinessPlan } from '../hooks/useBusinessPlan';
 import { getAnalysisSession } from '../services/sessionService';
@@ -89,19 +89,19 @@ export function BusinessPlanPage() {
   if (!hasValidSession) {
     return (
       <div className="max-w-3xl mx-auto py-12 px-4 space-y-8">
-        <div className="bg-[#0c241b] rounded-3xl p-8 sm:p-12 border border-[#18533e] text-center space-y-6 shadow-2xl">
-          <div className="w-16 h-16 rounded-2xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-amber-400 mx-auto">
+        <div className="bg-white rounded-2xl p-8 sm:p-12 border border-[#DDE5DD] text-center space-y-6 shadow-sm">
+          <div className="w-16 h-16 rounded-2xl bg-emerald-50 border border-emerald-200 flex items-center justify-center text-[#14532D] mx-auto">
             <Briefcase className="w-8 h-8" />
           </div>
 
           <div className="space-y-2 max-w-lg mx-auto">
-            <span className="text-xs font-semibold px-3 py-1 rounded-full bg-emerald-950 text-emerald-300 border border-emerald-800">
+            <span className="text-xs font-semibold px-3 py-1 rounded-full bg-emerald-50 text-[#14532D] border border-emerald-200">
               Module 6 • Business Launch Plan
             </span>
-            <h2 className="text-2xl font-bold text-white font-serif">
+            <h2 className="text-2xl font-bold text-[#14532D]">
               Start a business analysis first.
             </h2>
-            <p className="text-xs sm:text-sm text-emerald-200/70 leading-relaxed">
+            <p className="text-xs sm:text-sm text-[#647067] leading-relaxed">
               The Business Launch Plan synthesizes your market intelligence, feasibility assessment, capital structuring, scheme routing, and advisory recommendations into a concrete pre-launch roadmap.
             </p>
           </div>
@@ -109,7 +109,7 @@ export function BusinessPlanPage() {
           <div className="pt-2">
             <Link
               to="/new-analysis"
-              className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-orange-600 to-amber-600 hover:from-orange-500 hover:to-amber-500 text-white font-bold text-xs uppercase tracking-wider shadow-lg shadow-orange-950/40 transition-all"
+              className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-[#E58A24] hover:bg-[#c87512] text-white font-bold text-xs uppercase tracking-wider shadow-sm transition-all"
             >
               <span>Initialize Business Intake</span>
               <ArrowRight className="w-4 h-4" />
@@ -124,19 +124,19 @@ export function BusinessPlanPage() {
   if (!hasValidMargin) {
     return (
       <div className="max-w-3xl mx-auto py-12 px-4 space-y-8">
-        <div className="bg-[#0c241b] rounded-3xl p-8 sm:p-12 border border-amber-800/60 text-center space-y-6 shadow-2xl">
-          <div className="w-16 h-16 rounded-2xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-amber-400 mx-auto">
+        <div className="bg-white rounded-2xl p-8 sm:p-12 border border-amber-200 text-center space-y-6 shadow-sm">
+          <div className="w-16 h-16 rounded-2xl bg-amber-50 border border-amber-200 flex items-center justify-center text-[#C87512] mx-auto">
             <IndianRupee className="w-8 h-8" />
           </div>
 
           <div className="space-y-2 max-w-lg mx-auto">
-            <span className="text-xs font-semibold px-3 py-1 rounded-full bg-amber-950 text-amber-300 border border-amber-800">
+            <span className="text-xs font-semibold px-3 py-1 rounded-full bg-amber-50 text-[#C87512] border border-amber-200">
               Equity Parameter Required
             </span>
-            <h2 className="text-2xl font-bold text-white font-serif">
+            <h2 className="text-2xl font-bold text-[#14532D]">
               Margin capital is required for the launch plan.
             </h2>
-            <p className="text-xs sm:text-sm text-emerald-200/70 leading-relaxed">
+            <p className="text-xs sm:text-sm text-[#647067] leading-relaxed">
               Capital sizing, bank loan eligibility, debt service schedules, and financial preparation checkpoints depend directly on your available promoter equity.
             </p>
           </div>
@@ -144,7 +144,7 @@ export function BusinessPlanPage() {
           <div className="pt-2">
             <Link
               to="/new-analysis"
-              className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-orange-600 to-amber-600 hover:from-orange-500 hover:to-amber-500 text-white font-bold text-xs uppercase tracking-wider shadow-lg shadow-orange-950/40 transition-all"
+              className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-[#E58A24] hover:bg-[#c87512] text-white font-bold text-xs uppercase tracking-wider shadow-sm transition-all"
             >
               <span>Provide Margin Capital</span>
               <ArrowRight className="w-4 h-4" />
@@ -156,7 +156,7 @@ export function BusinessPlanPage() {
   }
 
   return (
-    <div className="space-y-8 pb-12 max-w-7xl mx-auto">
+    <div className="space-y-6 pb-12 max-w-7xl mx-auto">
       
       {/* Workflow Progress Tracker */}
       <div className="print:hidden">
@@ -175,16 +175,16 @@ export function BusinessPlanPage() {
       )}
 
       {/* 1. Page Header & Actions */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-[#18533e] pb-6 print:border-none print:pb-2">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-[#DDE5DD] pb-4 print:border-none print:pb-2">
         <div>
-          <div className="inline-flex items-center gap-2 text-xs font-semibold px-3 py-1 rounded-full bg-amber-950 text-amber-300 border border-amber-800 mb-2">
-            <Sparkles className="w-3.5 h-3.5" />
+          <div className="inline-flex items-center gap-2 text-xs font-semibold px-3 py-1 rounded-full bg-emerald-50 text-[#14532D] border border-emerald-200 mb-2">
+            <Sparkles className="w-3.5 h-3.5 text-[#E58A24]" />
             <span>Module 6: Business Launch Plan</span>
           </div>
-          <h1 className="text-2xl sm:text-4xl font-extrabold text-white tracking-tight font-serif">
+          <h1 className="text-2xl sm:text-3xl font-black text-[#14532D] tracking-tight">
             Enterprise Business Launch Plan
           </h1>
-          <p className="text-xs sm:text-sm text-emerald-200/80 mt-1 max-w-2xl">
+          <p className="text-xs sm:text-sm text-[#647067] mt-0.5 max-w-2xl">
             A structured, evidence-derived operational roadmap synthesizing market intelligence, operational feasibility, financial structuring, scheme routing, and advisory findings.
           </p>
         </div>
@@ -192,9 +192,9 @@ export function BusinessPlanPage() {
         <div className="flex items-center gap-3 print:hidden">
           <button
             onClick={handlePrint}
-            className="px-4 py-2 rounded-xl bg-[#0c241b] hover:bg-[#12382b] text-emerald-300 border border-[#18533e] text-xs font-bold flex items-center gap-2 transition-colors"
+            className="px-4 py-2 rounded-xl bg-stone-100 hover:bg-stone-200 text-[#17211B] border border-[#DDE5DD] text-xs font-bold flex items-center gap-2 transition-colors shadow-sm"
           >
-            <Printer className="w-4 h-4" />
+            <Printer className="w-4 h-4 text-[#14532D]" />
             <span>Print / Export PDF</span>
           </button>
         </div>
@@ -202,27 +202,61 @@ export function BusinessPlanPage() {
 
       {/* 2. Loading State */}
       {loading && !launchPlan && (
-        <div className="p-16 text-center space-y-4 bg-[#0c241b] rounded-3xl border border-[#18533e]">
-          <div className="w-12 h-12 rounded-2xl bg-amber-500/20 border border-amber-500/40 text-amber-400 flex items-center justify-center mx-auto animate-bounce">
-            <Sparkles className="w-6 h-6" />
+        <div className="p-16 text-center space-y-4 bg-white rounded-2xl border border-[#DDE5DD] shadow-sm">
+          <div className="w-12 h-12 rounded-xl bg-emerald-50 border border-emerald-200 text-[#14532D] flex items-center justify-center mx-auto animate-bounce">
+            <Sparkles className="w-6 h-6 text-[#E58A24]" />
           </div>
-          <p className="text-sm font-semibold text-emerald-200">
+          <p className="text-sm font-bold text-[#14532D]">
             Synthesizing hyper-local intelligence into your business launch plan...
+          </p>
+          <p className="text-xs text-[#647067]">
+            Merging market benchmarks, credit tracks, risk controls, and 90-day execution milestones.
           </p>
         </div>
       )}
 
       {/* 3. Error State */}
       {error && !launchPlan && (
-        <div className="p-6 rounded-2xl bg-rose-950/40 border border-rose-800 text-rose-300 text-xs space-y-2">
-          <p className="font-bold">Error generating Business Launch Plan:</p>
+        <div className="p-6 rounded-2xl bg-red-50 border border-red-200 text-[#C2413A] text-xs space-y-3 shadow-sm">
+          <div className="flex items-center gap-2 font-bold text-sm">
+            <AlertCircle className="w-4 h-4" />
+            <span>Error generating Business Launch Plan:</span>
+          </div>
           <p>{error}</p>
+          <button
+            onClick={handleRefresh}
+            className="px-4 py-2 bg-[#C2413A] hover:bg-[#a6342e] text-white rounded-xl font-bold transition-colors"
+          >
+            Retry Synthesis
+          </button>
+        </div>
+      )}
+
+      {/* 3B. Empty / Uninitialized State (Prevents Blank Screen) */}
+      {!launchPlan && !loading && !error && (
+        <div className="p-12 text-center space-y-4 bg-white rounded-2xl border border-[#DDE5DD] shadow-sm">
+          <div className="w-12 h-12 rounded-xl bg-emerald-50 text-[#14532D] flex items-center justify-center mx-auto border border-emerald-200">
+            <Briefcase className="w-6 h-6" />
+          </div>
+          <h3 className="text-base font-bold text-[#17211B]">
+            Launch Plan Ready to Synthesize
+          </h3>
+          <p className="text-xs text-[#647067] max-w-md mx-auto">
+            Click below to generate your comprehensive 90-day pre-launch roadmap from your analysis session.
+          </p>
+          <button
+            onClick={handleRefresh}
+            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#14532D] hover:bg-[#0f3e22] text-white text-xs font-semibold shadow-sm transition-colors"
+          >
+            <RefreshCw className="w-3.5 h-3.5" />
+            <span>Generate Launch Plan</span>
+          </button>
         </div>
       )}
 
       {/* 4. Complete Synthesized Dashboard */}
       {launchPlan && (
-        <div className="space-y-8">
+        <div className="space-y-6">
           
           {/* Section 1: Business Overview */}
           <BusinessOverviewCard overview={launchPlan.overview} />
@@ -233,7 +267,7 @@ export function BusinessPlanPage() {
             coverage={launchPlan.coverage} 
           />
 
-          {/* Section 3: Recommended Before Launch (Task 7 Advisory Synthesis) */}
+          {/* Section 3: Recommended Before Launch */}
           <LaunchRecommendations 
             recommendations={launchPlan.recommendationsBeforeLaunch} 
           />
@@ -263,7 +297,7 @@ export function BusinessPlanPage() {
           <BusinessPlanTransparency transparency={launchPlan.transparency} />
 
           {/* Section 12: Navigation Controls */}
-          <div className="pt-6 border-t border-[#18533e]/50 flex flex-col sm:flex-row items-center justify-between gap-4 print:hidden">
+          <div className="pt-4 border-t border-[#DDE5DD] flex flex-col sm:flex-row items-center justify-between gap-4 print:hidden">
             <Link
               to="/advisory"
               state={{ 
@@ -273,24 +307,24 @@ export function BusinessPlanPage() {
                 financialPlan: financialData,
                 schemeRoute: schemeRouteData
               }}
-              className="inline-flex items-center gap-2 px-5 py-3 rounded-xl bg-[#0c241b] hover:bg-[#12382b] text-emerald-300 text-xs font-semibold border border-[#18533e] transition-colors w-full sm:w-auto justify-center"
+              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-stone-100 hover:bg-stone-200 text-[#17211B] text-xs font-semibold border border-[#DDE5DD] transition-colors w-full sm:w-auto justify-center"
             >
-              <ArrowLeft className="w-4 h-4" />
+              <ArrowLeft className="w-4 h-4 text-[#14532D]" />
               <span>Back to AI Advisory</span>
             </Link>
 
             <div className="flex items-center gap-3 w-full sm:w-auto">
               <button
                 onClick={handlePrint}
-                className="px-5 py-3 rounded-xl bg-[#0c241b] hover:bg-[#12382b] text-emerald-300 border border-[#18533e] text-xs font-semibold flex items-center justify-center gap-2 transition-colors w-full sm:w-auto"
+                className="px-5 py-2.5 rounded-xl bg-stone-100 hover:bg-stone-200 text-[#17211B] border border-[#DDE5DD] text-xs font-semibold flex items-center justify-center gap-2 transition-colors w-full sm:w-auto shadow-sm"
               >
-                <Printer className="w-4 h-4" />
+                <Printer className="w-4 h-4 text-[#14532D]" />
                 <span>Print Plan</span>
               </button>
 
               <Link
                 to="/new-analysis"
-                className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-orange-600 to-amber-600 hover:from-orange-500 hover:to-amber-500 text-white font-bold text-xs uppercase tracking-wider shadow-lg shadow-orange-950/40 transition-all w-full sm:w-auto justify-center"
+                className="inline-flex items-center gap-2 px-6 py-2.5 rounded-xl bg-[#E58A24] hover:bg-[#c87512] text-white font-bold text-xs uppercase tracking-wider shadow-sm transition-all w-full sm:w-auto justify-center"
               >
                 <span>Start New Analysis</span>
                 <ArrowRight className="w-4 h-4" />

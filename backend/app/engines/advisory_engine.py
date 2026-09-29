@@ -1,150 +1,125 @@
-from app.models.schemas import (
-    AdvisoryRequest, AdvisoryResponse, FeasibilityRequest, FinancialRequest, 
-    MarketAnalysisRequest, SchemeRoutingRequest, ComplianceItem, ActionStep
-)
-from app.engines.feasibility_engine import FeasibilityEngine
-from app.engines.financial_engine import FinancialCalculationEngine
-from app.engines.market_engine import MarketIntelligenceEngine
-from app.engines.scheme_engine import SchemeRoutingEngine
-from app.services.data_service import DataService
+from typing import List, Dict, Any, Optional
+from app.models.schemas import AdvisoryRequest, AdvisoryResponse, RecommendationItem
 
 class AdvisoryGenerationEngine:
     """
-    Unified AI Business Advisory & Action Plan Engine.
-    Combines feasibility, market intelligence, financial structuring, and scheme routing
-    into a step-by-step roadmap for rural micro-entrepreneurs.
+    Deterministic Strategic Business Advisory Engine (Task 7).
+    Synthesizes available upstream analysis into explainable, evidence-backed recommendations,
+    risk mitigations, validation questions, and a phased execution roadmap.
     """
 
     @staticmethod
     def generate_advisory(request: AdvisoryRequest) -> AdvisoryResponse:
-        sector = DataService.get_sector_by_id(request.sector_id)
-        district = DataService.get_district_by_id(request.district_id)
+        session = request.session or {}
+        market = request.market
+        feasibility = request.feasibility
+        financial = request.financial
+        scheme = request.scheme
 
-        sector_name = sector.name if sector else request.sector_id.title()
-        district_name = f"{district.name}, {district.state}" if district else request.district_id.title()
+        # Extract context
+        business = session.get("business", {})
+        location = session.get("location", {})
+        finance = session.get("finance", {})
 
-        # Run constituent engines
-        feasibility_res = FeasibilityEngine.assess_feasibility(FeasibilityRequest(
-            sector_id=request.sector_id,
-            district_id=request.district_id,
-            proposed_capital=request.proposed_capital,
-            prior_experience_years=request.experience_years
-        ))
+        sector_name = business.get("sectorName") or business.get("category") or "Rural Micro-Enterprise"
+        idea_title = business.get("idea") or sector_name
+        district_name = location.get("districtName") or location.get("district") or "Target Cluster"
+        margin = finance.get("marginCapital") or request.proposed_capital or 0.0
 
-        market_res = MarketIntelligenceEngine.analyze_market(MarketAnalysisRequest(
-            sector_id=request.sector_id,
-            district_id=request.district_id,
-            investment_amount=request.proposed_capital
-        ))
+        strengths: List[str] = []
+        risks: List[str] = []
+        recommendations: List[RecommendationItem] = []
 
-        est_monthly_rev = round(request.proposed_capital * 0.38, 2)
-        financial_res = FinancialCalculationEngine.calculate_financials(FinancialRequest(
-            sector_id=request.sector_id,
-            total_project_cost=request.proposed_capital,
-            equity_contribution=round(request.proposed_capital * 0.15, 2),
-            estimated_monthly_revenue=est_monthly_rev
-        ))
+        # 1. Market-Derived Intelligence (ONLY if market is available)
+        if market and isinstance(market, dict) and not market.get("is_unavailable"):
+            trend = market.get("demand_trend") or market.get("snapshot", {}).get("demandLevel") or "Growing"
+            strengths.append(f"Demonstrated local market demand signal ({trend}) within target cluster.")
+            recommendations.append(RecommendationItem(
+                category="Market Penetration",
+                priority="High",
+                title="Secure Initial Local Offtake Commitments",
+                why=f"Local market indicates {trend} with competitive room for high-quality packaging.",
+                action="Engage 5–10 village retailers and dhabas with sample trial packs prior to commercial launch.",
+                source="Market Intelligence"
+            ))
+        else:
+            strengths.append("Market Intelligence: Not available from current analysis — validation required.")
 
-        scheme_res = SchemeRoutingEngine.route_schemes(SchemeRoutingRequest(
-            sector_id=request.sector_id,
-            district_id=request.district_id,
-            investment_amount=request.proposed_capital,
-            gender=request.gender,
-            social_category=request.social_category
-        ))
+        # 2. Feasibility-Derived Intelligence
+        if feasibility and isinstance(feasibility, dict) and not feasibility.get("is_unavailable"):
+            score = feasibility.get("feasibility_score", 75)
+            status = feasibility.get("feasibility_status", "Potentially Feasible")
+            strengths.append(f"Operational & financial feasibility readiness assessed at {score}/100 ({status}).")
+            recommendations.append(RecommendationItem(
+                category="Operational Readiness",
+                priority="High",
+                title="Execute Infrastructure & Licensing Milestone",
+                why="Operational clearance ensures uninterrupted production once term loan disburses.",
+                action="Confirm Gram Panchayat NOC, power sanction, and initiate Udyam/FSSAI registration.",
+                source="Feasibility Assessment"
+            ))
+        else:
+            risks.append("Operational Feasibility: Not available from current analysis — conduct site check.")
 
-        business_title = f"{request.entrepreneur_name}'s {sector_name} Enterprise"
+        # 3. Financial-Derived Intelligence
+        if financial and isinstance(financial, dict) and not financial.get("is_unavailable"):
+            cost = financial.get("total_project_cost") or financial.get("financing", {}).get("projectCost") or (margin * 10)
+            loan = financial.get("required_loan_amount") or financial.get("financing", {}).get("loanAmount") or (margin * 9)
+            dscr = financial.get("dscr") or 1.35
+            strengths.append(f"Bankable debt structuring sized at ₹{cost:,.0f} total cost (₹{loan:,.0f} debt requirement).")
+            recommendations.append(RecommendationItem(
+                category="Financial Discipline",
+                priority="High",
+                title="Maintain Working Capital Buffer",
+                why=f"Indicative DSCR is {dscr:.2f}x; initial ramp-up requires liquidity discipline.",
+                action="Keep at least 15% of equity capital in an accessible liquid buffer for initial operating cycles.",
+                source="Financial Plan"
+            ))
+        else:
+            risks.append("Financial Structuring: Not available from current analysis — establish promoter equity.")
 
-        exec_summary = (
-            f"Based on hyper-local data for {district_name}, establishing a {sector_name} unit with "
-            f"₹{request.proposed_capital:,.0f} capital holds an overall feasibility grade of {feasibility_res.feasibility_grade} "
-            f"(Score: {feasibility_res.feasibility_score}/100). By leveraging the {scheme_res.best_matching_scheme.scheme_name}, "
-            f"you are eligible for an estimated subsidy of ₹{scheme_res.best_matching_scheme.max_subsidy_amount:,.0f}, "
-            f"reducing your net effective loan burden. Estimated break-even is achieved in {feasibility_res.estimated_breakeven_months} months."
+        # 4. Scheme-Derived Guidance
+        if scheme and isinstance(scheme, dict) and not scheme.get("is_unavailable"):
+            track_title = scheme.get("track_title") or scheme.get("routingPlan", {}).get("trackTitle") or "Term Loan Track"
+            strengths.append(f"Government financing alignment confirmed under {track_title}.")
+            recommendations.append(RecommendationItem(
+                category="Government Subsidy",
+                priority="Medium",
+                title="Submit Margin Money Application via Nodal Portal",
+                why="Credit-linked subsidies reduce effective borrowing cost and monthly debt service pressure.",
+                action="Prepare DPR following PMEGP / Mudra documentation guidelines and apply via JanSamarth.",
+                source="Scheme Router"
+            ))
+        else:
+            risks.append("Scheme Routing: Not available from current analysis — verify official criteria.")
+
+        # Synthesis Summary
+        summary = (
+            f"Strategic analysis for {idea_title} in {district_name}. "
+            f"Promoter equity of ₹{margin:,.0f} structures a bankable project with actionable preparatory milestones. "
+            "Follow the prioritized recommendations to validate local demand and secure formal credit-linked support."
         )
 
-        compliance = [
-            ComplianceItem(
-                title="Udyam Registration Certificate",
-                authority="Ministry of MSME",
-                mandatory=True,
-                estimated_time_days=1,
-                estimated_cost_inr=0.0,
-                guidance="Instant online registration using Aadhaar on udyamregistration.gov.in. Unlocks interest subvention."
-            ),
-            ComplianceItem(
-                title="FSSAI Basic Food License / Registration",
-                authority="Food Safety & Standards Authority of India",
-                mandatory=True if request.sector_id in ["dairy-processing", "spices-food-processing"] else False,
-                estimated_time_days=7,
-                estimated_cost_inr=100.0,
-                guidance="Apply online on FoSCoS portal. Required for food manufacturing, packaging, and retail sale."
-            ),
-            ComplianceItem(
-                title="Gram Panchayat Trade NOC / Commercial Permit",
-                authority="Local Village Panchayat",
-                mandatory=True,
-                estimated_time_days=3,
-                estimated_cost_inr=250.0,
-                guidance="Obtain no-objection certificate from Gram Pradhan / Sarpanch for operating commercial power unit."
-            ),
-            ComplianceItem(
-                title="GST Registration (Exempt for Turnover < ₹40 Lakhs)",
-                authority="GST Council / State Tax Department",
-                mandatory=False,
-                estimated_time_days=5,
-                estimated_cost_inr=0.0,
-                guidance="Optional initially for micro-enterprises under ₹40 Lakhs turnover unless selling inter-state or on e-commerce."
-            )
-        ]
-
         roadmap = [
-            ActionStep(
-                phase="Phase 1: Foundation & Grant Filing (Weeks 1-3)",
-                step_number=1,
-                title="Register Udyam & Submit PMEGP / Scheme Portal Application",
-                description=f"Complete Udyam registration and submit project proposal on {scheme_res.best_matching_scheme.scheme_name} portal.",
-                estimated_days=7
-            ),
-            ActionStep(
-                phase="Phase 1: Foundation & Grant Filing (Weeks 1-3)",
-                step_number=2,
-                title="Bank Sanction & Machinery Procurement",
-                description="Present project report to nodal bank branch for loan sanction and order core equipment.",
-                estimated_days=14
-            ),
-            ActionStep(
-                phase="Phase 2: Installation & Pilot Operations (Weeks 4-6)",
-                step_number=3,
-                title="Unit Setup, Power Connection & Quality Testing",
-                description="Install processing machinery, setup electrical backup, and conduct test run for FSSAI compliance.",
-                estimated_days=10
-            ),
-            ActionStep(
-                phase="Phase 3: Market Launch & Scaling (Weeks 7-10)",
-                step_number=4,
-                title="Launch Local Distribution & Onboard Retailers",
-                description=f"Begin supply to targeted buyers in {district_name} ({market_res.target_demographics[0].segment}).",
-                estimated_days=15
-            )
+            {"phase": "Phase 1: Pre-Sanction Preparation", "timeframe": "Weeks 1–3", "focus": "Documentation, Udyam enrollment, site NOC, and supplier quotations."},
+            {"phase": "Phase 2: Financing & Equipment Sourcing", "timeframe": "Weeks 4–7", "focus": "Bank appraisal, JanSamarth subsidy linkage, machinery procurement."},
+            {"phase": "Phase 3: Trial Production & Distribution", "timeframe": "Weeks 8–12", "focus": "Trial batch, packaging validation, retail shelf placement."}
         ]
 
-        voice_script = {
-            "hi": f"नमस्ते {request.entrepreneur_name} जी! {district_name} में {sector_name} का उद्योग शुरू करने के लिए आपकी योजना बहुत उत्तम है। इसका फ़िजिबिलिटी स्कोर {feasibility_res.feasibility_score} प्रतिशत है। आपको {scheme_res.best_matching_scheme.scheme_name} के तहत लगभग ₹{scheme_res.best_matching_scheme.max_subsidy_amount:,.0f} की सब्सिडी मिल सकती है।",
-            "en": f"Hello {request.entrepreneur_name}! Starting your {sector_name} unit in {district_name} shows high viability with a feasibility score of {feasibility_res.feasibility_score}%. Under {scheme_res.best_matching_scheme.scheme_name}, you can secure up to ₹{scheme_res.best_matching_scheme.max_subsidy_amount:,.0f} in capital subsidy."
-        }
+        validation_questions = [
+            {"domain": "Market Validation", "question": "Have you confirmed pricing acceptance with at least 5 local retail buyers?"},
+            {"domain": "Raw Material Access", "question": "Are supply contracts or verbal commitments in place for peak and lean harvest months?"},
+            {"domain": "Cash Flow Buffer", "question": "Can your enterprise sustain 60 days of delayed customer receivables without halting wages?"}
+        ]
 
         return AdvisoryResponse(
-            entrepreneur_name=request.entrepreneur_name,
-            business_title=business_title,
-            sector_name=sector_name,
-            location_display=district_name,
-            executive_summary=exec_summary,
-            feasibility=feasibility_res,
-            market_intelligence=market_res,
-            financial_structure=financial_res,
-            matching_schemes=scheme_res,
-            compliance_checklist=compliance,
-            roadmap_steps=roadmap,
-            voice_script_summary=voice_script
+            executive_summary=summary,
+            strengths=strengths,
+            risks=risks,
+            recommendations=recommendations,
+            action_roadmap=roadmap,
+            validation_questions=validation_questions,
+            is_fallback=False,
+            source="backend",
+            disclaimer="Deterministic Prototype Advisory — Non-Guarantee Guidance"
         )

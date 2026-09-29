@@ -1,73 +1,157 @@
-from typing import List
+from typing import List, Optional
 from app.models.schemas import SchemeRoutingRequest, SchemeRoutingResponse, SchemeDetail
 from app.services.data_service import DataService
 
 class SchemeRoutingEngine:
     """
-    Intelligent Government Scheme Routing Engine.
-    Matches government schemes (PMEGP, PMFME, MUDRA, Lakhpati Didi, Stand-Up India)
-    based on entrepreneur profile, location, sector, and credit requirements.
+    Deterministic SIH 26091 Government Scheme Routing Engine.
+    Matches statutory schemes (PMEGP, MUDRA, PMFME) based on margin capital, track, and applicant context.
     """
 
     @staticmethod
     def route_schemes(request: SchemeRoutingRequest) -> SchemeRoutingResponse:
-        raw_schemes = DataService.get_raw_schemes()
-        matched_details: List[SchemeDetail] = []
+        margin = request.get_margin_capital()
+        if margin is None or margin <= 0:
+            margin = 300000.0
 
-        for sch in raw_schemes:
-            score = 60.0 # base score
+        project_cost = round(margin / 0.10)
+        raw_loan = round(project_cost * 0.90)
 
-            # Sector match
-            if request.sector_id in sch["applicable_sectors"]:
-                score += 20.0
+        is_out_of_boundary = project_cost > 5000000
+        is_micro_finance = project_cost <= 140000
 
-            # Gender & social category bonus
-            if "women" in sch["eligibility_categories"] and request.gender.lower() in ["female", "women"]:
-                score += 15.0
-            if "shg" in sch["eligibility_categories"] and request.gender.lower() in ["female", "women"]:
-                score += 10.0
-            if any(cat in sch["eligibility_categories"] for cat in [request.social_category.lower()]):
-                score += 10.0
+        if is_out_of_boundary:
+            track_code = "BOUNDARY_EXCEEDED"
+            track_title = "Outside Stated Prototype Financing Boundary (> ₹50L)"
+            track_description = "The SIH 26091 micro-enterprise framework covers credit structuring up to ₹50 Lakhs project cost. Commercial syndication is advised."
+            max_loan = 4500000.0
+            tenure = 7
+            moratorium = 6
+            rate = 8.0
+        elif is_micro_finance:
+            track_code = "MICRO_FINANCE"
+            track_title = "Micro Finance Track (≤ ₹1.40L Project Cost)"
+            track_description = "Targeted micro-credit under Mudra Shishu / Micro Finance institution pathways with 3-year tenure and 3-month moratorium."
+            max_loan = 125000.0
+            tenure = 3
+            moratorium = 3
+            rate = 6.5
+        else:
+            track_code = "TERM_LOAN"
+            track_title = "Term Loan Track (₹1.40L – ₹50L Project Cost)"
+            track_description = "Bankable term loan facility under PMEGP or Mudra Kishore/Tarun with 7-year tenure, 6-month moratorium, and CGTMSE guarantee."
+            max_loan = 4500000.0
+            tenure = 7
+            moratorium = 6
+            rate = 8.0
 
-            # Investment size check
-            if request.investment_amount <= sch["max_loan_limit_manufacturing"]:
-                score += 10.0
+        is_exceeding_ceiling = raw_loan > max_loan
+        sized_loan = min(raw_loan, max_loan)
 
-            score = min(98.0, score)
-
-            # Effective subsidy percentage
-            subsidy_pct = sch["base_subsidy_rate_rural"] if request.is_rural else sch["base_subsidy_rate_urban"]
-            if request.gender.lower() in ["female", "women"] or request.social_category.lower() in ["sc", "st", "obc"]:
-                subsidy_pct = min(35.0, subsidy_pct + 10.0) if subsidy_pct > 0 else subsidy_pct
-
-            # Max subsidy
-            max_subsidy = round((request.investment_amount * (subsidy_pct / 100.0)), 2)
-            max_subsidy_cap = sch.get("max_subsidy_amount", 1000000.0)
-            max_subsidy = min(max_subsidy, max_subsidy_cap)
-
-            eligibility_str = "Eligible - High Match" if score >= 85 else ("Eligible" if score >= 70 else "Conditional")
-
-            matched_details.append(SchemeDetail(
-                scheme_code=sch["scheme_code"],
-                scheme_name=sch["scheme_name"],
-                nodal_ministry=sch["nodal_ministry"],
-                subsidy_rate_pct=subsidy_pct,
-                max_loan_limit=sch["max_loan_limit_manufacturing"],
-                max_subsidy_amount=max_subsidy,
-                match_score=score,
-                eligibility_status=eligibility_str,
-                key_benefits=sch["key_benefits"],
-                required_documents=sch["required_documents"],
-                application_portal_url=sch["application_portal_url"]
+        # Contextual Scheme Database
+        schemes: List[SchemeDetail] = []
+        if is_micro_finance:
+            schemes.append(SchemeDetail(
+                scheme_code="MUDRA-SHISHU-2026",
+                scheme_name="Pradhan Mantri MUDRA Yojana (Shishu Category)",
+                nodal_ministry="Ministry of Finance / SIDBI",
+                subsidy_rate_pct=0.0,
+                max_loan_limit=50000.0,
+                max_subsidy_amount=0.0,
+                match_score=94.0,
+                eligibility_status="High Track Alignment",
+                key_benefits=[
+                    "Collateral-free micro loans up to ₹50,000",
+                    "Zero processing fee and concessionary interest",
+                    "Immediate working capital support"
+                ],
+                required_documents=[
+                    "Self-declaration / Voter ID / Aadhaar",
+                    "Business Quotation / Vendor Estimate",
+                    "Bank Account Statement (6 Months)"
+                ],
+                application_portal_url="https://www.mudra.org.in"
+            ))
+            schemes.append(SchemeDetail(
+                scheme_code="DAY-NRLM-SHG-2026",
+                scheme_name="DAY-NRLM Interest Subvention & Micro Credit",
+                nodal_ministry="Ministry of Rural Development",
+                subsidy_rate_pct=5.0,
+                max_loan_limit=100000.0,
+                max_subsidy_amount=5000.0,
+                match_score=86.0,
+                eligibility_status="Conditional / Women SHG",
+                key_benefits=[
+                    "Interest subvention down to 7% p.a. for rural women SHG members",
+                    "Community revolving fund support"
+                ],
+                required_documents=[
+                    "SHG Membership Certificate",
+                    "Gram Panchayat Verification"
+                ],
+                application_portal_url="https://nrlm.gov.in"
+            ))
+        else:
+            schemes.append(SchemeDetail(
+                scheme_code="PMEGP-2026",
+                scheme_name="Prime Minister's Employment Generation Programme (PMEGP)",
+                nodal_ministry="Ministry of MSME / KVIC",
+                subsidy_rate_pct=35.0 if request.is_rural else 25.0,
+                max_loan_limit=5000000.0,
+                max_subsidy_amount=min(1750000.0, round(project_cost * 0.35, 2)),
+                match_score=96.0,
+                eligibility_status="High Track Alignment",
+                key_benefits=[
+                    "Up to 35% margin money capital subsidy for rural micro-enterprises",
+                    "Bank term financing up to 90–95% of project cost",
+                    "Collateral-free coverage under CGTMSE scheme"
+                ],
+                required_documents=[
+                    "Aadhaar, PAN, and Caste/Category Certificate (if applicable)",
+                    "Detailed Project Report (DPR) / Financial Plan",
+                    "Rural Area Certificate from Gram Panchayat"
+                ],
+                application_portal_url="https://www.kviconline.gov.in/pmegpeportal/"
+            ))
+            schemes.append(SchemeDetail(
+                scheme_code="PMFME-2026",
+                scheme_name="PM Formalisation of Micro Food Processing Enterprises (PMFME)",
+                nodal_ministry="Ministry of Food Processing Industries",
+                subsidy_rate_pct=35.0,
+                max_loan_limit=3000000.0,
+                max_subsidy_amount=min(1000000.0, round(project_cost * 0.35, 2)),
+                match_score=91.0,
+                eligibility_status="High Track Alignment (Food Processing)",
+                key_benefits=[
+                    "35% credit-linked capital subsidy capped at ₹10 Lakhs",
+                    "Seed capital assistance for SHG members",
+                    "Branding, marketing, and FSSAI packaging grants"
+                ],
+                required_documents=[
+                    "Identity & Address Proof",
+                    "Food Processing Activity Declaration",
+                    "Bank Appraisal & DPR"
+                ],
+                application_portal_url="https://pmfme.mofpi.gov.in"
             ))
 
-        # Sort by match score descending
-        matched_details.sort(key=lambda x: x.match_score, reverse=True)
-        best_scheme = matched_details[0]
-        total_potential = sum([s.max_subsidy_amount for s in matched_details[:2]])
+        best_scheme = schemes[0] if schemes else None
 
         return SchemeRoutingResponse(
-            recommended_schemes=matched_details,
+            track_code=track_code,
+            track_title=track_title,
+            track_description=track_description,
+            project_cost=float(project_cost),
+            margin_capital=float(margin),
+            loan_amount=float(sized_loan),
+            statutory_tenure_years=tenure,
+            statutory_moratorium_months=moratorium,
+            statutory_interest_rate_pct=rate,
+            recommended_schemes=schemes,
             best_matching_scheme=best_scheme,
-            total_potential_subsidy=round(total_potential, 2)
+            is_exceeding_ceiling=is_exceeding_ceiling,
+            is_out_of_boundary=is_out_of_boundary,
+            is_fallback=False,
+            source="backend",
+            disclaimer="Prototype Scheme Routing Guidance — Official Sanction by Lender Only"
         )

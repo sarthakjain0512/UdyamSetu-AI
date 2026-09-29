@@ -13,12 +13,12 @@ import { AnalysisSummaryCard } from '../components/analysis/AnalysisSummaryCard'
 
 export function NewAnalysisPage() {
   const navigate = useNavigate();
-  const { sectors, districts, loading, error: sectorsError } = useSectors();
+  const { sectors, districts, loading } = useSectors();
 
-  // Check for any previous active session to allow restoring or editing
+  // Check for any previous active session
   const existingSession = useMemo(() => getAnalysisSession(), []);
 
-  // Section 1: Location State
+  // STEP 1: Location State
   const [selectedState, setSelectedState] = useState(
     existingSession?.location?.state || 'Uttar Pradesh'
   );
@@ -29,7 +29,7 @@ export function NewAnalysisPage() {
     existingSession?.location?.blockOrLocality || ''
   );
 
-  // Section 2: Business Category & Idea
+  // STEP 2: Business Category & Idea
   const [selectedSectorId, setSelectedSectorId] = useState(
     existingSession?.business?.isCustom ? 'other' : (existingSession?.business?.sectorId || 'dairy-processing')
   );
@@ -37,12 +37,12 @@ export function NewAnalysisPage() {
     existingSession?.business?.idea || ''
   );
 
-  // Section 3: Available Margin Capital
+  // STEP 3: Available Margin Capital
   const [marginCapitalInput, setMarginCapitalInput] = useState(
-    existingSession?.finance?.marginCapital ? String(existingSession.finance.marginCapital) : '300000'
+    existingSession?.finance?.marginCapital ? String(existingSession.finance.marginCapital) : '100000'
   );
 
-  // Section 4: Entrepreneur Context (Optional)
+  // STEP 4: Entrepreneur Context
   const [entrepreneurName, setEntrepreneurName] = useState(
     existingSession?.entrepreneurContext?.name || 'Ramesh Sharma'
   );
@@ -68,7 +68,7 @@ export function NewAnalysisPage() {
     setBlockOrLocality('');
     setSelectedSectorId('dairy-processing');
     setCustomIdea('');
-    setMarginCapitalInput('300000');
+    setMarginCapitalInput('100000');
     setEntrepreneurName('Ramesh Sharma');
     setGender('general');
     setSocialCategory('obc');
@@ -103,7 +103,6 @@ export function NewAnalysisPage() {
 
   // Numeric capital value for live calculations
   const parsedCapital = Number(marginCapitalInput) || 0;
-  const financialPreview = computeFinancialPreview(parsedCapital);
 
   // Handle State selection change
   const handleStateChange = (e) => {
@@ -111,7 +110,6 @@ export function NewAnalysisPage() {
     setSelectedState(newState);
     setErrors(prev => ({ ...prev, state: undefined }));
 
-    // Reset or auto-select first district in newly selected state
     const matched = districts.filter(d => d.state === newState);
     if (matched.length > 0) {
       setSelectedDistrictId(matched[0].id);
@@ -125,7 +123,6 @@ export function NewAnalysisPage() {
     setSelectedDistrictId(newDistrictId);
     setErrors(prev => ({ ...prev, district: undefined }));
 
-    // If state does not match district's state, sync state
     const dist = districts.find(d => d.id === newDistrictId);
     if (dist && dist.state && dist.state !== selectedState) {
       setSelectedState(dist.state);
@@ -136,7 +133,6 @@ export function NewAnalysisPage() {
   const validateForm = () => {
     const newErrors = {};
 
-    // Location validation
     if (!selectedState || selectedState.trim() === '') {
       newErrors.state = 'Please select a state.';
     }
@@ -144,7 +140,6 @@ export function NewAnalysisPage() {
       newErrors.district = 'Please select a district.';
     }
 
-    // Business idea validation
     if (!selectedSectorId || selectedSectorId.trim() === '') {
       newErrors.category = 'Please select a business category.';
     }
@@ -152,7 +147,6 @@ export function NewAnalysisPage() {
       newErrors.customIdea = 'Please provide a descriptive business idea (at least 3 characters).';
     }
 
-    // Margin capital validation
     if (!marginCapitalInput || marginCapitalInput.trim() === '') {
       newErrors.marginCapital = 'Please enter a valid margin capital amount.';
     } else {
@@ -181,7 +175,6 @@ export function NewAnalysisPage() {
     setIsSubmitting(true);
 
     try {
-      // Build normalized session data
       const categoryLabel = isCustomSector 
         ? 'Custom Enterprise' 
         : (currentSector?.name || selectedSectorId);
@@ -214,13 +207,11 @@ export function NewAnalysisPage() {
         }
       };
 
-      // Store in analysis session
       const savedSession = saveAnalysisSession(sessionPayload);
 
-      // Navigate to Market Analysis (Stage 1) passing session payload
       navigate('/market-analysis', {
         state: {
-          sector_id: isCustomSector ? 'dairy-processing' : selectedSectorId, // fallback sector id for mock market engine
+          sector_id: isCustomSector ? 'dairy-processing' : selectedSectorId,
           district_id: selectedDistrictId,
           proposed_capital: parsedCapital,
           business_idea: finalIdea,
@@ -239,35 +230,35 @@ export function NewAnalysisPage() {
   };
 
   return (
-    <div className="space-y-8 max-w-7xl mx-auto">
+    <div className="space-y-8 max-w-7xl mx-auto pb-12">
       
-      {/* Header Banner */}
-      <div className="border-b border-[#144233] pb-6 flex flex-col md:flex-row md:items-center justify-between gap-4">
+      {/* Page Header */}
+      <div className="border-b border-[#DDE5DD] pb-5 flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-950 text-emerald-300 text-xs font-semibold border border-emerald-800 mb-2">
-            <Compass className="w-3.5 h-3.5 text-amber-400" />
+          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-50 text-[#14532D] text-xs font-semibold border border-emerald-200 mb-2">
+            <Compass className="w-3.5 h-3.5 text-[#E58A24]" />
             Stage 1: Entrepreneur Onboarding & Opportunity Sizing
           </div>
-          <h1 className="text-3xl sm:text-4xl font-black text-white tracking-tight">
-            Start New Business Analysis
+          <h1 className="text-2xl sm:text-3xl font-black text-[#14532D] tracking-tight">
+            Create New Analysis
           </h1>
-          <p className="text-xs sm:text-sm text-emerald-100/70 mt-1 max-w-2xl leading-relaxed">
+          <p className="text-xs sm:text-sm text-[#647067] mt-1 max-w-2xl leading-relaxed">
             Provide your geographic location, available equity margin, and proposed enterprise category to compute viability, market dynamics, and subsidy matches.
           </p>
         </div>
 
         {existingSession && !hasCleared && (
-          <div className="flex flex-wrap items-center gap-3">
-            <div className="flex items-center gap-2 bg-[#09241b] px-3 py-2 rounded-xl border border-[#1b5540] text-xs text-emerald-200">
-              <RefreshCw className="w-3.5 h-3.5 text-amber-400" />
-              <span>Pre-filled from active session</span>
+          <div className="flex flex-wrap items-center gap-2 self-start md:self-auto">
+            <div className="flex items-center gap-1.5 bg-emerald-50 px-3 py-1.5 rounded-xl border border-emerald-200 text-xs text-[#14532D] font-medium">
+              <RefreshCw className="w-3.5 h-3.5 text-[#E58A24]" />
+              <span>Restored from session</span>
             </div>
             <button
               type="button"
               onClick={handleClearSession}
-              className="px-3 py-2 rounded-xl bg-red-950/40 hover:bg-red-900/50 text-red-300 border border-red-800/60 text-xs font-semibold transition-colors"
+              className="px-3 py-1.5 rounded-xl bg-stone-100 hover:bg-stone-200 text-[#647067] hover:text-[#17211B] border border-[#DDE5DD] text-xs font-semibold transition-colors"
             >
-              Clear & Start Fresh
+              Start Fresh
             </button>
           </div>
         )}
@@ -275,40 +266,42 @@ export function NewAnalysisPage() {
 
       {/* General Form Error Notice */}
       {errors.form && (
-        <div className="p-4 rounded-xl bg-red-950/80 border border-red-800 text-red-200 text-xs flex items-center gap-2">
-          <AlertCircle className="w-4 h-4 text-red-400 flex-shrink-0" />
+        <div className="p-4 rounded-xl bg-red-50 border border-red-200 text-[#C2413A] text-xs flex items-center gap-2">
+          <AlertCircle className="w-4 h-4 text-[#C2413A] shrink-0" />
           <span>{errors.form}</span>
         </div>
       )}
 
-      {/* Main Grid: 2-Column Form + Live Summary Card */}
+      {/* Main Grid: 2-Column Form (Left) + Sticky Live Summary (Right) */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
         
         {/* Left 2 Columns: Multi-Section Form */}
         <form onSubmit={handleSubmit} className="lg:col-span-2 space-y-6" noValidate>
           
-          {/* SECTION 1: Where is your business? */}
-          <div className="bg-[#0c241b] rounded-2xl p-6 sm:p-7 border border-[#18533e] space-y-5 shadow-lg">
-            <div className="flex items-center justify-between border-b border-[#144233] pb-3">
-              <h2 className="text-base font-bold text-white flex items-center gap-2.5">
-                <span className="w-6 h-6 rounded-full bg-emerald-800 text-emerald-100 text-xs flex items-center justify-center font-bold">1</span>
-                <span>Where is your business?</span>
+          {/* STEP 1: Location */}
+          <div className="bg-white rounded-2xl p-6 sm:p-7 border border-[#DDE5DD] space-y-5 shadow-sm">
+            <div className="flex items-center justify-between border-b border-[#DDE5DD] pb-3">
+              <h2 className="text-base font-bold text-[#14532D] flex items-center gap-2.5">
+                <span className="w-6 h-6 rounded-full bg-[#14532D] text-white text-xs flex items-center justify-center font-bold">1</span>
+                <span>STEP 1: Location Context</span>
               </h2>
-              <span className="text-[11px] text-emerald-300/70 font-mono">Location Context</span>
+              <span className="text-[11px] text-[#0F766E] font-medium bg-teal-50 px-2 py-0.5 rounded-full border border-teal-100">
+                Geography
+              </span>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               
               {/* State Input */}
               <div className="space-y-1.5">
-                <label className="text-xs font-semibold text-emerald-100 flex items-center gap-1.5">
-                  <MapPin className="w-3.5 h-3.5 text-rose-400" /> State <span className="text-amber-400">*</span>
+                <label className="text-xs font-semibold text-[#17211B] flex items-center gap-1.5">
+                  <MapPin className="w-3.5 h-3.5 text-[#0F766E]" /> State <span className="text-[#C87512]">*</span>
                 </label>
                 <select
                   value={selectedState}
                   onChange={handleStateChange}
-                  className={`w-full px-3.5 py-2.5 rounded-xl bg-[#071913] border text-sm text-white focus:outline-none focus:ring-1 focus:ring-emerald-400 transition-colors ${
-                    errors.state ? 'border-red-500' : 'border-[#1d5c46]'
+                  className={`w-full px-3.5 py-2.5 rounded-xl bg-white border text-sm text-[#17211B] focus:outline-none focus:ring-2 focus:ring-[#14532D]/30 transition-colors ${
+                    errors.state ? 'border-red-400' : 'border-[#DDE5DD]'
                   }`}
                 >
                   <option value="">Select State</option>
@@ -317,7 +310,7 @@ export function NewAnalysisPage() {
                   ))}
                 </select>
                 {errors.state && (
-                  <p className="text-[11px] text-red-400 flex items-center gap-1">
+                  <p className="text-[11px] text-[#C2413A] flex items-center gap-1">
                     <AlertCircle className="w-3 h-3" /> {errors.state}
                   </p>
                 )}
@@ -325,14 +318,14 @@ export function NewAnalysisPage() {
 
               {/* District Input */}
               <div className="space-y-1.5">
-                <label className="text-xs font-semibold text-emerald-100 flex items-center gap-1.5">
-                  <MapPin className="w-3.5 h-3.5 text-rose-400" /> District <span className="text-amber-400">*</span>
+                <label className="text-xs font-semibold text-[#17211B] flex items-center gap-1.5">
+                  <MapPin className="w-3.5 h-3.5 text-[#0F766E]" /> District <span className="text-[#C87512]">*</span>
                 </label>
                 <select
                   value={selectedDistrictId}
                   onChange={handleDistrictChange}
-                  className={`w-full px-3.5 py-2.5 rounded-xl bg-[#071913] border text-sm text-white focus:outline-none focus:ring-1 focus:ring-emerald-400 transition-colors ${
-                    errors.district ? 'border-red-500' : 'border-[#1d5c46]'
+                  className={`w-full px-3.5 py-2.5 rounded-xl bg-white border text-sm text-[#17211B] focus:outline-none focus:ring-2 focus:ring-[#14532D]/30 transition-colors ${
+                    errors.district ? 'border-red-400' : 'border-[#DDE5DD]'
                   }`}
                 >
                   <option value="">Select District</option>
@@ -343,89 +336,118 @@ export function NewAnalysisPage() {
                   ))}
                 </select>
                 {errors.district && (
-                  <p className="text-[11px] text-red-400 flex items-center gap-1">
+                  <p className="text-[11px] text-[#C2413A] flex items-center gap-1">
                     <AlertCircle className="w-3 h-3" /> {errors.district}
                   </p>
                 )}
               </div>
 
-              {/* Optional Block / Locality */}
+              {/* Block or Locality (Optional) */}
               <div className="sm:col-span-2 space-y-1.5">
-                <label className="text-xs font-semibold text-emerald-100 flex items-center justify-between">
-                  <span>Gram Panchayat / Block / Locality</span>
-                  <span className="text-[10px] text-emerald-300/60 font-normal">Optional</span>
+                <label className="text-xs font-semibold text-[#17211B] flex items-center gap-1.5">
+                  Block / Gram Panchayat / Catchment Radius <span className="text-[10px] text-[#647067] font-normal">(Optional)</span>
                 </label>
                 <input
                   type="text"
                   value={blockOrLocality}
                   onChange={(e) => setBlockOrLocality(e.target.value)}
-                  placeholder="e.g. Kashi Vidyapeeth Block, Chiraigaon Tehsil"
-                  className="w-full px-3.5 py-2.5 rounded-xl bg-[#071913] border border-[#1d5c46] text-sm text-white focus:outline-none focus:border-emerald-400"
+                  placeholder="e.g. Cholapur Block, Rohania, 5-10 km radius"
+                  className="w-full px-3.5 py-2.5 rounded-xl bg-white border border-[#DDE5DD] text-sm text-[#17211B] placeholder-[#647067]/60 focus:outline-none focus:ring-2 focus:ring-[#14532D]/30 transition-colors"
                 />
               </div>
 
             </div>
-
-            {/* Prototype geographic note */}
-            <p className="text-[11px] text-emerald-200/60 italic border-t border-[#144233] pt-3">
-              Prototype location data • Production version will integrate authorized geographic datasets (Bhuvan/LGD).
-            </p>
           </div>
 
-          {/* SECTION 2: What do you want to start? */}
-          <div className="bg-[#0c241b] rounded-2xl p-6 sm:p-7 border border-[#18533e] space-y-5 shadow-lg">
-            <div className="flex items-center justify-between border-b border-[#144233] pb-3">
-              <h2 className="text-base font-bold text-white flex items-center gap-2.5">
-                <span className="w-6 h-6 rounded-full bg-emerald-800 text-emerald-100 text-xs flex items-center justify-center font-bold">2</span>
-                <span>What do you want to start?</span>
+          {/* STEP 2: Business Category & Idea */}
+          <div className="bg-white rounded-2xl p-6 sm:p-7 border border-[#DDE5DD] space-y-5 shadow-sm">
+            <div className="flex items-center justify-between border-b border-[#DDE5DD] pb-3">
+              <h2 className="text-base font-bold text-[#14532D] flex items-center gap-2.5">
+                <span className="w-6 h-6 rounded-full bg-[#14532D] text-white text-xs flex items-center justify-center font-bold">2</span>
+                <span>STEP 2: Business Concept</span>
               </h2>
-              <span className="text-[11px] text-emerald-300/70 font-mono">Venture Scope</span>
+              <span className="text-[11px] text-[#0F766E] font-medium bg-teal-50 px-2 py-0.5 rounded-full border border-teal-100">
+                Enterprise Sector
+              </span>
             </div>
 
             <div className="space-y-4">
               
-              {/* Category Dropdown */}
-              <div className="space-y-1.5">
-                <label className="text-xs font-semibold text-emerald-100 flex items-center gap-1.5">
-                  <Building2 className="w-3.5 h-3.5 text-emerald-400" />
-                  Business Category <span className="text-amber-400">*</span>
+              {/* Sector Selection Grid */}
+              <div className="space-y-2">
+                <label className="text-xs font-semibold text-[#17211B] flex items-center gap-1.5">
+                  <Building2 className="w-3.5 h-3.5 text-[#14532D]" /> Select Enterprise Sector <span className="text-[#C87512]">*</span>
                 </label>
-                <select
-                  value={selectedSectorId}
-                  onChange={(e) => {
-                    setSelectedSectorId(e.target.value);
-                    setErrors(prev => ({ ...prev, category: undefined, customIdea: undefined }));
-                  }}
-                  className={`w-full px-3.5 py-2.5 rounded-xl bg-[#071913] border text-sm text-white focus:outline-none focus:ring-1 focus:ring-emerald-400 transition-colors ${
-                    errors.category ? 'border-red-500' : 'border-[#1d5c46]'
-                  }`}
-                >
-                  <option value="">Select Category</option>
-                  {sectors.map(s => (
-                    <option key={s.id} value={s.id}>
-                      {s.name} ({s.category})
-                    </option>
-                  ))}
-                  <option value="other">✨ Other / Custom Business Idea</option>
-                </select>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  {sectors.map((s) => {
+                    const isSelected = selectedSectorId === s.id;
+                    return (
+                      <div
+                        key={s.id}
+                        onClick={() => {
+                          setSelectedSectorId(s.id);
+                          setErrors(prev => ({ ...prev, category: undefined }));
+                        }}
+                        className={`p-3.5 rounded-xl border cursor-pointer transition-all ${
+                          isSelected 
+                            ? 'bg-emerald-50/70 border-[#14532D] ring-1 ring-[#14532D] shadow-sm' 
+                            : 'bg-white border-[#DDE5DD] hover:bg-stone-50'
+                        }`}
+                      >
+                        <div className="flex items-center justify-between">
+                          <span className={`text-xs font-bold ${isSelected ? 'text-[#14532D]' : 'text-[#17211B]'}`}>
+                            {s.name}
+                          </span>
+                          <span className="text-[10px] font-semibold text-[#647067]">
+                            {s.category}
+                          </span>
+                        </div>
+                        <p className="text-[11px] text-[#647067] mt-1 line-clamp-2 leading-relaxed">
+                          {s.description}
+                        </p>
+                      </div>
+                    );
+                  })}
+
+                  {/* Option: Other / Custom Idea */}
+                  <div
+                    onClick={() => {
+                      setSelectedSectorId('other');
+                      setErrors(prev => ({ ...prev, category: undefined }));
+                    }}
+                    className={`p-3.5 rounded-xl border cursor-pointer transition-all ${
+                      isCustomSector 
+                        ? 'bg-amber-50/80 border-[#E58A24] ring-1 ring-[#E58A24] shadow-sm' 
+                        : 'bg-white border-[#DDE5DD] hover:bg-stone-50'
+                    }`}
+                  >
+                    <div className="flex items-center justify-between">
+                      <span className={`text-xs font-bold ${isCustomSector ? 'text-[#C87512]' : 'text-[#17211B]'}`}>
+                        Other / Custom Enterprise
+                      </span>
+                      <span className="text-[10px] font-semibold text-[#C87512]">
+                        Custom
+                      </span>
+                    </div>
+                    <p className="text-[11px] text-[#647067] mt-1 leading-relaxed">
+                      Enter a custom micro-enterprise concept not covered in benchmark sectors.
+                    </p>
+                  </div>
+                </div>
+
                 {errors.category && (
-                  <p className="text-[11px] text-red-400 flex items-center gap-1">
+                  <p className="text-[11px] text-[#C2413A] flex items-center gap-1 mt-1">
                     <AlertCircle className="w-3 h-3" /> {errors.category}
                   </p>
                 )}
               </div>
 
-              {/* Custom Business Idea text input */}
-              <div className="space-y-1.5">
-                <label className="text-xs font-semibold text-emerald-100 flex items-center justify-between">
-                  <span className="flex items-center gap-1.5">
-                    <Lightbulb className="w-3.5 h-3.5 text-amber-400" />
-                    Specific Business Idea / Venture Scope
-                    {isCustomSector && <span className="text-amber-400">*</span>}
-                  </span>
-                  {!isCustomSector && (
-                    <span className="text-[10px] text-emerald-300/60 font-normal">Optional details</span>
-                  )}
+              {/* Specific Business Idea Description */}
+              <div className="space-y-1.5 pt-2">
+                <label className="text-xs font-semibold text-[#17211B] flex items-center gap-1.5">
+                  <Lightbulb className="w-3.5 h-3.5 text-[#E58A24]" /> Specific Business Description
+                  {isCustomSector && <span className="text-[#C87512]">*</span>}
                 </label>
                 <input
                   type="text"
@@ -436,22 +458,19 @@ export function NewAnalysisPage() {
                   }}
                   placeholder={
                     isCustomSector
-                      ? "e.g. Village-level solar cold storage or artisanal pottery workshop"
-                      : "e.g. 500-liter milk chilling and paneer manufacturing center"
+                      ? "e.g. Cold-Pressed Mustard Oil Expeller unit with retail packaging"
+                      : `e.g. Village unit producing packaged Paneer, Curd and Pure Ghee`
                   }
-                  className={`w-full px-3.5 py-2.5 rounded-xl bg-[#071913] border text-sm text-white focus:outline-none focus:ring-1 focus:ring-emerald-400 transition-colors ${
-                    errors.customIdea ? 'border-red-500' : 'border-[#1d5c46]'
+                  className={`w-full px-3.5 py-2.5 rounded-xl bg-white border text-sm text-[#17211B] placeholder-[#647067]/60 focus:outline-none focus:ring-2 focus:ring-[#14532D]/30 transition-colors ${
+                    errors.customIdea ? 'border-red-400' : 'border-[#DDE5DD]'
                   }`}
                 />
-                {errors.customIdea ? (
-                  <p className="text-[11px] text-red-400 flex items-center gap-1">
+                <p className="text-[11px] text-[#647067]">
+                  Helps hyper-local market intelligence calibrate local pricing and product-level demand.
+                </p>
+                {errors.customIdea && (
+                  <p className="text-[11px] text-[#C2413A] flex items-center gap-1">
                     <AlertCircle className="w-3 h-3" /> {errors.customIdea}
-                  </p>
-                ) : (
-                  <p className="text-[11px] text-emerald-200/60">
-                    {isCustomSector 
-                      ? "Required: Describe your custom micro-enterprise concept clearly." 
-                      : "Optional: Provide a specific operational angle to tailor feasibility recommendations."}
                   </p>
                 )}
               </div>
@@ -459,25 +478,27 @@ export function NewAnalysisPage() {
             </div>
           </div>
 
-          {/* SECTION 3: How much capital do you have? */}
-          <div className="bg-[#0c241b] rounded-2xl p-6 sm:p-7 border border-[#18533e] space-y-5 shadow-lg">
-            <div className="flex items-center justify-between border-b border-[#144233] pb-3">
-              <h2 className="text-base font-bold text-white flex items-center gap-2.5">
-                <span className="w-6 h-6 rounded-full bg-emerald-800 text-emerald-100 text-xs flex items-center justify-center font-bold">3</span>
-                <span>How much capital do you have?</span>
+          {/* STEP 3: Available Margin Capital */}
+          <div className="bg-white rounded-2xl p-6 sm:p-7 border border-[#DDE5DD] space-y-5 shadow-sm">
+            <div className="flex items-center justify-between border-b border-[#DDE5DD] pb-3">
+              <h2 className="text-base font-bold text-[#14532D] flex items-center gap-2.5">
+                <span className="w-6 h-6 rounded-full bg-[#14532D] text-white text-xs flex items-center justify-center font-bold">3</span>
+                <span>STEP 3: Margin Capital (Promoter Equity)</span>
               </h2>
-              <span className="text-[11px] text-emerald-300/70 font-mono">Financial Sizing</span>
+              <span className="text-[11px] text-[#C87512] font-semibold bg-amber-50 px-2 py-0.5 rounded-full border border-amber-200">
+                10% Own Contribution
+              </span>
             </div>
 
             <div className="space-y-4">
-              
               <div className="space-y-1.5">
-                <label className="text-xs font-semibold text-emerald-100 flex items-center gap-1.5">
-                  <IndianRupee className="w-3.5 h-3.5 text-emerald-400" />
-                  Available Margin Capital <span className="text-amber-400">*</span>
+                <label className="text-xs font-semibold text-[#17211B] flex items-center gap-1.5">
+                  <IndianRupee className="w-3.5 h-3.5 text-[#14532D]" /> Available Own Equity Margin <span className="text-[#C87512]">*</span>
                 </label>
                 <div className="relative">
-                  <span className="absolute left-3.5 top-2.5 text-emerald-400 text-sm font-bold">₹</span>
+                  <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-sm font-bold text-[#647067]">
+                    ₹
+                  </span>
                   <input
                     type="number"
                     min="5000"
@@ -487,158 +508,161 @@ export function NewAnalysisPage() {
                       setMarginCapitalInput(e.target.value);
                       setErrors(prev => ({ ...prev, marginCapital: undefined }));
                     }}
-                    placeholder="Enter amount (e.g. 300000)"
-                    className={`w-full pl-8 pr-3.5 py-2.5 rounded-xl bg-[#071913] border text-sm text-white font-medium focus:outline-none focus:ring-1 focus:ring-emerald-400 transition-colors ${
-                      errors.marginCapital ? 'border-red-500' : 'border-[#1d5c46]'
+                    placeholder="100000"
+                    className={`w-full pl-8 pr-3.5 py-2.5 rounded-xl bg-white border text-sm font-bold text-[#17211B] focus:outline-none focus:ring-2 focus:ring-[#14532D]/30 transition-colors ${
+                      errors.marginCapital ? 'border-red-400' : 'border-[#DDE5DD]'
                     }`}
                   />
                 </div>
-                {errors.marginCapital ? (
-                  <p className="text-[11px] text-red-400 flex items-center gap-1">
+
+                <div className="flex flex-wrap items-center gap-2 pt-1">
+                  <span className="text-[11px] text-[#647067]">Quick Presets:</span>
+                  {[
+                    { label: '₹50,000', value: '50000' },
+                    { label: '₹1,00,000', value: '100000' },
+                    { label: '₹2,00,000', value: '200000' },
+                    { label: '₹3,00,000', value: '300000' },
+                    { label: '₹5,00,000', value: '500000' }
+                  ].map(preset => (
+                    <button
+                      key={preset.value}
+                      type="button"
+                      onClick={() => {
+                        setMarginCapitalInput(preset.value);
+                        setErrors(prev => ({ ...prev, marginCapital: undefined }));
+                      }}
+                      className="px-2.5 py-1 rounded-lg bg-stone-100 hover:bg-emerald-50 text-[11px] font-semibold text-[#17211B] border border-[#DDE5DD] transition-colors"
+                    >
+                      {preset.label}
+                    </button>
+                  ))}
+                </div>
+
+                {errors.marginCapital && (
+                  <p className="text-[11px] text-[#C2413A] flex items-center gap-1">
                     <AlertCircle className="w-3 h-3" /> {errors.marginCapital}
-                  </p>
-                ) : (
-                  <p className="text-[11px] text-emerald-200/60 leading-relaxed">
-                    Enter the amount of your own capital available to start the business.
                   </p>
                 )}
               </div>
 
-              {/* Informative Live Preview Callout */}
-              <div className="p-4 rounded-xl bg-[#071f16] border border-[#1c5540] space-y-3">
-                <div className="flex items-center justify-between">
-                  <span className="text-xs font-semibold text-emerald-200 flex items-center gap-1.5">
-                    <Info className="w-3.5 h-3.5 text-amber-400" />
-                    SIH 26091 Sizing Preview
-                  </span>
-                  <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-emerald-950 text-amber-300 border border-emerald-800">
-                    {financialPreview.track}
-                  </span>
+              {/* Informational Callout */}
+              <div className="p-3.5 rounded-xl bg-emerald-50/50 border border-emerald-200 text-xs text-[#14532D] space-y-1">
+                <div className="flex items-center gap-1.5 font-bold">
+                  <ShieldCheck className="w-4 h-4 text-[#16803C]" />
+                  <span>SIH 26091 Statutory Sizing Framework</span>
                 </div>
-
-                <div className="grid grid-cols-2 gap-3 text-xs pt-1">
-                  <div className="p-2.5 rounded-lg bg-[#051811] border border-[#134232]">
-                    <span className="text-[10px] text-emerald-300/60 block">Estimated Project Cost</span>
-                    <span className="font-bold text-white text-base">
-                      {formatCurrencyINR(financialPreview.estimatedProjectCost)}
-                    </span>
-                    <span className="text-[10px] text-emerald-300/50 block">Formula: Margin / 0.10</span>
-                  </div>
-
-                  <div className="p-2.5 rounded-lg bg-[#051811] border border-[#134232]">
-                    <span className="text-[10px] text-emerald-300/60 block">Estimated Bank Loan</span>
-                    <span className="font-bold text-amber-400 text-base">
-                      {formatCurrencyINR(financialPreview.estimatedLoanAmount)}
-                    </span>
-                    <span className="text-[10px] text-emerald-300/50 block">Formula: Cost × 0.90</span>
-                  </div>
-                </div>
-
-                <p className="text-[10px] text-emerald-300/60 leading-relaxed border-t border-[#123d2e] pt-2">
-                  {financialPreview.disclaimer} Prototype estimates based on the SIH problem statement framework; not a guaranteed loan approval.
+                <p className="text-[11px] text-[#647067] leading-relaxed">
+                  Rural micro-lending schemes (PMEGP, Mudra) operate on a 10% promoter equity and 90% bank loan framework. Your entered margin capital directly sizes project viability and credit track.
                 </p>
               </div>
-
             </div>
           </div>
 
-          {/* SECTION 4: Entrepreneur Context (Optional) */}
-          <div className="bg-[#0c241b] rounded-2xl p-6 sm:p-7 border border-[#18533e] space-y-5 shadow-lg">
-            <div className="flex items-center justify-between border-b border-[#144233] pb-3">
-              <h2 className="text-base font-bold text-white flex items-center gap-2.5">
-                <span className="w-6 h-6 rounded-full bg-emerald-800 text-emerald-100 text-xs flex items-center justify-center font-bold">4</span>
-                <span>Entrepreneur Context</span>
+          {/* STEP 4: Entrepreneur Context */}
+          <div className="bg-white rounded-2xl p-6 sm:p-7 border border-[#DDE5DD] space-y-5 shadow-sm">
+            <div className="flex items-center justify-between border-b border-[#DDE5DD] pb-3">
+              <h2 className="text-base font-bold text-[#14532D] flex items-center gap-2.5">
+                <span className="w-6 h-6 rounded-full bg-[#14532D] text-white text-xs flex items-center justify-center font-bold">4</span>
+                <span>STEP 4: Entrepreneur Context</span>
               </h2>
-              <span className="text-[11px] text-emerald-300/60 font-normal">Optional Context</span>
+              <span className="text-[11px] text-[#647067] font-medium bg-stone-100 px-2 py-0.5 rounded-full border border-[#DDE5DD]">
+                Subsidy Parameters
+              </span>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               
-              {/* Applicant Name */}
+              {/* Entrepreneur Name */}
               <div className="space-y-1.5">
-                <label className="text-xs font-semibold text-emerald-100 flex items-center justify-between">
-                  <span>Applicant / Entity Name</span>
-                  <span className="text-[10px] text-emerald-300/60 font-normal">Optional</span>
+                <label className="text-xs font-semibold text-[#17211B] flex items-center gap-1.5">
+                  <Users className="w-3.5 h-3.5 text-[#0F766E]" /> Entrepreneur / SHG Name
                 </label>
                 <input
                   type="text"
                   value={entrepreneurName}
                   onChange={(e) => setEntrepreneurName(e.target.value)}
                   placeholder="e.g. Ramesh Sharma"
-                  className="w-full px-3.5 py-2.5 rounded-xl bg-[#071913] border border-[#1d5c46] text-sm text-white focus:outline-none focus:border-emerald-400"
+                  className="w-full px-3.5 py-2.5 rounded-xl bg-white border border-[#DDE5DD] text-sm text-[#17211B] focus:outline-none focus:ring-2 focus:ring-[#14532D]/30 transition-colors"
                 />
-              </div>
-
-              {/* Area Context */}
-              <div className="space-y-1.5">
-                <label className="text-xs font-semibold text-emerald-100">Area Location Context</label>
-                <select
-                  value={areaContext}
-                  onChange={(e) => setAreaContext(e.target.value)}
-                  className="w-full px-3.5 py-2.5 rounded-xl bg-[#071913] border border-[#1d5c46] text-sm text-white focus:outline-none focus:border-emerald-400"
-                >
-                  <option value="rural">Rural Area (Eligible for highest PMEGP subsidies)</option>
-                  <option value="semi-urban">Semi-Urban / Peri-Urban Area</option>
-                  <option value="urban">Urban Cluster</option>
-                </select>
               </div>
 
               {/* Gender */}
               <div className="space-y-1.5">
-                <label className="text-xs font-semibold text-emerald-100">Gender / Ownership</label>
+                <label className="text-xs font-semibold text-[#17211B]">
+                  Gender
+                </label>
                 <select
                   value={gender}
                   onChange={(e) => setGender(e.target.value)}
-                  className="w-full px-3.5 py-2.5 rounded-xl bg-[#071913] border border-[#1d5c46] text-sm text-white focus:outline-none focus:border-emerald-400"
+                  className="w-full px-3.5 py-2.5 rounded-xl bg-white border border-[#DDE5DD] text-sm text-[#17211B] focus:outline-none focus:ring-2 focus:ring-[#14532D]/30 transition-colors"
                 >
-                  <option value="general">Male / General Ownership</option>
-                  <option value="female">Female / Women-Led (35% Subsidy Match)</option>
-                  <option value="transgender">Transgender</option>
+                  <option value="general">Male</option>
+                  <option value="female">Female (Eligible for Special PMEGP Track)</option>
+                  <option value="other">Other</option>
                 </select>
               </div>
 
               {/* Social Category */}
               <div className="space-y-1.5">
-                <label className="text-xs font-semibold text-emerald-100">Social Category</label>
+                <label className="text-xs font-semibold text-[#17211B]">
+                  Beneficiary Social Category
+                </label>
                 <select
                   value={socialCategory}
                   onChange={(e) => setSocialCategory(e.target.value)}
-                  className="w-full px-3.5 py-2.5 rounded-xl bg-[#071913] border border-[#1d5c46] text-sm text-white focus:outline-none focus:border-emerald-400"
+                  className="w-full px-3.5 py-2.5 rounded-xl bg-white border border-[#DDE5DD] text-sm text-[#17211B] focus:outline-none focus:ring-2 focus:ring-[#14532D]/30 transition-colors"
                 >
-                  <option value="obc">OBC (Other Backward Class)</option>
-                  <option value="sc">SC (Scheduled Caste)</option>
-                  <option value="st">ST (Scheduled Tribe)</option>
-                  <option value="general">General</option>
+                  <option value="general">General (15–25% Subsidy)</option>
+                  <option value="obc">OBC (Up to 35% Rural Subsidy)</option>
+                  <option value="sc">SC (Up to 35% Rural Subsidy)</option>
+                  <option value="st">ST (Up to 35% Rural Subsidy)</option>
+                  <option value="minority">Minority / Ex-Serviceman / Divyang (Up to 35%)</option>
+                </select>
+              </div>
+
+              {/* Setting Context */}
+              <div className="space-y-1.5">
+                <label className="text-xs font-semibold text-[#17211B]">
+                  Operational Setting
+                </label>
+                <select
+                  value={areaContext}
+                  onChange={(e) => setAreaContext(e.target.value)}
+                  className="w-full px-3.5 py-2.5 rounded-xl bg-white border border-[#DDE5DD] text-sm text-[#17211B] focus:outline-none focus:ring-2 focus:ring-[#14532D]/30 transition-colors"
+                >
+                  <option value="rural">Rural (Eligible for highest 35% PMEGP subsidy)</option>
+                  <option value="semi-urban">Semi-Urban / Peri-Urban</option>
+                  <option value="urban">Urban</option>
                 </select>
               </div>
 
             </div>
           </div>
 
-          {/* Submission CTA */}
+          {/* Primary Submit Button */}
           <div className="pt-2">
             <button
               type="submit"
               disabled={isSubmitting}
-              className="w-full py-4 px-6 rounded-2xl bg-gradient-to-r from-orange-600 via-amber-600 to-emerald-700 hover:from-orange-500 hover:via-amber-500 hover:to-emerald-600 text-white font-bold text-base shadow-xl shadow-orange-950/40 flex items-center justify-center gap-2 group transition-all duration-200 cursor-pointer disabled:opacity-50"
+              className="w-full py-4 px-8 rounded-xl bg-[#E58A24] hover:bg-[#c87512] text-white font-bold text-base shadow-md flex items-center justify-center gap-3 group transition-all transform hover:-translate-y-0.5 disabled:opacity-50"
             >
-              <span>{isSubmitting ? 'Initializing Session...' : 'Analyze Business Opportunity'}</span>
-              <ArrowRight className="w-5 h-5 group-hover:translate-x-1.5 transition-transform" />
+              <span>Continue to Analysis →</span>
+              <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
             </button>
-            <p className="text-center text-[11px] text-emerald-200/60 mt-2">
-              Validates your inputs, initializes the analysis session, and transitions to Stage 1: Market Analysis.
+            <p className="text-center text-[11px] text-[#647067] mt-2">
+              Proceeds to Stage 1: Hyper-Local Market Intelligence with configured parameters.
             </p>
           </div>
 
         </form>
 
-        {/* Right 1 Column: Live Summary Card (Step 8) */}
+        {/* Right Column: Sticky Live Analysis Summary */}
         <div className="lg:col-span-1">
           <AnalysisSummaryCard
             stateName={selectedState}
-            districtName={currentDistrict?.name || 'Varanasi'}
+            districtName={currentDistrict?.name}
             blockOrLocality={blockOrLocality}
-            categoryName={currentSector?.name || selectedSectorId}
+            categoryName={currentSector?.name}
             customIdea={customIdea}
             isCustom={isCustomSector}
             marginCapital={parsedCapital}
@@ -651,3 +675,5 @@ export function NewAnalysisPage() {
     </div>
   );
 }
+
+export default NewAnalysisPage;

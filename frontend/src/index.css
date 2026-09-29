@@ -2,68 +2,116 @@
 
 @layer base {
   :root {
-    --primary-forest: #064e3b;
-    --primary-forest-dark: #022c22;
-    --primary-forest-light: #0d5f49;
-    --accent-orange: #ea580c;
-    --accent-orange-hover: #c2410c;
-    --surface-cream: #faf9f5;
-    --surface-card: #11221b;
-    --border-forest: #1b382d;
+    --bg-page: #F7F5EF;
+    --surface-card: #FFFFFF;
+    --primary-forest: #14532D;
+    --secondary-teal: #0F766E;
+    --accent-saffron: #E58A24;
+    --text-primary: #17211B;
+    --text-secondary: #647067;
+    --border-subtle: #DDE5DD;
+    --color-success: #16803C;
+    --color-warning: #C87512;
+    --color-error: #C2413A;
   }
 
   body {
-    background-color: #091410;
-    color: #f1f5f3;
+    background-color: #F7F5EF;
+    color: #17211B;
     font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
     -webkit-font-smoothing: antialiased;
   }
 }
 
-/* Dignified Government / Startup Design Tokens */
-.forest-panel {
-  background: rgba(13, 29, 23, 0.85);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  border: 1px solid rgba(16, 185, 129, 0.15);
+/* Premium Government-Tech Card & Surface Utility Styles */
+.gov-card {
+  background-color: #FFFFFF;
+  border: 1px solid #DDE5DD;
+  box-shadow: 0 1px 3px 0 rgba(20, 83, 45, 0.05), 0 1px 2px -1px rgba(20, 83, 45, 0.05);
+  border-radius: 1rem;
+}
+
+.gov-card-elevated {
+  background-color: #FFFFFF;
+  border: 1px solid #DDE5DD;
+  box-shadow: 0 4px 6px -1px rgba(20, 83, 45, 0.07), 0 2px 4px -2px rgba(20, 83, 45, 0.07);
+  border-radius: 1rem;
+}
+
+.gov-badge-subtle {
+  background-color: #F0FDF4;
+  color: #14532D;
+  border: 1px solid #BBF7D0;
+}
+
+.gov-badge-saffron {
+  background-color: #FFFBEB;
+  color: #C87512;
+  border: 1px solid #FDE68A;
+}
+
+.gov-badge-prototype {
+  background-color: #FFF7ED;
+  color: #C87512;
+  border: 1px solid #FED7AA;
 }
 
 .cream-card {
-  background-color: #faf9f5;
-  color: #1a2e26;
-  border: 1px solid #e7e5dc;
+  background-color: #FFFFFF;
+  color: #17211B;
+  border: 1px solid #DDE5DD;
 }
 
-.badge-prototype {
-  background-color: rgba(234, 88, 12, 0.12);
-  color: #fb923c;
-  border: 1px solid rgba(234, 88, 12, 0.3);
+.forest-panel {
+  background-color: #14532D;
+  color: #FFFFFF;
+  border: 1px solid #14532D;
 }
 
-/* Backward compatibility with existing Task-0 pages */
-.glass-panel {
-  background: rgba(13, 29, 23, 0.75);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  border: 1px solid rgba(16, 185, 129, 0.12);
+/* Global Government-Tech Palette Adapter for nested legacy components */
+.bg-\[\#0c241b\],
+.bg-\[\#0a1e16\],
+.bg-\[\#081812\],
+.bg-\[\#061a12\],
+.bg-\[\#064e3b\] {
+  background-color: #FFFFFF !important;
+  color: #17211B !important;
+  border-color: #DDE5DD !important;
+  box-shadow: 0 1px 3px 0 rgba(20, 83, 45, 0.05), 0 1px 2px -1px rgba(20, 83, 45, 0.05) !important;
 }
 
-.glass-card {
-  background: rgba(9, 20, 16, 0.75);
-  backdrop-filter: blur(6px);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+.bg-\[\#12382b\],
+.bg-\[\#144333\],
+.bg-\[\#0e2a20\],
+.bg-\[\#0b2b1f\] {
+  background-color: #F7F5EF !important;
+  color: #17211B !important;
+  border-color: #DDE5DD !important;
 }
 
-.gradient-text {
-  background: linear-gradient(135deg, #34d399 0%, #38bdf8 50%, #fb923c 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
+.border-\[\#18533e\],
+.border-\[\#1b4332\],
+.border-\[\#235c45\],
+.border-\[\#103527\],
+.border-\[\#154030\] {
+  border-color: #DDE5DD !important;
 }
 
-.gradient-emerald {
-  background: linear-gradient(135deg, #064e3b 0%, #047857 100%);
+/* Ensure text readability on light surfaces */
+.bg-\[\#0c241b\] .text-white,
+.bg-\[\#0a1e16\] .text-white,
+.bg-\[\#081812\] .text-white,
+.bg-\[\#12382b\] .text-white {
+  color: #17211B !important;
 }
 
-.gradient-amber {
-  background: linear-gradient(135deg, #ea580c 0%, #d97706 100%);
+.bg-\[\#0c241b\] h1,
+.bg-\[\#0c241b\] h2,
+.bg-\[\#0c241b\] h3,
+.bg-\[\#0c241b\] h4,
+.bg-\[\#0a1e16\] h1,
+.bg-\[\#0a1e16\] h2,
+.bg-\[\#0a1e16\] h3,
+.bg-\[\#0a1e16\] h4 {
+  color: #14532D !important;
 }

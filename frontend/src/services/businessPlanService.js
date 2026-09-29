@@ -89,8 +89,17 @@ export async function getBusinessLaunchPlan(context = {}) {
     }
   }
 
-  // 7. Attempt backend synthesis first
-  let source = "prototype-fallback";
+  // 7. Compute deterministic baseline model first
+  const localPlan = generateBusinessLaunchPlan({
+    session: resolvedSession,
+    market: resolvedMarket,
+    feasibility: resolvedFeasibility,
+    financial: resolvedFinancial,
+    scheme: resolvedScheme,
+    advisory: resolvedAdvisory
+  });
+
+  // 8. Attempt backend synthesis and safely overlay
   try {
     const backendData = await apiClient.post('/api/business-plan/generate', {
       session: resolvedSession,
@@ -102,7 +111,29 @@ export async function getBusinessLaunchPlan(context = {}) {
     });
     if (backendData && backendData.overview) {
       return {
-        ...backendData,
+        ...localPlan,
+        overview: backendData.overview || localPlan.overview,
+        readiness: {
+          ...localPlan.readiness,
+          ...(backendData.readiness || {}),
+          informationAvailable: localPlan.readiness?.informationAvailable || [],
+          informationRequiringValidation: localPlan.readiness?.informationRequiringValidation || [],
+          informationMissing: localPlan.readiness?.informationMissing || [],
+          hasFeasibility: localPlan.readiness?.hasFeasibility || false,
+          feasibilityStatus: localPlan.readiness?.feasibilityStatus,
+          feasibilityGrade: localPlan.readiness?.feasibilityGrade,
+          feasibilityScore: localPlan.readiness?.feasibilityScore
+        },
+        recommendationsBeforeLaunch: backendData.recommendations || localPlan.recommendationsBeforeLaunch,
+        checklist: backendData.checklist || localPlan.checklist,
+        launchSequence: backendData.sequence || localPlan.launchSequence,
+        milestones: backendData.milestones || localPlan.milestones,
+        riskControlPlan: backendData.risk_control || localPlan.riskControlPlan,
+        financialSummary: backendData.financial_preparation || localPlan.financialSummary,
+        schemeSummary: backendData.financing_follow_up || localPlan.schemeSummary,
+        validationQuestions: backendData.validation_questions || localPlan.validationQuestions,
+        coverage: localPlan.coverage,
+        transparency: localPlan.transparency,
         is_fallback: false,
         source: "backend"
       };
@@ -111,19 +142,8 @@ export async function getBusinessLaunchPlan(context = {}) {
     console.warn('[BusinessPlanService] Backend launch plan API unavailable or failed. Using deterministic fallback:', err.message);
   }
 
-  // 8. Generate complete launch plan using deterministic engine
-  // Market and Feasibility remain strictly null if not completed — never fabricated!
-  const launchPlan = generateBusinessLaunchPlan({
-    session: resolvedSession,
-    market: resolvedMarket,
-    feasibility: resolvedFeasibility,
-    financial: resolvedFinancial,
-    scheme: resolvedScheme,
-    advisory: resolvedAdvisory
-  });
-
   return {
-    ...launchPlan,
+    ...localPlan,
     is_fallback: true,
     source: "prototype-fallback"
   };

@@ -20,12 +20,12 @@ export default function WorkflowProgressTracker({ moduleStatuses, currentStage }
   ];
 
   return (
-    <div className="bg-[#0c241b] rounded-2xl p-3 sm:p-4 border border-[#18533e] shadow-lg print:hidden">
-      <div className="flex items-center justify-between gap-2 mb-3 px-1">
-        <span className="text-[11px] font-bold text-slate-300 uppercase tracking-wider flex items-center gap-1.5">
+    <div className="bg-white rounded-2xl p-3 sm:p-4 border border-[#DDE5DD] shadow-sm print:hidden">
+      <div className="flex items-center justify-between gap-2 mb-2.5 px-1">
+        <span className="text-[11px] font-bold text-[#14532D] uppercase tracking-wider flex items-center gap-1.5">
           <span>Analysis Workflow Progress</span>
         </span>
-        <span className="text-[10px] text-emerald-400 font-mono">
+        <span className="text-[10px] text-[#0F766E] font-medium bg-teal-50 px-2 py-0.5 rounded-full border border-teal-100">
           Canonical Session Active
         </span>
       </div>
@@ -35,22 +35,42 @@ export default function WorkflowProgressTracker({ moduleStatuses, currentStage }
           const Icon = stg.icon;
           const statusInfo = moduleStatuses?.[stg.key] || { status: 'not_started' };
           const isCurrent = location.pathname === stg.route || currentStage === stg.key;
+          const isCompleted = statusInfo.status === 'completed';
+          const isStale = Boolean(statusInfo.isStale);
+
+          let borderStyle = 'border-[#DDE5DD] bg-stone-50/60 hover:bg-stone-50';
+          let textColor = 'text-[#647067]';
+          let iconColor = 'text-[#647067]';
+
+          if (isCurrent) {
+            borderStyle = 'border-[#E58A24] bg-amber-50/70 shadow-sm ring-1 ring-[#E58A24]/60';
+            textColor = 'text-[#17211B] font-bold';
+            iconColor = 'text-[#E58A24]';
+          } else if (isCompleted) {
+            borderStyle = 'border-emerald-200 bg-emerald-50/30 hover:bg-emerald-50/60';
+            textColor = 'text-[#14532D] font-semibold';
+            iconColor = 'text-[#16803C]';
+          } else if (isStale) {
+            borderStyle = 'border-amber-300 bg-amber-50/40';
+            textColor = 'text-[#C87512] font-semibold';
+            iconColor = 'text-[#C87512]';
+          }
 
           return (
             <Link
               key={stg.key}
               to={stg.route}
-              className={`p-2.5 rounded-xl border transition-all flex flex-col justify-between space-y-1.5 ${
-                isCurrent 
-                  ? 'bg-emerald-900/60 border-amber-500 shadow-md ring-1 ring-amber-500/50' 
-                  : 'bg-[#071913] border-[#18533e] hover:border-emerald-700'
-              }`}
+              className={`p-2.5 rounded-xl border transition-all flex flex-col justify-between space-y-1 ${borderStyle}`}
             >
               <div className="flex items-center justify-between gap-1">
-                <span className={`text-[11px] font-bold truncate ${isCurrent ? 'text-amber-300' : 'text-slate-200'}`}>
+                <span className={`text-[11px] truncate ${textColor}`}>
                   {stg.label}
                 </span>
-                <Icon className={`w-3.5 h-3.5 shrink-0 ${isCurrent ? 'text-amber-400' : 'text-emerald-400'}`} />
+                {isCompleted ? (
+                  <CheckCircle2 className="w-3.5 h-3.5 text-[#16803C] shrink-0" />
+                ) : (
+                  <Icon className={`w-3.5 h-3.5 shrink-0 ${iconColor}`} />
+                )}
               </div>
 
               <div className="pt-0.5">

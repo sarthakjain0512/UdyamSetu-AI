@@ -18,9 +18,23 @@ export function getBaseUrl() {
 }
 
 export function buildEndpointUrl(endpoint) {
-  const base = getBaseUrl();
-  const cleanEndpoint = endpoint.startsWith('/') ? endpoint : `/${endpoint}`;
-  return `${base}${cleanEndpoint}`;
+  let base = getBaseUrl();
+  let path = endpoint.startsWith('/') ? endpoint : `/${endpoint}`;
+
+  // Defensively handle cases where base URL already includes /api/v1 or /api
+  if (base.endsWith('/api/v1')) {
+    if (path.startsWith('/api/v1/')) {
+      path = path.slice(7);
+    } else if (path.startsWith('/api/')) {
+      path = path.slice(4);
+    }
+  } else if (base.endsWith('/api')) {
+    if (path.startsWith('/api/')) {
+      path = path.slice(4);
+    }
+  }
+
+  return `${base}${path.startsWith('/') ? path : `/${path}`}`;
 }
 
 /**

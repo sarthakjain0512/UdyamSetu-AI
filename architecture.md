@@ -252,23 +252,19 @@ UdyamSetu AI/
 ## 5. Frontend Service Layer
 
 All backend interactions are strictly abstracted through dedicated frontend services:
-- **`apiConfig.js`**: Centralized Axios/fetch client handling base URL configuration (`VITE_API_BASE_URL`), timeout handling, and network status checks.
-- **`sectorService.js`**: Fetches active micro sectors and supported districts.
-- **`marketService.js`**: Calls `/api/v1/market-intelligence/analyze`.
-- **`feasibilityService.js`**: Calls `/api/v1/feasibility/assess`.
-- **`financialService.js`**: Calls `/api/v1/financials/calculate`.
-- **`schemeService.js`**: Executes deterministic SIH 26091 scheme routing (`schemeRouterEngine.js`) and retrieves contextual nodal schemes via `/api/v1/schemes/route`.
-- **`advisoryService.js`**: Calls `/api/v1/advisory/generate` and executes deterministic advisory engine (`advisoryEngine.js`).
+- **`apiClient.js`**: Centralized HTTP client managing base URL resolution (`VITE_API_BASE_URL`), timeout handling via `AbortController`, JSON unwrapping, error normalization (`VALIDATION_ERROR`, `BACKEND_UNAVAILABLE`), and health checks.
+- **`apiConfig.js`**: Backward-compatibility wrapper forwarding to `apiClient.js`.
+- **`sectorService.js`**: Fetches active micro sectors and supported districts via `/api/sectors` and `/api/districts`.
+- **`marketService.js`**: Calls `/api/market/analyze` with deterministic local fallback.
+- **`feasibilityService.js`**: Calls `/api/feasibility/analyze` with deterministic scoring fallback.
+- **`financialService.js`**: Calls `/api/financial/calculate` with deterministic SIH 26091 financial model fallback.
+- **`schemeService.js`**: Calls `/api/scheme/route` with deterministic SIH 26091 scheme router fallback.
+- **`advisoryService.js`**: Calls `/api/advisory/generate` with deterministic advisory engine fallback.
+- **`businessPlanService.js`**: Calls `/api/business-plan/generate` with deterministic launch plan engine fallback.
 - **`analysisStateService.js`**: Centralized canonical persistence layer managing module outputs, deterministic input fingerprints, stale data detection, and merge updates under `udyamsetu_analysis_session`.
-- **`businessPlanService.js`**: Coordinates cross-module launch plan synthesis (`businessPlanEngine.js`).
-- **`feasibilityService.js`**: Calls `/api/v1/feasibility/assess`.
-- **`financialService.js`**: Calls `/api/v1/financials/calculate`.
-- **`marketService.js`**: Calls `/api/v1/market-intelligence/analyze`.
-- **`schemeService.js`**: Executes deterministic SIH 26091 scheme routing (`schemeRouterEngine.js`) and retrieves contextual nodal schemes via `/api/v1/schemes/route`.
-- **`sectorService.js`**: Fetches active micro sectors and supported districts.
 - **`sessionService.js`**: Manages client-side analysis session persistence under `udyamsetu_analysis_session`, enforcing normalized schema across all downstream advisory stages.
 
-Each service includes a local fallback to ensure high presentation resilience even if the local backend server is inactive during evaluation.
+Each service attempts the FastAPI backend first; if the backend is unavailable or returns an error, it falls back cleanly to the verified deterministic prototype engine, tagging the data with `source: "backend"` or `source: "prototype-fallback"`.
 
 ---
 
@@ -327,7 +323,40 @@ Module statuses are derived dynamically from stored data:
 
 ---
 
-## 7. Critical Architecture Rules
+## 8. Backend API Integration & Resilience (Task 10)
+
+### 8.1 API Contract & Registered Endpoints
+The FastAPI backend (`backend/app/main.py`) exposes uniform endpoints registered under both `/api` and `/api/v1` prefixes:
+
+| Endpoint | Method | Purpose | Engine / Handler |
+|---|---|---|---|
+| `/api/health` | `GET` | Health verification & backend liveness probe | `health_check()` |
+| `/api/sectors` | `GET` | Supported micro-enterprise sectors | `DataService.get_all_sectors()` |
+| `/api/districts` | `GET` | Supported rural district profiles | `DataService.get_all_districts()` |
+| `/api/market/analyze` | `POST` | Stage 1: Market demand & competition analysis | `MarketIntelligenceEngine` |
+| `/api/feasibility/analyze` | `POST` | Stage 2: Operational readiness & scoring (0–100) | `FeasibilityEngine` |
+| `/api/financial/calculate` | `POST` | Stage 3: SIH 26091 financial model & EMI schedule | `FinancialCalculationEngine` |
+| `/api/scheme/route` | `POST` | Stage 4: Credit track & subsidy scheme matching | `SchemeRoutingEngine` |
+| `/api/advisory/generate` | `POST` | Stage 5: Strategic advisory & execution roadmap | `AdvisoryGenerationEngine` |
+| `/api/business-plan/generate` | `POST` | Stage 6: Business launch plan & milestone blueprint | `BusinessPlanEngine` |
+
+### 8.2 Frontend API Client (`apiClient.js`)
+- **Centralized Fetch Wrapper**: Replaces raw `fetch` calls across all services.
+- **Base URL Resolution**: Defaults to `http://127.0.0.1:8000`, overridable via `VITE_API_BASE_URL`.
+- **Request Timeout**: 4000ms timeout using `AbortController` preventing UI lockup.
+- **Error Normalization**: Maps network failures to `BACKEND_UNAVAILABLE` and HTTP 400/422 to `VALIDATION_ERROR`.
+- **Backend Availability Probe**: `apiClient.checkHealth(1500)` returns boolean health status.
+
+### 8.3 Deterministic Fallback Strategy
+To guarantee complete demo resilience during evaluative testing:
+1. Every frontend service calls `apiClient.post(...)` first.
+2. If the response succeeds, data is tagged with `source: "backend"` and `is_fallback: false`.
+3. If the backend is unreachable or returns an error, the service invokes the verified local deterministic engine, tagging output with `source: "prototype-fallback"` and `is_fallback: true`.
+4. Outputs are seamlessly persisted into `analysisStateService.js` regardless of origin.
+
+---
+
+## 9. Critical Architecture Rules
 
 1. **Presentation Focus**: React components strictly handle user input, state transitions, layout, and visualization.
 2. **No Duplicated Business Rules**: Financial formulas (EMI, DSCR, CapEx ratios, subsidy percentages) must never be re-implemented inside React components.
@@ -336,7 +365,7 @@ Module statuses are derived dynamically from stored data:
 
 ---
 
-## 7. Future Scalability Roadmap
+## 10. Future Scalability Roadmap
 
 The current prototype is designed to transition smoothly to a full production deployment:
 - **Relational Storage**: Replace in-memory dictionaries with a managed PostgreSQL database using SQLAlchemy / Alembic migrations.
@@ -344,3 +373,4 @@ The current prototype is designed to transition smoothly to a full production de
 - **Dynamic Geospatial Data**: Integration of GIS boundary layers and Agmarknet live price feeds.
 - **Real LLM Integration**: Orchestration layer (LangChain / LlamaIndex) querying fine-tuned models for vernacular conversational advisory.
 - **Authentication**: JWT-based session security with Aadhaar / mobile OTP verification.
+

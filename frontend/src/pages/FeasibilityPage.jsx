@@ -124,19 +124,19 @@ export function FeasibilityPage() {
   if (!hasValidSession) {
     return (
       <div className="max-w-3xl mx-auto py-12 px-4 space-y-8">
-        <div className="bg-[#0c241b] rounded-3xl p-8 sm:p-12 border border-[#18533e] text-center space-y-6 shadow-2xl">
-          <div className="w-16 h-16 rounded-2xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-amber-400 mx-auto">
+        <div className="bg-white rounded-2xl p-8 sm:p-12 border border-[#DDE5DD] text-center space-y-6 shadow-sm">
+          <div className="w-16 h-16 rounded-2xl bg-emerald-50 border border-emerald-200 flex items-center justify-center text-[#14532D] mx-auto">
             <Compass className="w-8 h-8" />
           </div>
 
           <div className="space-y-2 max-w-lg mx-auto">
-            <span className="text-xs font-semibold px-3 py-1 rounded-full bg-emerald-950 text-emerald-300 border border-emerald-800">
+            <span className="text-xs font-semibold px-3 py-1 rounded-full bg-emerald-50 text-[#14532D] border border-emerald-200">
               Session Required
             </span>
-            <h1 className="text-2xl sm:text-3xl font-black text-white tracking-tight">
+            <h1 className="text-2xl sm:text-3xl font-black text-[#14532D] tracking-tight">
               Start a business analysis first.
             </h1>
-            <p className="text-sm text-emerald-100/70 leading-relaxed">
+            <p className="text-sm text-[#647067] leading-relaxed">
               Business Feasibility analysis requires defined entrepreneur inputs (target geography, business category, business idea, and available margin capital) to evaluate operational readiness and financial sizing.
             </p>
           </div>
@@ -144,16 +144,16 @@ export function FeasibilityPage() {
           <div className="pt-2">
             <Link
               to="/new-analysis"
-              className="inline-flex items-center gap-2 py-3.5 px-8 rounded-2xl bg-gradient-to-r from-orange-600 via-amber-600 to-emerald-700 hover:from-orange-500 hover:via-amber-500 hover:to-emerald-600 text-white font-bold text-sm shadow-xl shadow-orange-950/40 transition-all transform hover:-translate-y-0.5"
+              className="inline-flex items-center gap-2 py-3 px-7 rounded-xl bg-[#E58A24] hover:bg-[#c87512] text-white font-bold text-sm shadow-sm transition-all transform hover:-translate-y-0.5"
             >
               <span>Create New Analysis</span>
               <ArrowRight className="w-4 h-4" />
             </Link>
           </div>
 
-          <div className="pt-4 border-t border-[#144233] text-left max-w-md mx-auto">
-            <p className="text-xs text-emerald-300/60 font-mono">
-              💡 Tip: Completing Step 1 (New Business Analysis) populates the hyper-local context so feasibility and financial models run automatically without re-entering parameters.
+          <div className="pt-4 border-t border-[#DDE5DD] text-left max-w-md mx-auto">
+            <p className="text-xs text-[#647067] font-mono">
+              💡 Tip: Completing Step 1 populates the hyper-local context so feasibility and financial models run automatically without re-entering parameters.
             </p>
           </div>
         </div>
@@ -165,19 +165,19 @@ export function FeasibilityPage() {
   if (!hasValidCapital) {
     return (
       <div className="max-w-3xl mx-auto py-12 px-4 space-y-8">
-        <div className="bg-[#0c241b] rounded-3xl p-8 sm:p-12 border border-[#18533e] text-center space-y-6 shadow-2xl">
-          <div className="w-16 h-16 rounded-2xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-amber-400 mx-auto">
+        <div className="bg-white rounded-2xl p-8 sm:p-12 border border-[#DDE5DD] text-center space-y-6 shadow-sm">
+          <div className="w-16 h-16 rounded-2xl bg-amber-50 border border-amber-200 flex items-center justify-center text-[#C87512] mx-auto">
             <IndianRupee className="w-8 h-8" />
           </div>
 
           <div className="space-y-2 max-w-lg mx-auto">
-            <span className="text-xs font-semibold px-3 py-1 rounded-full bg-amber-950 text-amber-300 border border-amber-800">
+            <span className="text-xs font-semibold px-3 py-1 rounded-full bg-amber-50 text-[#C87512] border border-amber-200">
               Margin Capital Required
             </span>
-            <h1 className="text-2xl sm:text-3xl font-black text-white tracking-tight">
+            <h1 className="text-2xl sm:text-3xl font-black text-[#14532D] tracking-tight">
               Margin capital is missing or invalid.
             </h1>
-            <p className="text-sm text-emerald-100/70 leading-relaxed">
+            <p className="text-sm text-[#647067] leading-relaxed">
               Business Feasibility analysis requires an actual margin capital input to evaluate project cost sizing, credit ratios, and capital adequacy. No default or fabricated financial amounts are assumed.
             </p>
           </div>
@@ -185,7 +185,7 @@ export function FeasibilityPage() {
           <div className="pt-2">
             <Link
               to="/new-analysis"
-              className="inline-flex items-center gap-2 py-3.5 px-8 rounded-2xl bg-gradient-to-r from-orange-600 via-amber-600 to-emerald-700 hover:from-orange-500 hover:via-amber-500 hover:to-emerald-600 text-white font-bold text-sm shadow-xl shadow-orange-950/40 transition-all transform hover:-translate-y-0.5"
+              className="inline-flex items-center gap-2 py-3 px-7 rounded-xl bg-[#E58A24] hover:bg-[#c87512] text-white font-bold text-sm shadow-sm transition-all transform hover:-translate-y-0.5"
             >
               <span>Provide Margin Capital in Analysis Inputs</span>
               <ArrowRight className="w-4 h-4" />
@@ -212,64 +212,64 @@ export function FeasibilityPage() {
       )}
 
       {/* PAGE HEADER */}
-      <div className="border-b border-[#18533e]/50 pb-6 flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div className="border-b border-[#DDE5DD] pb-4 flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <div className="inline-flex items-center gap-2 text-xs font-semibold px-3 py-1 rounded-full bg-emerald-950 text-emerald-300 border border-emerald-800 mb-2">
-            <ShieldCheck className="w-3.5 h-3.5" /> Stage 2: Feasibility Engine
+          <div className="inline-flex items-center gap-2 text-xs font-semibold px-3 py-1 rounded-full bg-emerald-50 text-[#14532D] border border-emerald-200 mb-2">
+            <ShieldCheck className="w-3.5 h-3.5 text-[#16803C]" /> Stage 2: Feasibility Engine
           </div>
-          <h1 className="text-2xl sm:text-3xl font-black text-white tracking-tight">
+          <h1 className="text-2xl sm:text-3xl font-black text-[#14532D] tracking-tight">
             Business Feasibility
           </h1>
-          <p className="text-xs sm:text-sm text-emerald-100/70 mt-1">
+          <p className="text-xs sm:text-sm text-[#647067] mt-0.5">
             Evaluate operational, market and financial readiness for your proposed enterprise.
           </p>
         </div>
 
         <div className="flex items-center gap-2 self-start md:self-auto">
-          <span className="text-[11px] font-mono text-emerald-300/80 bg-[#0c241b] px-3 py-1.5 rounded-xl border border-[#18533e]">
+          <span className="text-[11px] font-semibold text-[#14532D] bg-emerald-50 px-3 py-1.5 rounded-xl border border-emerald-200">
             Prototype Feasibility Assessment
           </span>
         </div>
       </div>
 
       {/* COMPACT ANALYSIS CONTEXT CARD (Step 1) */}
-      <div className="bg-[#0c241b] rounded-2xl p-5 border border-[#18533e] shadow-lg flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <div className="bg-white rounded-2xl p-5 border border-[#DDE5DD] shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 flex-1">
           <div>
-            <span className="text-[10px] text-emerald-300/60 uppercase tracking-wider font-semibold block">
+            <span className="text-[10px] text-[#647067] uppercase tracking-wider font-semibold block">
               Location
             </span>
-            <div className="flex items-center gap-1.5 text-xs font-bold text-white mt-0.5">
-              <MapPin className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
+            <div className="flex items-center gap-1.5 text-xs font-bold text-[#17211B] mt-0.5">
+              <MapPin className="w-3.5 h-3.5 text-[#0F766E] shrink-0" />
               <span className="truncate">{displayLocation}</span>
             </div>
           </div>
 
           <div>
-            <span className="text-[10px] text-emerald-300/60 uppercase tracking-wider font-semibold block">
+            <span className="text-[10px] text-[#647067] uppercase tracking-wider font-semibold block">
               Business Category
             </span>
-            <div className="flex items-center gap-1.5 text-xs font-bold text-white mt-0.5">
-              <Building2 className="w-3.5 h-3.5 text-amber-400 shrink-0" />
+            <div className="flex items-center gap-1.5 text-xs font-bold text-[#17211B] mt-0.5">
+              <Building2 className="w-3.5 h-3.5 text-[#14532D] shrink-0" />
               <span className="truncate">{displayCategory}</span>
             </div>
           </div>
 
           <div className="col-span-2 sm:col-span-1">
-            <span className="text-[10px] text-emerald-300/60 uppercase tracking-wider font-semibold block">
+            <span className="text-[10px] text-[#647067] uppercase tracking-wider font-semibold block">
               Business Idea
             </span>
-            <div className="text-xs font-bold text-white mt-0.5 truncate" title={displayIdea}>
+            <div className="text-xs font-bold text-[#17211B] mt-0.5 truncate" title={displayIdea}>
               {displayIdea}
             </div>
           </div>
 
           <div>
-            <span className="text-[10px] text-emerald-300/60 uppercase tracking-wider font-semibold block">
+            <span className="text-[10px] text-[#647067] uppercase tracking-wider font-semibold block">
               Margin Capital
             </span>
-            <div className="flex items-center gap-1 text-xs font-bold text-emerald-300 mt-0.5">
-              <IndianRupee className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
+            <div className="flex items-center gap-1 text-xs font-bold text-[#14532D] mt-0.5">
+              <IndianRupee className="w-3.5 h-3.5 text-[#14532D] shrink-0" />
               <span>{formatCurrencyINR(capital)}</span>
             </div>
           </div>
@@ -277,21 +277,21 @@ export function FeasibilityPage() {
 
         <Link
           to="/new-analysis"
-          className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-[#071913] hover:bg-[#12382b] text-emerald-300 text-xs font-semibold border border-[#18533e] transition-colors shrink-0 self-start sm:self-auto"
+          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-stone-50 hover:bg-stone-100 text-[#0F766E] text-xs font-semibold border border-[#DDE5DD] transition-colors shrink-0 self-start sm:self-auto"
         >
           <Edit3 className="w-3.5 h-3.5" />
-          <span>Edit Analysis Inputs</span>
+          <span>Edit Inputs</span>
         </Link>
       </div>
 
       {/* LOADING STATE */}
       {loading && (
-        <div className="bg-[#0c241b] rounded-3xl p-12 border border-[#18533e] text-center space-y-4">
-          <RefreshCw className="w-8 h-8 text-emerald-400 animate-spin mx-auto" />
-          <p className="text-sm font-semibold text-emerald-200">
+        <div className="bg-white rounded-2xl p-12 border border-[#DDE5DD] text-center space-y-3 shadow-sm">
+          <RefreshCw className="w-8 h-8 text-[#14532D] animate-spin mx-auto" />
+          <p className="text-sm font-bold text-[#14532D]">
             Assessing business feasibility...
           </p>
-          <p className="text-xs text-emerald-300/60 max-w-md mx-auto">
+          <p className="text-xs text-[#647067] max-w-md mx-auto">
             Synthesizing hyper-local market signals, operational dependencies, capital adequacy ratios, and break-even horizons.
           </p>
         </div>
@@ -299,13 +299,13 @@ export function FeasibilityPage() {
 
       {/* ERROR STATE */}
       {error && !loading && (
-        <div className="bg-rose-950/40 rounded-3xl p-8 border border-rose-800/80 text-center space-y-4">
-          <AlertCircle className="w-8 h-8 text-rose-400 mx-auto" />
+        <div className="bg-red-50 rounded-2xl p-6 border border-red-200 text-center space-y-3 shadow-sm">
+          <AlertCircle className="w-6 h-6 text-[#C2413A] mx-auto" />
           <div>
-            <h3 className="text-base font-bold text-white">
+            <h3 className="text-sm font-bold text-[#17211B]">
               Feasibility assessment could not be generated.
             </h3>
-            <p className="text-xs text-rose-300/70 mt-1 max-w-md mx-auto">
+            <p className="text-xs text-[#647067] mt-1 max-w-md mx-auto">
               {error}
             </p>
           </div>
@@ -319,7 +319,7 @@ export function FeasibilityPage() {
               is_custom: isCustom,
               district_tier: districtInfo?.tier || 'Tier-3 / Rural Cluster'
             })}
-            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-rose-900/60 hover:bg-rose-900 text-white text-xs font-semibold border border-rose-700 transition-colors"
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-[#C2413A] hover:bg-[#a6342e] text-white text-xs font-semibold transition-colors"
           >
             <RefreshCw className="w-3.5 h-3.5" />
             <span>Retry Assessment</span>
@@ -329,12 +329,12 @@ export function FeasibilityPage() {
 
       {/* EMPTY STATE */}
       {!data && !loading && !error && (
-        <div className="bg-[#0c241b] rounded-3xl p-12 border border-[#18533e] text-center space-y-4">
-          <Info className="w-8 h-8 text-emerald-400 mx-auto" />
-          <h3 className="text-base font-bold text-white">
+        <div className="bg-white rounded-2xl p-12 border border-[#DDE5DD] text-center space-y-3 shadow-sm">
+          <Info className="w-8 h-8 text-[#14532D] mx-auto" />
+          <h3 className="text-base font-bold text-[#17211B]">
             No feasibility assessment available.
           </h3>
-          <p className="text-xs text-emerald-300/60 max-w-md mx-auto">
+          <p className="text-xs text-[#647067] max-w-md mx-auto">
             Please verify your analysis inputs to compute feasibility indicators.
           </p>
         </div>
@@ -342,7 +342,7 @@ export function FeasibilityPage() {
 
       {/* FEASIBILITY CONTENT — 11-PART STRUCTURE */}
       {data && !loading && (
-        <div className="space-y-8">
+        <div className="space-y-6">
           
           {/* 1. Feasibility Overview Card */}
           <FeasibilityOverviewCard
@@ -389,7 +389,7 @@ export function FeasibilityPage() {
               contributionMargin: data.breakeven_assumptions?.unitContributionMargin,
               indicativeMonths: data.estimated_breakeven_months || data.breakeven_assumptions?.indicativeBreakEvenMonths,
               dailyBreakEvenUnits: data.breakeven_assumptions?.breakEvenVolumeNote,
-              assumptions: `Fixed cost reflects rural premise rental, 2 helpers, and base utility bills for ${displayCategory}. Variable costs assume direct farm-gate raw material purchases without middlemen.`
+              assumptions: `Fixed cost reflects rural premise rental, helper allowances, and utility expenses for ${displayCategory}. Variable costs assume direct farm-gate raw material purchases without middlemen.`
             }}
             projectCost={Math.round(capital / 0.10)}
           />
@@ -421,21 +421,21 @@ export function FeasibilityPage() {
           <FeasibilityExplainabilityPanel />
 
           {/* Step 20: Data Transparency & Non-Guarantee Disclaimer Banner */}
-          <div className="p-4 rounded-2xl bg-[#071913] border border-[#18533e] flex items-start gap-3 text-xs text-emerald-200/80">
-            <Info className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
+          <div className="p-3.5 rounded-xl bg-amber-50/70 border border-amber-200 flex items-start gap-2.5 text-xs text-[#C87512]">
+            <Info className="w-4 h-4 text-[#C87512] shrink-0 mt-0.5" />
             <div>
-              <strong className="text-white">Prototype Feasibility Assessment Disclosure:</strong> Results are illustrative prototype indicators based on the information entered and demo datasets. They are not a guarantee of business success, loan approval, official bank sanction, or official government assessment.
+              <strong className="text-[#17211B]">Prototype Feasibility Assessment Disclosure:</strong> Results are illustrative prototype indicators based on the information entered and demo datasets. They are not a guarantee of business success, loan approval, official bank sanction, or official government assessment.
             </div>
           </div>
 
           {/* 11. NEXT STEP & NAVIGATION FOOTER */}
-          <div className="pt-6 border-t border-[#18533e]/50 flex flex-col sm:flex-row items-center justify-between gap-4">
+          <div className="pt-4 border-t border-[#DDE5DD] flex flex-col sm:flex-row items-center justify-between gap-4">
             <Link
               to="/market-analysis"
               state={{ session: activeSession }}
-              className="inline-flex items-center gap-2 px-5 py-3 rounded-xl bg-[#0c241b] hover:bg-[#12382b] text-emerald-300 text-xs font-semibold border border-[#18533e] transition-colors w-full sm:w-auto justify-center"
+              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-stone-100 hover:bg-stone-200 text-[#17211B] text-xs font-semibold border border-[#DDE5DD] transition-colors w-full sm:w-auto justify-center"
             >
-              <ArrowLeft className="w-4 h-4" />
+              <ArrowLeft className="w-4 h-4 text-[#14532D]" />
               <span>Back to Market Analysis</span>
             </Link>
 
@@ -448,7 +448,7 @@ export function FeasibilityPage() {
                 sector_id: sectorId,
                 district_id: districtId
               }}
-              className="inline-flex items-center gap-2 px-7 py-3.5 rounded-xl bg-gradient-to-r from-orange-600 via-amber-600 to-emerald-700 hover:from-orange-500 hover:via-amber-500 hover:to-emerald-600 text-white font-bold text-xs sm:text-sm shadow-xl shadow-orange-950/40 transition-all transform hover:-translate-y-0.5 w-full sm:w-auto justify-center"
+              className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-[#E58A24] hover:bg-[#c87512] text-white font-bold text-xs uppercase tracking-wider shadow-md transition-all transform hover:-translate-y-0.5 w-full sm:w-auto justify-center"
             >
               <span>Continue to Financial Planning</span>
               <ArrowRight className="w-4 h-4" />

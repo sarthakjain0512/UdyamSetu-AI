@@ -12,10 +12,10 @@ export default function LaunchReadinessCard({ readiness, coverage }) {
     feasibilityStatus,
     feasibilityScore,
     feasibilityGrade,
-    informationAvailable,
-    informationRequiringValidation,
-    informationMissing
-  } = readiness;
+    informationAvailable = [],
+    informationRequiringValidation = [],
+    informationMissing = []
+  } = readiness || {};
 
   // Visual style for existing Task 4 status
   const getStatusBadge = () => {

@@ -366,3 +366,37 @@ Stored under localStorage key `udyamsetu_analysis_session`:
 - Direct URL Access: Opening any route directly retrieves the active session and module data from storage; if no session exists, the page renders a structured "Session Required" card pointing to `/new-analysis`.
 - Clean Reset: Starting a new analysis or clicking "Clear & Start Fresh" clears previous downstream analysis to prevent stale reuse.
 - Zero Git commands run; all existing legacy routes and aliases preserved.
+
+---
+
+## 11. Task 10 — Backend API Integration
+
+### 11.1 Objective & Architecture
+- **Objective**: Connect the React frontend to the FastAPI backend through a dedicated, centralized API client layer with deterministic prototype fallbacks when the backend is offline.
+- **Key Files Created/Modified**:
+  - `backend/app/models/schemas.py`: Pydantic request/response schemas for all 6 analysis stages, health response, and uniform error models.
+  - `backend/app/engines/financial_engine.py`: Deterministic SIH 26091 financial model (Micro Finance $\le 1.40$L @ 6.5%, Term Loan $> 1.40$L to $\le 50$L @ 8%, reducing EMI, DSCR).
+  - `backend/app/engines/scheme_engine.py`: SIH 26091 track classification, loan ceiling mismatch, PMEGP/Mudra matching, official non-sanction disclaimers.
+  - `backend/app/engines/market_engine.py`: Hyper-local demand, competition, and pricing benchmarks with explicit prototype demo disclosures.
+  - `backend/app/engines/feasibility_engine.py`: Operational & financial readiness scoring (0–100), letter grade (A+ through D), and break-even insights.
+  - `backend/app/engines/advisory_engine.py`: Synthesizes upstream outputs with recommendation provenance (`category`, `priority`, `title`, `why`, `action`, `source`) and missing-data safety.
+  - `backend/app/engines/business_plan_engine.py`: Synthesizes evidence-derived launch blueprints, checklists, sequences, and milestones.
+  - `backend/app/api/router.py`: Uniform endpoints (`/health`, `/market/analyze`, `/feasibility/analyze`, `/financial/calculate`, `/scheme/route`, `/advisory/generate`, `/business-plan/generate`).
+  - `backend/app/main.py`: CORS configuration via `CORS_ORIGINS`, uniform `HTTPException` and `RequestValidationError` formatting, and dual `/api` / `/api/v1` mounts.
+  - `frontend/src/services/apiClient.js`: Centralized fetch wrapper with 4000ms timeout protection, error normalization, and health probe.
+  - `frontend/src/services/apiConfig.js`: Forwarder maintaining backward compatibility.
+  - Frontend services updated: `marketService.js`, `feasibilityService.js`, `financialService.js`, `schemeService.js`, `advisoryService.js`, `businessPlanService.js`, `sectorService.js`.
+  - Config files: `frontend/.env.example`, `backend/.env.example`.
+
+### 11.2 Error Model & HTTP Status Codes
+- Uniform error structure: `{"error": {"code": "...", "message": "..."}}`.
+- Error categories: `VALIDATION_ERROR` (400/422), `NOT_FOUND` (404), `BACKEND_UNAVAILABLE` (client network failure), `INTERNAL_ERROR` (500).
+- No Python stack traces exposed to client.
+
+### 11.3 Fallback & Provenance Governance
+- Every frontend service tags output with metadata:
+  - `source: "backend"`, `is_fallback: false` when backend responds.
+  - `source: "prototype-fallback"`, `is_fallback: true` when backend is offline or errors.
+- Never fabricates live AI or official government approvals.
+- Zero Git commands run.
+

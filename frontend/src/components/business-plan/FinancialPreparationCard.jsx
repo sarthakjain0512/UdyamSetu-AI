@@ -107,10 +107,10 @@ export default function FinancialPreparationCard({ summary }) {
                 Tenure & Moratorium
               </span>
               <p className="text-base font-black text-white">
-                {summary.tenureYears ? `${summary.tenureYears} Years` : 'N/A'}
+                {summary.tenureYears ? `${summary.tenureYears} Years (${summary.tenureMonths || summary.tenureYears * 12} Mo)` : 'N/A'}
               </p>
               <span className="text-[10px] text-slate-400">
-                {summary.moratoriumMonths ? `${summary.moratoriumMonths}m moratorium` : 'N/A'}
+                {summary.moratoriumMonths ? `${summary.moratoriumMonths}m moratorium (${(summary.tenureMonths || summary.tenureYears * 12) - summary.moratoriumMonths}m active EMI)` : 'N/A'}
               </span>
             </div>
 

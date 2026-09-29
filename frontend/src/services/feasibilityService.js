@@ -59,54 +59,74 @@ export async function assessFeasibility(payload) {
       finance: payload.session?.finance || null
     });
 
+    const estimatedCost = apiResult.project_cost_estimate || Math.round(capital / 0.10);
+    const estimatedLoan = Math.round(estimatedCost * 0.90);
+    const financingTrack = capital <= 14000 ? 'Micro Finance Track' : 'Term Loan Track';
+
     return {
       sector_id: sectorId,
       sector_name: apiResult.sector_name || sector.name,
       district_name: apiResult.district_name || `${district.name}, ${district.state}`,
-      feasibility_score: apiResult.feasibility_score,
-      feasibility_grade: apiResult.feasibility_grade,
-      feasibility_status: apiResult.feasibility_status,
+      feasibility_score: apiResult.feasibility_score ?? assessment.overallScore,
+      feasibility_grade: apiResult.feasibility_grade ?? assessment.grade,
+      feasibility_status: apiResult.feasibility_status ?? assessment.status,
+      overall_status: apiResult.feasibility_status ?? assessment.status,
+      status_color: assessment.statusColor || 'emerald',
       capital_analyzed: capital,
-      project_cost_estimate: apiResult.project_cost_estimate || round(capital / 0.10),
-      loan_requirement_estimate: round((apiResult.project_cost_estimate || (capital / 0.10)) * 0.90),
-      financing_track: capital <= 14000 ? 'Micro Finance Track' : 'Term Loan Track',
-      estimated_breakeven_months: apiResult.estimated_breakeven_months,
-      recommended_min_capital: apiResult.recommended_min_capital,
-      capital_adequacy: apiResult.capital_adequacy,
-      executive_narrative: `Based on your proposed ₹${capital.toLocaleString('en-IN')} promoter equity, your enterprise scores ${apiResult.feasibility_score}/100 (${apiResult.feasibility_grade}) in operational readiness.`,
+      project_cost_estimate: estimatedCost,
+      loan_requirement_estimate: estimatedLoan,
+      financing_track: financingTrack,
+      estimated_breakeven_months: apiResult.estimated_breakeven_months ?? assessment.breakevenAssumptions?.indicativeBreakEvenMonths ?? 6,
+      recommended_min_capital: apiResult.recommended_min_capital ?? (capital <= 100000 ? 100000 : 200000),
+      capital_adequacy: apiResult.capital_adequacy ?? 'Sufficient Equity Contribution',
+      executive_narrative: `Based on your proposed ₹${capital.toLocaleString('en-IN')} promoter equity, your enterprise scores ${apiResult.feasibility_score ?? assessment.overallScore}/100 (${apiResult.feasibility_grade ?? assessment.grade}) in operational readiness.`,
       dimensions: assessment.dimensions,
       operational_readiness: assessment.operationalReadiness,
-      risk_factors: apiResult.risks || assessment.riskAssessment,
+      resource_requirements: assessment.resourceRequirements,
+      breakeven_assumptions: assessment.breakevenAssumptions,
+      risks: apiResult.risks && apiResult.risks.length > 0 ? apiResult.risks : assessment.risks,
+      risk_factors: apiResult.risks && apiResult.risks.length > 0 ? apiResult.risks : assessment.risks,
       key_gaps: assessment.keyGaps,
-      recommendations: apiResult.key_recommendations || assessment.recommendations,
-      break_even: assessment.breakEven,
+      recommendations: apiResult.key_recommendations && apiResult.key_recommendations.length > 0 ? apiResult.key_recommendations : assessment.recommendations,
+      break_even: assessment.breakEven || assessment.breakevenAssumptions,
+      financial_summary: assessment.financialSummary,
       is_fallback: false,
       source: "backend"
     };
   } catch (err) {
     console.warn('[FeasibilityService] Backend unavailable or failed. Using deterministic prototype fallback:', err.message);
 
+    const estimatedCost = assessment.financialSummary?.estimatedProjectCost || Math.round(capital / 0.10);
+    const estimatedLoan = assessment.financialSummary?.estimatedLoan || Math.round(estimatedCost * 0.90);
+    const financingTrack = assessment.financialSummary?.financingTrack || (capital <= 14000 ? 'Micro Finance Track' : 'Term Loan Track');
+
     return {
       sector_id: sectorId,
       sector_name: sector.name,
       district_name: `${district.name}, ${district.state}`,
-      feasibility_score: assessment.overview.feasibilityScore,
-      feasibility_grade: assessment.overview.feasibilityGrade,
-      feasibility_status: assessment.overview.feasibilityStatus,
+      feasibility_score: assessment.overallScore,
+      feasibility_grade: assessment.grade,
+      feasibility_status: assessment.status,
+      overall_status: assessment.status,
+      status_color: assessment.statusColor || 'emerald',
       capital_analyzed: capital,
-      project_cost_estimate: assessment.financialReadiness.projectCost,
-      loan_requirement_estimate: assessment.financialReadiness.loanRequirement,
-      financing_track: assessment.financialReadiness.financingTrack,
-      estimated_breakeven_months: assessment.breakEven.indicativeBreakEvenMonths,
-      recommended_min_capital: assessment.financialReadiness.recommendedMargin,
-      capital_adequacy: assessment.financialReadiness.marginSufficiency,
-      executive_narrative: assessment.overview.executiveNarrative,
+      project_cost_estimate: estimatedCost,
+      loan_requirement_estimate: estimatedLoan,
+      financing_track: financingTrack,
+      estimated_breakeven_months: assessment.breakevenAssumptions?.indicativeBreakEvenMonths || 6,
+      recommended_min_capital: capital <= 100000 ? 100000 : 200000,
+      capital_adequacy: 'Sufficient Equity Contribution',
+      executive_narrative: `Based on your proposed ₹${capital.toLocaleString('en-IN')} promoter equity, your enterprise scores ${assessment.overallScore}/100 (${assessment.grade}) in operational readiness.`,
       dimensions: assessment.dimensions,
       operational_readiness: assessment.operationalReadiness,
-      risk_factors: assessment.riskAssessment,
+      resource_requirements: assessment.resourceRequirements,
+      breakeven_assumptions: assessment.breakevenAssumptions,
+      risks: assessment.risks,
+      risk_factors: assessment.risks,
       key_gaps: assessment.keyGaps,
       recommendations: assessment.recommendations,
-      break_even: assessment.breakEven,
+      break_even: assessment.breakEven || assessment.breakevenAssumptions,
+      financial_summary: assessment.financialSummary,
       is_fallback: true,
       source: "prototype-fallback"
     };
