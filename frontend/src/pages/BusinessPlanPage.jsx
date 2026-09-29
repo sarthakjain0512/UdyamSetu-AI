@@ -6,6 +6,9 @@ import {
 } from 'lucide-react';
 import { useBusinessPlan } from '../hooks/useBusinessPlan';
 import { getAnalysisSession } from '../services/sessionService';
+import { useAnalysisState } from '../hooks/useAnalysisState';
+import WorkflowProgressTracker from '../components/common/WorkflowProgressTracker';
+import StaleAnalysisAlert from '../components/common/StaleAnalysisAlert';
 
 // Task 8 Components
 import BusinessOverviewCard from '../components/business-plan/BusinessOverviewCard';
@@ -23,7 +26,8 @@ import BusinessPlanTransparency from '../components/business-plan/BusinessPlanTr
 export function BusinessPlanPage() {
   const location = useLocation();
   const navigate = useNavigate();
-  const { launchPlan, loading, error, fetchLaunchPlan } = useBusinessPlan();
+  const { moduleStatuses } = useAnalysisState();
+  const { launchPlan, loading, error, isStale, fetchLaunchPlan } = useBusinessPlan();
 
   // 1. Session Retrieval (State or LocalStorage)
   const activeSession = useMemo(() => {
@@ -50,7 +54,7 @@ export function BusinessPlanPage() {
 
   // 4. Trigger Launch Plan Synthesis
   useEffect(() => {
-    if (hasValidSession && hasValidMargin) {
+    if (hasValidSession && hasValidMargin && !launchPlan) {
       fetchLaunchPlan({
         session: activeSession,
         market: marketData,
@@ -62,7 +66,20 @@ export function BusinessPlanPage() {
         console.error('[BusinessPlanPage] Synthesis error:', err);
       });
     }
-  }, [hasValidSession, hasValidMargin, activeSession, marketData, feasibilityData, financialData, schemeRouteData, advisoryPlanData, fetchLaunchPlan]);
+  }, [hasValidSession, hasValidMargin, launchPlan, activeSession, marketData, feasibilityData, financialData, schemeRouteData, advisoryPlanData, fetchLaunchPlan]);
+
+  const handleRefresh = () => {
+    fetchLaunchPlan({
+      session: activeSession,
+      market: marketData,
+      feasibility: feasibilityData,
+      financial: financialData,
+      scheme: schemeRouteData,
+      advisory: advisoryPlanData
+    }).catch(err => {
+      console.error('[BusinessPlanPage] Synthesis refresh error:', err);
+    });
+  };
 
   const handlePrint = () => {
     window.print();
@@ -141,6 +158,22 @@ export function BusinessPlanPage() {
   return (
     <div className="space-y-8 pb-12 max-w-7xl mx-auto">
       
+      {/* Workflow Progress Tracker */}
+      <div className="print:hidden">
+        <WorkflowProgressTracker moduleStatuses={moduleStatuses} currentStage="businessPlan" />
+      </div>
+
+      {/* Stale Analysis Alert */}
+      {isStale && (
+        <div className="print:hidden">
+          <StaleAnalysisAlert 
+            moduleName="Business Launch Plan" 
+            onRefresh={handleRefresh} 
+            isRefreshing={loading} 
+          />
+        </div>
+      )}
+
       {/* 1. Page Header & Actions */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-[#18533e] pb-6 print:border-none print:pb-2">
         <div>

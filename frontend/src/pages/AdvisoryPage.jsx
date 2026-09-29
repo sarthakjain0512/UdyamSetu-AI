@@ -15,6 +15,9 @@ import {
 
 import { useAdvisory } from '../hooks/useAdvisory';
 import { getAnalysisSession } from '../services/sessionService';
+import { useAnalysisState } from '../hooks/useAnalysisState';
+import WorkflowProgressTracker from '../components/common/WorkflowProgressTracker';
+import StaleAnalysisAlert from '../components/common/StaleAnalysisAlert';
 
 // Module Presentation Components
 import AdvisoryContextBanner from '../components/advisory/AdvisoryContextBanner';
@@ -31,7 +34,8 @@ import AdvisoryDisclaimerCard from '../components/advisory/AdvisoryDisclaimerCar
 export function AdvisoryPage() {
   const location = useLocation();
   const navigate = useNavigate();
-  const { advisoryPlan, loading, error, fetchAdvisory } = useAdvisory();
+  const { moduleStatuses } = useAnalysisState();
+  const { advisoryPlan, loading, error, isStale, fetchAdvisory } = useAdvisory();
 
   // 1. Session Retrieval (State or LocalStorage)
   const activeSession = useMemo(() => {
@@ -57,7 +61,7 @@ export function AdvisoryPage() {
 
   // 4. Trigger Advisory Synthesis
   useEffect(() => {
-    if (hasValidSession && hasValidMargin) {
+    if (hasValidSession && hasValidMargin && !advisoryPlan) {
       fetchAdvisory({
         session: activeSession,
         market: marketData,
@@ -68,7 +72,19 @@ export function AdvisoryPage() {
         console.error('[AdvisoryPage] Synthesis error:', err);
       });
     }
-  }, [hasValidSession, hasValidMargin, activeSession, marketData, feasibilityData, financialData, schemeRouteData, fetchAdvisory]);
+  }, [hasValidSession, hasValidMargin, advisoryPlan, activeSession, marketData, feasibilityData, financialData, schemeRouteData, fetchAdvisory]);
+
+  const handleRefresh = () => {
+    fetchAdvisory({
+      session: activeSession,
+      market: marketData,
+      feasibility: feasibilityData,
+      financial: financialData,
+      scheme: schemeRouteData
+    }).catch(err => {
+      console.error('[AdvisoryPage] Synthesis refresh error:', err);
+    });
+  };
 
   // GUARD A: NO SESSION
   if (!hasValidSession) {
@@ -143,6 +159,18 @@ export function AdvisoryPage() {
   return (
     <div className="space-y-8 pb-12 max-w-7xl mx-auto">
       
+      {/* Workflow Progress Tracker */}
+      <WorkflowProgressTracker moduleStatuses={moduleStatuses} currentStage="advisory" />
+
+      {/* Stale Analysis Alert */}
+      {isStale && (
+        <StaleAnalysisAlert 
+          moduleName="AI Business Advisory" 
+          onRefresh={handleRefresh} 
+          isRefreshing={loading} 
+        />
+      )}
+
       {/* 1. Header */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-[#18533e] pb-6">
         <div>

@@ -15,6 +15,9 @@ import {
 import { useSchemeRouter } from '../hooks/useSchemeRouter';
 import { useSectors } from '../hooks/useSectors';
 import { getAnalysisSession } from '../services/sessionService';
+import { useAnalysisState } from '../hooks/useAnalysisState';
+import WorkflowProgressTracker from '../components/common/WorkflowProgressTracker';
+import StaleAnalysisAlert from '../components/common/StaleAnalysisAlert';
 
 // Module Components
 import AnalysisContextBanner from '../components/schemes/AnalysisContextBanner';
@@ -32,7 +35,8 @@ export function SchemeRouterPage() {
   const location = useLocation();
   const navigate = useNavigate();
   const { sectors, districts } = useSectors();
-  const { routingPlan, loading, error, routeSession } = useSchemeRouter();
+  const { moduleStatuses } = useAnalysisState();
+  const { routingPlan, loading, error, isStale, routeSession } = useSchemeRouter();
 
   // 1. Session Retrieval (State or LocalStorage)
   const activeSession = useMemo(() => {
@@ -77,7 +81,7 @@ export function SchemeRouterPage() {
 
   // 3. Trigger Deterministic Scheme Routing
   useEffect(() => {
-    if (hasValidSession && hasValidMargin) {
+    if (hasValidSession && hasValidMargin && !routingPlan) {
       routeSession({
         marginCapital,
         sectorId,
@@ -91,7 +95,22 @@ export function SchemeRouterPage() {
         console.error('[SchemeRouterPage] Routing calculation error:', err);
       });
     }
-  }, [hasValidSession, hasValidMargin, marginCapital, sectorId, districtId, displayIdea, gender, socialCategory, displayCategory, displayLocation, routeSession]);
+  }, [hasValidSession, hasValidMargin, routingPlan, marginCapital, sectorId, districtId, displayIdea, gender, socialCategory, displayCategory, displayLocation, routeSession]);
+
+  const handleRefresh = () => {
+    routeSession({
+      marginCapital,
+      sectorId,
+      districtId,
+      businessIdea: displayIdea,
+      gender,
+      socialCategory,
+      sectorName: displayCategory,
+      locationDisplay: displayLocation
+    }).catch(err => {
+      console.error('[SchemeRouterPage] Refresh error:', err);
+    });
+  };
 
   // GUARD A: NO SESSION
   if (!hasValidSession) {
@@ -166,6 +185,18 @@ export function SchemeRouterPage() {
   return (
     <div className="space-y-8 pb-12 max-w-7xl mx-auto">
       
+      {/* Workflow Progress Tracker */}
+      <WorkflowProgressTracker moduleStatuses={moduleStatuses} currentStage="scheme" />
+
+      {/* Stale Analysis Alert */}
+      {isStale && (
+        <StaleAnalysisAlert 
+          moduleName="Government Scheme Router" 
+          onRefresh={handleRefresh} 
+          isRefreshing={loading} 
+        />
+      )}
+
       {/* 1. Header */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-[#18533e] pb-6">
         <div>

@@ -6,15 +6,19 @@ import {
   Users, Award, FileText, ChevronRight, AlertCircle, Compass
 } from 'lucide-react';
 import { useSectors } from '../hooks/useSectors';
+import { useAnalysisState } from '../hooks/useAnalysisState';
+import ModuleStatusBadge from '../components/common/ModuleStatusBadge';
 import { formatCurrencyINR } from '../utils/formatters';
 
 export function HomePage() {
   const navigate = useNavigate();
   const { sectors, loading } = useSectors();
+  const { session, moduleStatuses } = useAnalysisState();
 
   const workflowSteps = [
     {
       step: '01',
+      key: 'market',
       title: 'Market Intelligence',
       path: '/market-analysis',
       icon: TrendingUp,
@@ -23,6 +27,7 @@ export function HomePage() {
     },
     {
       step: '02',
+      key: 'feasibility',
       title: 'Business Feasibility',
       path: '/feasibility',
       icon: ShieldCheck,
@@ -31,6 +36,7 @@ export function HomePage() {
     },
     {
       step: '03',
+      key: 'financial',
       title: 'Financial Planning',
       path: '/financial-plan',
       icon: Calculator,
@@ -39,6 +45,7 @@ export function HomePage() {
     },
     {
       step: '04',
+      key: 'scheme',
       title: 'Scheme Guidance',
       path: '/scheme-router',
       icon: Landmark,
@@ -47,6 +54,16 @@ export function HomePage() {
     },
     {
       step: '05',
+      key: 'advisory',
+      title: 'Strategic Advisory',
+      path: '/advisory',
+      icon: Sparkles,
+      desc: 'Multi-module AI synthesis generating actionable strengths, mitigations & next steps.',
+      badge: 'Action Roadmap'
+    },
+    {
+      step: '06',
+      key: 'businessPlan',
       title: 'Business Launch Plan',
       path: '/business-plan',
       icon: FileText,
@@ -54,6 +71,12 @@ export function HomePage() {
       badge: 'Bank-Ready PDF'
     }
   ];
+
+  // Derive next active step for quick continuation
+  const nextStep = workflowSteps.find(s => {
+    const st = moduleStatuses[s.key];
+    return !st || st.status === 'not_started' || st.isStale;
+  }) || workflowSteps[workflowSteps.length - 1];
 
   return (
     <div className="space-y-12">
@@ -97,17 +120,27 @@ export function HomePage() {
               className="py-3.5 px-7 rounded-2xl bg-gradient-to-r from-orange-600 via-amber-600 to-emerald-700 hover:from-orange-500 hover:via-amber-500 hover:to-emerald-600 text-white font-bold text-sm sm:text-base shadow-xl shadow-orange-950/50 flex items-center gap-2.5 group transition-all transform hover:-translate-y-0.5"
             >
               <Compass className="w-5 h-5 text-amber-200" />
-              <span>Start New Business Analysis</span>
+              <span>{session ? 'Create New Analysis' : 'Start New Business Analysis'}</span>
               <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
             </Link>
 
-            <Link
-              to="/business-plan"
-              className="py-3.5 px-6 rounded-2xl bg-[#0b3829] hover:bg-[#0e4835] text-emerald-200 hover:text-white font-semibold text-sm border border-[#1b5c45] flex items-center gap-2 transition-all"
-            >
-              <FileText className="w-4 h-4 text-emerald-400" />
-              <span>View Sample Blueprint</span>
-            </Link>
+            {session ? (
+              <Link
+                to={nextStep.path}
+                className="py-3.5 px-6 rounded-2xl bg-[#0b3829] hover:bg-[#0e4835] text-amber-300 hover:text-white font-bold text-sm border border-amber-500/40 flex items-center gap-2 transition-all shadow-lg shadow-emerald-950/40"
+              >
+                <span>Resume Active Analysis ({nextStep.title})</span>
+                <ArrowRight className="w-4 h-4" />
+              </Link>
+            ) : (
+              <Link
+                to="/business-plan"
+                className="py-3.5 px-6 rounded-2xl bg-[#0b3829] hover:bg-[#0e4835] text-emerald-200 hover:text-white font-semibold text-sm border border-[#1b5c45] flex items-center gap-2 transition-all"
+              >
+                <FileText className="w-4 h-4 text-emerald-400" />
+                <span>View Sample Blueprint</span>
+              </Link>
+            )}
           </div>
 
           {/* Highlight Metrics */}
@@ -133,6 +166,61 @@ export function HomePage() {
         </div>
       </div>
 
+      {/* ACTIVE SESSION STATUS BANNER (If session exists) */}
+      {session && (
+        <div className="bg-[#0c241b] rounded-3xl p-6 border border-[#1b5c45] shadow-xl space-y-4">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-[#144233] pb-4">
+            <div>
+              <div className="inline-flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-wider text-amber-300 bg-amber-950/60 px-2.5 py-0.5 rounded-full border border-amber-800 mb-1.5">
+                <CheckCircle2 className="w-3.5 h-3.5 text-amber-400" />
+                <span>Active Entrepreneur Session</span>
+              </div>
+              <h2 className="text-xl font-black text-white">
+                {session.business?.idea || session.business?.category || 'Rural Micro-Enterprise'}
+              </h2>
+              <p className="text-xs text-emerald-200/70 mt-0.5">
+                {session.location?.districtName || session.location?.district || 'Location defined'} • Equity: {formatCurrencyINR(session.finance?.marginCapital || 0)}
+              </p>
+            </div>
+
+            <div className="flex items-center gap-3">
+              <Link
+                to={nextStep.path}
+                className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-orange-600 to-amber-600 hover:from-orange-500 hover:to-amber-500 text-white font-bold text-xs uppercase tracking-wider shadow-lg shadow-orange-950/40 flex items-center gap-2 transition-all"
+              >
+                <span>Continue: {nextStep.title}</span>
+                <ArrowRight className="w-3.5 h-3.5" />
+              </Link>
+            </div>
+          </div>
+
+          {/* Module-by-module Progress Chips */}
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2.5">
+            {workflowSteps.map(step => {
+              const st = moduleStatuses[step.key];
+              return (
+                <div 
+                  key={step.key} 
+                  onClick={() => navigate(step.path)}
+                  className="bg-[#071913] hover:bg-[#0d2a20] p-3 rounded-xl border border-[#144233] cursor-pointer transition-colors space-y-1.5"
+                >
+                  <div className="text-[11px] font-semibold text-emerald-200 truncate">
+                    {step.title}
+                  </div>
+                  <div>
+                    <ModuleStatusBadge 
+                      status={st?.status || 'not_started'} 
+                      isStale={st?.isStale} 
+                      size="xs" 
+                    />
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      )}
+
       {/* Advisory Workflow Section (Required Step 4) */}
       <div className="space-y-6">
         <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-2 border-b border-[#144233] pb-4">
@@ -141,7 +229,7 @@ export function HomePage() {
               Advisory & Structuring Workflow
             </h2>
             <p className="text-xs text-emerald-200/70 mt-1">
-              Deterministic 5-stage pipeline transforming local inputs into sustainable rural enterprises
+              Deterministic 6-stage pipeline transforming local inputs into sustainable rural enterprises
             </p>
           </div>
           <Link
@@ -152,10 +240,11 @@ export function HomePage() {
           </Link>
         </div>
 
-        {/* 5-Step Pipeline Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4">
-          {workflowSteps.map((step, idx) => {
+        {/* 6-Step Pipeline Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          {workflowSteps.map((step) => {
             const Icon = step.icon;
+            const st = moduleStatuses[step.key];
             return (
               <div
                 key={step.step}
@@ -167,9 +256,11 @@ export function HomePage() {
                     <span className="text-xs font-mono font-bold text-amber-400/90 bg-amber-500/10 px-2 py-0.5 rounded border border-amber-500/20">
                       Step {step.step}
                     </span>
-                    <span className="text-[10px] text-emerald-300/80 font-medium bg-[#081f17] px-2 py-0.5 rounded-full border border-[#184f3c]">
-                      {step.badge}
-                    </span>
+                    <ModuleStatusBadge 
+                      status={st?.status || 'not_started'} 
+                      isStale={st?.isStale} 
+                      size="xs" 
+                    />
                   </div>
 
                   <div className="w-10 h-10 rounded-xl bg-emerald-950 flex items-center justify-center text-emerald-300 group-hover:scale-105 transition-transform border border-emerald-700/40">
@@ -186,7 +277,7 @@ export function HomePage() {
                   </div>
                 </div>
 
-                <div className="pt-2 flex items-center gap-1 text-[11px] font-semibold text-emerald-300 group-hover:text-amber-300">
+                <div className="pt-2 flex items-center justify-between text-[11px] font-semibold text-emerald-300 group-hover:text-amber-300 border-t border-[#133e2e]/50">
                   <span>Explore Module</span>
                   <ArrowRight className="w-3 h-3 group-hover:translate-x-1 transition-transform" />
                 </div>

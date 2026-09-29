@@ -10,6 +10,7 @@ import { assessFeasibility } from './feasibilityService';
 import { analyzeMarketIntelligence } from './marketService';
 import { calculateFinancials } from './financialService';
 import { routeSchemes } from './schemeService';
+import { getModuleOutput } from './analysisStateService';
 
 /**
  * Task-0 legacy generator preserved for backward compatibility.
@@ -84,13 +85,27 @@ export async function generateAdvisory(payload) {
  * @returns {Promise<Object>} Synthesized advisory plan
  */
 export async function getBusinessAdvisory(context) {
-  // 1. Compute deterministic advisory plan
-  const deterministicPlan = generateAdvisoryPlan(context);
+  // 1. Resolve upstream data from context OR canonical storage
+  const resolvedMarket = context.market || getModuleOutput('market')?.data || null;
+  const resolvedFeasibility = context.feasibility || getModuleOutput('feasibility')?.data || null;
+  const resolvedFinancial = context.financial || getModuleOutput('financial')?.data || null;
+  const resolvedScheme = context.scheme || getModuleOutput('scheme')?.data || null;
 
-  // 2. Safely attempt to fetch backend advisory details (e.g. compliance checklist / voice summary)
+  const resolvedContext = {
+    ...context,
+    market: resolvedMarket,
+    feasibility: resolvedFeasibility,
+    financial: resolvedFinancial,
+    scheme: resolvedScheme
+  };
+
+  // 2. Compute deterministic advisory plan
+  const deterministicPlan = generateAdvisoryPlan(resolvedContext);
+
+  // 3. Safely attempt to fetch backend advisory details (e.g. compliance checklist / voice summary)
   let backendData = null;
   try {
-    const rawMargin = context.session?.finance?.marginCapital || context.financial?.financing?.marginCapital || 30000;
+    const rawMargin = context.session?.finance?.marginCapital || resolvedFinancial?.financing?.marginCapital || 30000;
     backendData = await apiClient('/advisory/generate', {
       method: 'POST',
       body: JSON.stringify({

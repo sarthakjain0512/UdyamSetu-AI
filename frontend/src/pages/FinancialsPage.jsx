@@ -30,12 +30,16 @@ import FinancialSensitivitySection from '../components/financials/FinancialSensi
 import FinancialRisksSection from '../components/financials/FinancialRisksSection';
 import FinancialRecommendationsSection from '../components/financials/FinancialRecommendationsSection';
 import FinancialAssumptionsPanel from '../components/financials/FinancialAssumptionsPanel';
+import WorkflowProgressTracker from '../components/common/WorkflowProgressTracker';
+import StaleAnalysisAlert from '../components/common/StaleAnalysisAlert';
+import { useAnalysisState } from '../hooks/useAnalysisState';
 
 export function FinancialsPage() {
   const location = useLocation();
   const navigate = useNavigate();
   const { sectors, districts } = useSectors();
-  const { data, loading, error, calculate } = useFinancials();
+  const { moduleStatuses } = useAnalysisState();
+  const { data, loading, error, isStale, calculate } = useFinancials();
 
   // STEP 1: Consume active analysis session from Task-2
   const activeSession = useMemo(() => {
@@ -75,9 +79,9 @@ export function FinancialsPage() {
 
   const displayIdea = businessIdea || (sectorInfo ? sectorInfo.description : 'Rural Value-Added Enterprise');
 
-  // Trigger calculation when session and margin capital are verified
+  // Trigger calculation when session and margin capital are verified and no data stored yet
   useEffect(() => {
-    if (hasValidSession && hasValidMargin) {
+    if (hasValidSession && hasValidMargin && !data) {
       calculate({
         marginCapital,
         sector_id: sectorId,
@@ -85,7 +89,16 @@ export function FinancialsPage() {
         district_id: districtId
       });
     }
-  }, [hasValidSession, hasValidMargin, marginCapital, sectorId, districtId]);
+  }, [hasValidSession, hasValidMargin, data, marginCapital, sectorId, districtId, calculate]);
+
+  const handleRefresh = () => {
+    calculate({
+      marginCapital,
+      sector_id: sectorId,
+      equity_contribution: marginCapital,
+      district_id: districtId
+    });
+  };
 
   // STEP 2A: NO-SESSION GUARD
   if (!hasValidSession) {
@@ -160,6 +173,18 @@ export function FinancialsPage() {
   return (
     <div className="space-y-8 max-w-7xl mx-auto pb-12">
       
+      {/* Workflow Progress Tracker */}
+      <WorkflowProgressTracker moduleStatuses={moduleStatuses} currentStage="financial" />
+
+      {/* Stale Analysis Alert */}
+      {isStale && (
+        <StaleAnalysisAlert 
+          moduleName="Financial Plan & Debt Sizing" 
+          onRefresh={handleRefresh} 
+          isRefreshing={loading} 
+        />
+      )}
+
       {/* PAGE HEADER */}
       <div className="border-b border-[#18533e]/50 pb-6 flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>

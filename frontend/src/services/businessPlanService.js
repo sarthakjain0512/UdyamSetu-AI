@@ -10,6 +10,7 @@ import { calculateFinancialPlan } from '../utils/financialCalculator';
 import { calculateSchemeRoute } from '../utils/schemeRouterEngine';
 import { generateAdvisoryPlan } from '../utils/advisoryEngine';
 import { getAnalysisSession } from './sessionService';
+import { getModuleOutput } from './analysisStateService';
 
 /**
  * Synthesizes the complete Business Launch Plan.
@@ -27,8 +28,17 @@ export async function getBusinessLaunchPlan(context = {}) {
   // 1. Resolve session (from argument or localStorage)
   const resolvedSession = context.session || getAnalysisSession();
 
-  // 2. If session exists and financial is missing, derive financial deterministically from margin
-  let resolvedFinancial = context.financial || null;
+  // 2. Resolve Market Intelligence (context -> canonical storage -> null)
+  const storedMarket = getModuleOutput('market');
+  const resolvedMarket = context.market || storedMarket?.data || null;
+
+  // 3. Resolve Feasibility (context -> canonical storage -> null)
+  const storedFeasibility = getModuleOutput('feasibility');
+  const resolvedFeasibility = context.feasibility || storedFeasibility?.data || null;
+
+  // 4. Resolve Financial Plan (context -> canonical storage -> deterministic calculation from margin)
+  const storedFinancial = getModuleOutput('financial');
+  let resolvedFinancial = context.financial || storedFinancial?.data || null;
   const rawMargin = resolvedSession?.finance?.marginCapital;
   const parsedMargin = Number(rawMargin);
 
@@ -43,8 +53,9 @@ export async function getBusinessLaunchPlan(context = {}) {
     }
   }
 
-  // 3. If session & financial exist, derive scheme deterministically if not provided
-  let resolvedScheme = context.scheme || null;
+  // 5. Resolve Scheme Route (context -> canonical storage -> deterministic calculation)
+  const storedScheme = getModuleOutput('scheme');
+  let resolvedScheme = context.scheme || storedScheme?.data || null;
   if (!resolvedScheme && resolvedSession && !isNaN(parsedMargin) && parsedMargin > 0) {
     try {
       resolvedScheme = calculateSchemeRoute({
@@ -60,14 +71,15 @@ export async function getBusinessLaunchPlan(context = {}) {
     }
   }
 
-  // 4. If advisory is missing but upstream parts exist, synthesize advisory deterministically
-  let resolvedAdvisory = context.advisory || null;
+  // 6. Resolve Advisory Plan (context -> canonical storage -> deterministic synthesis)
+  const storedAdvisory = getModuleOutput('advisory');
+  let resolvedAdvisory = context.advisory || storedAdvisory?.data || null;
   if (!resolvedAdvisory && resolvedSession) {
     try {
       resolvedAdvisory = generateAdvisoryPlan({
         session: resolvedSession,
-        market: context.market || null,
-        feasibility: context.feasibility || null,
+        market: resolvedMarket,
+        feasibility: resolvedFeasibility,
         financial: resolvedFinancial,
         scheme: resolvedScheme
       });
@@ -76,12 +88,12 @@ export async function getBusinessLaunchPlan(context = {}) {
     }
   }
 
-  // 5. Generate complete launch plan using deterministic engine
-  // Market and Feasibility remain strictly null if not provided — never fabricated!
+  // 7. Generate complete launch plan using deterministic engine
+  // Market and Feasibility remain strictly null if not completed — never fabricated!
   const launchPlan = generateBusinessLaunchPlan({
     session: resolvedSession,
-    market: context.market || null,
-    feasibility: context.feasibility || null,
+    market: resolvedMarket,
+    feasibility: resolvedFeasibility,
     financial: resolvedFinancial,
     scheme: resolvedScheme,
     advisory: resolvedAdvisory

@@ -134,7 +134,17 @@ UdyamSetu AI/
 │   │   │   │   ├── SchemeTaxonomyPanel.jsx
 │   │   │   │   ├── SchemeWarningsSection.jsx
 │   │   │   │   ├── VerificationChecklistSection.jsx
-│   │   │   │   └── WhyThisRouteSection.jsx
+│   │   │   ├── advisory/                 # AI-Assisted Business Advisory components (Task 7)
+│   │   │   │   ├── AdvisoryActionPlanSection.jsx
+│   │   │   │   ├── AdvisoryAssumptionsPanel.jsx
+│   │   │   │   ├── AdvisoryContextBanner.jsx
+│   │   │   │   ├── AdvisoryDisclaimerCard.jsx
+│   │   │   │   ├── AdvisoryRecommendationsSection.jsx
+│   │   │   │   ├── AdvisoryRisksSection.jsx
+│   │   │   │   ├── AdvisoryStrengthsSection.jsx
+│   │   │   │   ├── AdvisorySummaryCard.jsx
+│   │   │   │   ├── AnalysisCoverageCard.jsx
+│   │   │   │   └── ValidationQuestionsSection.jsx
 │   │   │   ├── market/                   # Hyper-local Market Intelligence components
 │   │   │   │   ├── CompetitionSection.jsx
 │   │   │   │   ├── DataMethodologyPanel.jsx
@@ -145,6 +155,18 @@ UdyamSetu AI/
 │   │   │   │   ├── OpportunityFactorsSection.jsx
 │   │   │   │   ├── ProductMarketValueSection.jsx
 │   │   │   │   └── SWOTSection.jsx
+│   │   │   │   ├── business-plan/        # Task 8 Business Launch Plan components
+│   │   │   │   │   ├── BusinessOverviewCard.jsx
+│   │   │   │   │   ├── LaunchReadinessCard.jsx
+│   │   │   │   │   ├── LaunchRecommendations.jsx
+│   │   │   │   │   ├── LaunchChecklist.jsx
+│   │   │   │   │   ├── LaunchSequence.jsx
+│   │   │   │   │   ├── LaunchMilestones.jsx
+│   │   │   │   │   ├── RiskControlPlan.jsx
+│   │   │   │   │   ├── FinancialPreparationCard.jsx
+│   │   │   │   │   ├── FinancingFollowUpCard.jsx
+│   │   │   │   │   ├── ValidationQuestionsCard.jsx
+│   │   │   │   │   └── BusinessPlanTransparency.jsx
 │   │   │   └── common/
 │   │   │       ├── Footer.jsx            # Application footer
 │   │   │       ├── MetricCard.jsx        # Data visualization card
@@ -158,6 +180,7 @@ UdyamSetu AI/
 │   │   ├── hooks/                        # React hooks for API lifecycle management
 │   │   │   ├── useAnalysisSession.js     # Analysis session access & persistence hook
 │   │   │   ├── useAdvisory.js
+│   │   │   ├── useBusinessPlan.js        # Business Launch Plan lifecycle hook (Task 8)
 │   │   │   ├── useFeasibility.js
 │   │   │   ├── useFinancials.js
 │   │   │   ├── useMarketIntelligence.js
@@ -167,16 +190,20 @@ UdyamSetu AI/
 │   │   ├── layouts/
 │   │   │   └── RootLayout.jsx            # Master shell layout with header & footer
 │   │   ├── pages/                        # Route page views
+│   │   │   ├── AdvisoryPage.jsx          # /advisory (Module 5: AI Advisory)
+│   │   │   ├── BusinessPlanPage.jsx      # /business-plan (Module 6: Business Launch Plan - Task 8)
 │   │   │   ├── FeasibilityPage.jsx       # /feasibility
 │   │   │   ├── FinancialsPage.jsx        # /financial-plan & /financials
-│   │   │   ├── FullAdvisoryPage.jsx      # /business-plan & /advisory
+│   │   │   ├── FullAdvisoryPage.jsx      # /full-advisory (Legacy Task-0 Blueprint)
 │   │   │   ├── HomePage.jsx              # / (Dashboard)
 │   │   │   ├── MarketIntelligencePage.jsx# /market-analysis & /market-intelligence
 │   │   │   ├── NewAnalysisPage.jsx       # /new-analysis (Intake flow)
-│   │   │   └── NotFoundPage.jsx          # Catch-all 404
+│   │   │   ├── NotFoundPage.jsx          # Catch-all 404
+│   │   │   └── SchemeRouterPage.jsx      # /scheme-router & /schemes
 │   │   ├── services/                     # Decoupled API service layer
-│   │   │   ├── advisoryService.js        # Advisory API calls with fallback
+│   │   │   ├── advisoryService.js        # Advisory synthesis & API calls with fallback
 │   │   │   ├── apiConfig.js              # Base API configuration & client
+│   │   │   ├── businessPlanService.js    # Business Launch Plan service (Task 8)
 │   │   │   ├── feasibilityService.js     # Feasibility API calls with fallback
 │   │   │   ├── financialService.js       # Financial calculations API calls with fallback
 │   │   │   ├── marketService.js          # Market intelligence API calls with fallback
@@ -184,6 +211,8 @@ UdyamSetu AI/
 │   │   │   ├── sectorService.js          # Sector & district metadata API calls with fallback
 │   │   │   └── sessionService.js         # Client-side analysis session persistence & schema
 │   │   ├── utils/                        # Utilities & formatters
+│   │   │   ├── advisoryEngine.js         # Deterministic SIH 26091 business advisory engine (Task 7)
+│   │   │   ├── businessPlanEngine.js     # Deterministic SIH 26091 launch plan synthesis engine (Task 8)
 │   │   │   ├── financialCalculator.js    # Deterministic SIH 26091 financial planning engine
 │   │   │   ├── financialPreview.js       # Sizing preview calculator (SIH 26091)
 │   │   │   ├── formatters.js             # Currency and number formatters
@@ -229,14 +258,76 @@ All backend interactions are strictly abstracted through dedicated frontend serv
 - **`feasibilityService.js`**: Calls `/api/v1/feasibility/assess`.
 - **`financialService.js`**: Calls `/api/v1/financials/calculate`.
 - **`schemeService.js`**: Executes deterministic SIH 26091 scheme routing (`schemeRouterEngine.js`) and retrieves contextual nodal schemes via `/api/v1/schemes/route`.
-- **`advisoryService.js`**: Calls `/api/v1/advisory/generate`.
+- **`advisoryService.js`**: Calls `/api/v1/advisory/generate` and executes deterministic advisory engine (`advisoryEngine.js`).
+- **`analysisStateService.js`**: Centralized canonical persistence layer managing module outputs, deterministic input fingerprints, stale data detection, and merge updates under `udyamsetu_analysis_session`.
+- **`businessPlanService.js`**: Coordinates cross-module launch plan synthesis (`businessPlanEngine.js`).
+- **`feasibilityService.js`**: Calls `/api/v1/feasibility/assess`.
+- **`financialService.js`**: Calls `/api/v1/financials/calculate`.
+- **`marketService.js`**: Calls `/api/v1/market-intelligence/analyze`.
+- **`schemeService.js`**: Executes deterministic SIH 26091 scheme routing (`schemeRouterEngine.js`) and retrieves contextual nodal schemes via `/api/v1/schemes/route`.
+- **`sectorService.js`**: Fetches active micro sectors and supported districts.
 - **`sessionService.js`**: Manages client-side analysis session persistence under `udyamsetu_analysis_session`, enforcing normalized schema across all downstream advisory stages.
 
 Each service includes a local fallback to ensure high presentation resilience even if the local backend server is inactive during evaluation.
 
 ---
 
-## 6. Critical Architecture Rules
+## 6. End-to-End Workflow Integration & State Persistence (Task 9)
+
+### 6.1 Canonical Session Architecture
+All six analytical stages and the initial intake belong to a unified canonical session stored under a single localStorage key (`udyamsetu_analysis_session`):
+
+```javascript
+{
+  version: 2,
+  sessionId: "session_...",
+  createdAt: "ISO_DATE",
+  updatedAt: "ISO_DATE",
+  intake: {
+    location: { state, district, districtId, blockOrLocality, tier },
+    business: { category, sectorId, sectorName, idea, isCustom },
+    finance: { marginCapital, estimatedProjectCost, estimatedLoanAmount },
+    entrepreneurContext: { name, gender, socialCategory, areaContext }
+  },
+  // Canonical location, business, finance mirrors intake for backward compatibility
+  location: { ... },
+  business: { ... },
+  finance: { ... },
+  entrepreneurContext: { ... },
+  analysis: {
+    market: { inputFingerprint: "...", generatedAt: "...", data: { ... } },
+    feasibility: { inputFingerprint: "...", generatedAt: "...", data: { ... } },
+    financial: { inputFingerprint: "...", generatedAt: "...", data: { ... } },
+    scheme: { inputFingerprint: "...", generatedAt: "...", data: { ... } },
+    advisory: { inputFingerprint: "...", generatedAt: "...", data: { ... } },
+    businessPlan: { inputFingerprint: "...", generatedAt: "...", data: { ... } }
+  }
+}
+```
+
+### 6.2 Deterministic Input Fingerprinting & Stale Data Protection
+To prevent displaying stale analysis when an entrepreneur changes their business inputs, `analysisStateService.js` computes deterministic input fingerprints:
+- **Global Input Fingerprint**: Normalized hash combining `state`, `districtId`, `locality`, `sectorId`, `idea`, and `marginCapital`.
+- **Market & Feasibility Sensitivity**: Any change to location, category, or business idea invalidates market and feasibility outputs.
+- **Capital Sensitivity**: Any change to `marginCapital` invalidates financial planning, scheme routing, strategic advisory, and business launch plan outputs.
+- Stale outputs are marked with `isStale: true` and status `"stale"` (`Needs Refresh`), displaying a prominent `StaleAnalysisAlert` banner with a one-click "Refresh Analysis" trigger.
+
+### 6.3 Module Status Model
+Module statuses are derived dynamically from stored data:
+1. `completed`: Valid output exists matching current intake fingerprint.
+2. `stale`: Output exists but was generated with earlier inputs.
+3. `not_started`: Session exists but module has not been run.
+4. `unavailable`: Prerequisite inputs or upstream data are missing.
+
+### 6.4 Direct URL & Browser Refresh Recovery
+- No analysis state relies solely on transient React memory or route parameters (`location.state`).
+- Direct URL access to `/market-analysis`, `/feasibility`, `/financial-plan`, `/scheme-router`, `/advisory`, or `/business-plan` resolves directly from `analysisStateService.js`.
+- If no session exists, the page renders a structured "Session Required" card guiding the user to `/new-analysis`.
+- If upstream data is incomplete, missing sections display informative "Not available from current analysis" indicators rather than fabricated results.
+
+---
+
+## 7. Critical Architecture Rules
 
 1. **Presentation Focus**: React components strictly handle user input, state transitions, layout, and visualization.
 2. **No Duplicated Business Rules**: Financial formulas (EMI, DSCR, CapEx ratios, subsidy percentages) must never be re-implemented inside React components.

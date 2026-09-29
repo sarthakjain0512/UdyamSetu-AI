@@ -34,12 +34,17 @@ import FeasibilityRiskMatrix from '../components/feasibility/FeasibilityRiskMatr
 import KeyGapsSection from '../components/feasibility/KeyGapsSection';
 import FeasibilityRecommendationsSection from '../components/feasibility/FeasibilityRecommendationsSection';
 import FeasibilityExplainabilityPanel from '../components/feasibility/FeasibilityExplainabilityPanel';
+import WorkflowProgressTracker from '../components/common/WorkflowProgressTracker';
+import StaleAnalysisAlert from '../components/common/StaleAnalysisAlert';
+import { useAnalysisState } from '../hooks/useAnalysisState';
+import { getModuleOutput } from '../services/analysisStateService';
 
 export function FeasibilityPage() {
   const location = useLocation();
   const navigate = useNavigate();
   const { sectors, districts } = useSectors();
-  const { data, loading, error, runAssessment } = useFeasibility();
+  const { moduleStatuses } = useAnalysisState();
+  const { data, loading, error, isStale, runAssessment } = useFeasibility();
 
   // STEP 1: Consume active analysis session from Task-2
   const activeSession = useMemo(() => {
@@ -80,15 +85,17 @@ export function FeasibilityPage() {
 
   const displayIdea = businessIdea || (sectorInfo ? sectorInfo.description : 'Rural Value-Added Enterprise');
 
-  // Consume Task-3 hyper-local market intelligence
+  // Consume Task-3 hyper-local market intelligence from context OR canonical storage
   const marketContext = useMemo(() => {
     if (location.state?.marketData) return location.state.marketData;
-    return getSectorMarketIntelligence(sectorId);
-  }, [location.state, sectorId]);
+    const stored = getModuleOutput('market');
+    if (stored?.data) return stored.data;
+    return null;
+  }, [location.state]);
 
-  // Trigger feasibility assessment only when session AND actual margin capital are present
+  // Trigger feasibility assessment only when session AND actual margin capital are present and no data exists yet
   useEffect(() => {
-    if (hasValidSession && hasValidCapital) {
+    if (hasValidSession && hasValidCapital && !data) {
       runAssessment({
         sector_id: sectorId,
         district_id: districtId,
@@ -99,7 +106,19 @@ export function FeasibilityPage() {
         district_tier: districtInfo?.tier || 'Tier-3 / Rural Cluster'
       });
     }
-  }, [hasValidSession, hasValidCapital, sectorId, districtId, capital]);
+  }, [hasValidSession, hasValidCapital, data, sectorId, districtId, capital, businessIdea, isCustom, districtInfo, runAssessment]);
+
+  const handleRefresh = () => {
+    runAssessment({
+      sector_id: sectorId,
+      district_id: districtId,
+      proposed_capital: capital,
+      prior_experience_years: 1,
+      business_idea: businessIdea,
+      is_custom: isCustom,
+      district_tier: districtInfo?.tier || 'Tier-3 / Rural Cluster'
+    });
+  };
 
   // STEP 2A: NO-SESSION GUARD
   if (!hasValidSession) {
@@ -180,6 +199,18 @@ export function FeasibilityPage() {
   return (
     <div className="space-y-8 max-w-7xl mx-auto pb-12">
       
+      {/* Workflow Progress Tracker */}
+      <WorkflowProgressTracker moduleStatuses={moduleStatuses} currentStage="feasibility" />
+
+      {/* Stale Analysis Alert */}
+      {isStale && (
+        <StaleAnalysisAlert 
+          moduleName="Business Feasibility" 
+          onRefresh={handleRefresh} 
+          isRefreshing={loading} 
+        />
+      )}
+
       {/* PAGE HEADER */}
       <div className="border-b border-[#18533e]/50 pb-6 flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>

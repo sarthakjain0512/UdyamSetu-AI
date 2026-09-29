@@ -19,11 +19,15 @@ import { SWOTSection } from '../components/market/SWOTSection';
 import { MarketThreatsSection } from '../components/market/MarketThreatsSection';
 import { MarketInsightSummary } from '../components/market/MarketInsightSummary';
 import { DataMethodologyPanel } from '../components/market/DataMethodologyPanel';
+import WorkflowProgressTracker from '../components/common/WorkflowProgressTracker';
+import StaleAnalysisAlert from '../components/common/StaleAnalysisAlert';
+import { useAnalysisState } from '../hooks/useAnalysisState';
 
 export function MarketIntelligencePage() {
   const location = useLocation();
   const { sectors, districts } = useSectors();
-  const { data, loading, error, runAnalysis } = useMarketIntelligence();
+  const { moduleStatuses } = useAnalysisState();
+  const { data, loading, error, isStale, runAnalysis } = useMarketIntelligence();
 
   // Step 1: Consume Analysis Session from Task-2
   const activeSession = useMemo(() => {
@@ -48,9 +52,9 @@ export function MarketIntelligencePage() {
   const investment = activeSession?.finance?.marginCapital || location.state?.proposed_capital || 300000;
   const businessIdea = activeSession?.business?.idea || '';
 
-  // Trigger analysis when session or radius changes
+  // Trigger analysis when session exists and no data is stored yet
   useEffect(() => {
-    if (hasValidSession) {
+    if (hasValidSession && !data) {
       runAnalysis({
         sector_id: sectorId,
         district_id: districtId,
@@ -60,11 +64,31 @@ export function MarketIntelligencePage() {
         is_custom: activeSession?.business?.isCustom || false
       });
     }
-  }, [hasValidSession, sectorId, districtId, investment, radiusKm]);
+  }, [hasValidSession, data, sectorId, districtId, investment, radiusKm, businessIdea, runAnalysis]);
+
+  // Explicit refresh handler
+  const handleRefresh = () => {
+    runAnalysis({
+      sector_id: sectorId,
+      district_id: districtId,
+      investment_amount: Number(investment),
+      radius_km: radiusKm,
+      business_idea: businessIdea,
+      is_custom: activeSession?.business?.isCustom || false
+    });
+  };
 
   // Handle radius toggle
   const handleRadiusChange = (newRadius) => {
     setRadiusKm(newRadius);
+    runAnalysis({
+      sector_id: sectorId,
+      district_id: districtId,
+      investment_amount: Number(investment),
+      radius_km: newRadius,
+      business_idea: businessIdea,
+      is_custom: activeSession?.business?.isCustom || false
+    });
   };
 
   // STEP 2 GUARD: Empty state when no analysis session exists
@@ -121,6 +145,18 @@ export function MarketIntelligencePage() {
   return (
     <div className="space-y-8 max-w-7xl mx-auto">
       
+      {/* Workflow Progress Tracker */}
+      <WorkflowProgressTracker moduleStatuses={moduleStatuses} currentStage="market" />
+
+      {/* Stale Analysis Alert */}
+      {isStale && (
+        <StaleAnalysisAlert 
+          moduleName="Market Intelligence" 
+          onRefresh={handleRefresh} 
+          isRefreshing={loading} 
+        />
+      )}
+
       {/* Step 1: Compact "Your Analysis" Summary Header with Return Action */}
       <div className="bg-[#0c241b] border border-[#18533e] rounded-2xl p-4 sm:p-5 shadow-lg flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div className="space-y-1">

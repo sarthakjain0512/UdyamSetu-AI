@@ -1,3 +1,5 @@
+import { computeInputFingerprint, clearAnalysisState } from './analysisStateService';
+
 /**
  * UdyamSetu AI — Analysis Session Service
  * Manages client-side analysis session persistence under `udyamsetu_analysis_session`.
@@ -43,7 +45,7 @@ export function normalizeSessionData(rawInput) {
   const estimatedLoanAmount = marginCapital > 0 ? Math.round(estimatedProjectCost * 0.90) : 0;
 
   return {
-    sessionId: rawInput.sessionId || `session_${Date.now()}_${Math.random().toString(36).substr(2, 6)}`,
+    sessionId: rawInput.sessionId || `session_${Date.now()}`,
     createdAt: rawInput.createdAt || new Date().toISOString(),
     updatedAt: new Date().toISOString(),
     status: 'ACTIVE_INTAKE',
@@ -81,13 +83,29 @@ export function normalizeSessionData(rawInput) {
  */
 export function saveAnalysisSession(rawInput) {
   try {
+    const existing = getAnalysisSession();
     const session = normalizeSessionData(rawInput);
     if (!isValidSession(session)) {
       throw new Error('Analysis session failed validation: missing location, business, or valid margin capital.');
     }
+
+    // Preserve existing module outputs across intake updates
+    session.analysis = rawInput.analysis || existing?.analysis || {
+      market: null,
+      feasibility: null,
+      financial: null,
+      scheme: null,
+      advisory: null,
+      businessPlan: null
+    };
+
+    session.inputFingerprint = computeInputFingerprint(session);
+    session.version = 2;
+
     localStorage.setItem(SESSION_STORAGE_KEY, JSON.stringify(session));
     if (typeof window !== 'undefined') {
       window.dispatchEvent(new CustomEvent('udyamsetu:session-updated', { detail: session }));
+      window.dispatchEvent(new CustomEvent('udyamsetu:analysis-updated', { detail: session }));
     }
     return session;
   } catch (err) {
@@ -120,14 +138,11 @@ export function getAnalysisSession() {
 }
 
 /**
- * Clears the active analysis session.
+ * Clears the active analysis session and all downstream module outputs.
  */
 export function clearAnalysisSession() {
   try {
-    if (typeof window !== 'undefined' && window.localStorage) {
-      localStorage.removeItem(SESSION_STORAGE_KEY);
-      window.dispatchEvent(new Event('udyamsetu:session-cleared'));
-    }
+    clearAnalysisState();
   } catch (err) {
     console.warn('[SessionService] Error clearing analysis session:', err);
   }

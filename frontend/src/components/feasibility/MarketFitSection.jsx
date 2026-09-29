@@ -2,9 +2,23 @@ import React from 'react';
 import { TrendingUp, Users, Sparkles, CheckCircle2, ShieldAlert } from 'lucide-react';
 
 export function MarketFitSection({ marketContext }) {
-  const demandSignal = marketContext?.demand_trend || marketContext?.snapshot?.demandLevel || "High Demand / Growing";
-  const competitionIntensity = marketContext?.competition_density || marketContext?.snapshot?.competitionIntensity || "Moderate";
-  const opportunitySignal = marketContext?.snapshot?.opportunitySignal || "Favorable Local Demand Alignment";
+  const hasMarket = Boolean(
+    marketContext &&
+    typeof marketContext === 'object' &&
+    (marketContext.demand_trend || marketContext.demand_level || marketContext.snapshot?.demandLevel || marketContext.competition_level)
+  );
+
+  const demandSignal = hasMarket 
+    ? (marketContext.demand_trend || marketContext.demand_level || marketContext.snapshot?.demandLevel || "Analyzed")
+    : "Not available from current analysis";
+
+  const competitionIntensity = hasMarket
+    ? (marketContext.competition_density || marketContext.competition_level || marketContext.snapshot?.competitionIntensity || "Analyzed")
+    : "Not available from current analysis";
+
+  const opportunitySignal = hasMarket
+    ? (marketContext.snapshot?.opportunitySignal || marketContext.market_opportunity_score ? `Opportunity Score: ${marketContext.market_opportunity_score}/100` : "Local Demand Alignment")
+    : "Market Intelligence not available from current analysis";
 
   return (
     <div className="bg-[#0c241b] rounded-2xl p-6 border border-[#18533e] shadow-xl space-y-6">

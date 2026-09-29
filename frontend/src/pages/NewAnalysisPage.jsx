@@ -8,7 +8,7 @@ import {
 import { useSectors } from '../hooks/useSectors';
 import { formatCurrencyINR } from '../utils/formatters';
 import { computeFinancialPreview } from '../utils/financialPreview';
-import { saveAnalysisSession, getAnalysisSession } from '../services/sessionService';
+import { saveAnalysisSession, getAnalysisSession, clearAnalysisSession } from '../services/sessionService';
 import { AnalysisSummaryCard } from '../components/analysis/AnalysisSummaryCard';
 
 export function NewAnalysisPage() {
@@ -59,6 +59,23 @@ export function NewAnalysisPage() {
   // Validation Errors state
   const [errors, setErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [hasCleared, setHasCleared] = useState(false);
+
+  const handleClearSession = () => {
+    clearAnalysisSession();
+    setSelectedState('Uttar Pradesh');
+    setSelectedDistrictId('varanasi-up');
+    setBlockOrLocality('');
+    setSelectedSectorId('dairy-processing');
+    setCustomIdea('');
+    setMarginCapitalInput('300000');
+    setEntrepreneurName('Ramesh Sharma');
+    setGender('general');
+    setSocialCategory('obc');
+    setAreaContext('rural');
+    setErrors({});
+    setHasCleared(true);
+  };
 
   // Derived unique states from districts list
   const availableStates = useMemo(() => {
@@ -239,10 +256,19 @@ export function NewAnalysisPage() {
           </p>
         </div>
 
-        {existingSession && (
-          <div className="flex items-center gap-2 bg-[#09241b] px-3 py-2 rounded-xl border border-[#1b5540] text-xs text-emerald-200">
-            <RefreshCw className="w-3.5 h-3.5 text-amber-400" />
-            <span>Pre-filled from active session</span>
+        {existingSession && !hasCleared && (
+          <div className="flex flex-wrap items-center gap-3">
+            <div className="flex items-center gap-2 bg-[#09241b] px-3 py-2 rounded-xl border border-[#1b5540] text-xs text-emerald-200">
+              <RefreshCw className="w-3.5 h-3.5 text-amber-400" />
+              <span>Pre-filled from active session</span>
+            </div>
+            <button
+              type="button"
+              onClick={handleClearSession}
+              className="px-3 py-2 rounded-xl bg-red-950/40 hover:bg-red-900/50 text-red-300 border border-red-800/60 text-xs font-semibold transition-colors"
+            >
+              Clear & Start Fresh
+            </button>
           </div>
         )}
       </div>
