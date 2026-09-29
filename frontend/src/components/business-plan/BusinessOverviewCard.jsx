@@ -60,84 +60,84 @@ export default function BusinessOverviewCard({ overview }) {
         
         {/* 1. Business Concept */}
         <div className="p-4 rounded-2xl bg-[#071913] border border-[#18533e] space-y-1.5">
-          <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider flex items-center gap-1.5">
+          <span className="text-[11px] font-bold text-[#6EE7B7] uppercase tracking-wider flex items-center gap-1.5">
             <Building2 className="w-3.5 h-3.5 text-amber-400" /> Business Concept
           </span>
           <p className="text-sm font-semibold text-white leading-snug">
             {idea || 'Concept definition in progress'}
           </p>
-          <p className="text-[11px] text-emerald-300/80">
+          <p className="text-[11px] text-[#B7D4C4]">
             Sector: {sectorName}
           </p>
         </div>
 
         {/* 2. Target Location */}
         <div className="p-4 rounded-2xl bg-[#071913] border border-[#18533e] space-y-1.5">
-          <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider flex items-center gap-1.5">
+          <span className="text-[11px] font-bold text-[#6EE7B7] uppercase tracking-wider flex items-center gap-1.5">
             <MapPin className="w-3.5 h-3.5 text-emerald-400" /> Target Location
           </span>
           <p className="text-sm font-semibold text-white leading-snug">
             {locationDisplay}
           </p>
-          <p className="text-[11px] text-emerald-300/80">
+          <p className="text-[11px] text-[#B7D4C4]">
             {blockOrLocality ? `${blockOrLocality} • ` : ''}{tier || 'Rural Cluster'}
           </p>
         </div>
 
         {/* 3. Promoter Equity */}
         <div className="p-4 rounded-2xl bg-[#071913] border border-[#18533e] space-y-1.5">
-          <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider flex items-center gap-1.5">
+          <span className="text-[11px] font-bold text-[#6EE7B7] uppercase tracking-wider flex items-center gap-1.5">
             <IndianRupee className="w-3.5 h-3.5 text-amber-400" /> Margin Capital (Equity)
           </span>
           <p className="text-lg font-black text-amber-400">
             {marginCapital ? formatCurrencyINR(marginCapital) : (
-              <span className="text-xs font-normal text-slate-400">Not available from current analysis</span>
+              <span className="text-xs font-normal text-[#B7D4C4]">Not available from current analysis</span>
             )}
           </p>
-          <p className="text-[11px] text-slate-400">
+          <p className="text-[11px] text-[#B7D4C4]">
             Committed 10% promoter contribution
           </p>
         </div>
 
         {/* 4. Total Project Cost */}
         <div className="p-4 rounded-2xl bg-[#071913] border border-[#18533e] space-y-1.5">
-          <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider flex items-center gap-1.5">
+          <span className="text-[11px] font-bold text-[#6EE7B7] uppercase tracking-wider flex items-center gap-1.5">
             <Layers className="w-3.5 h-3.5 text-cyan-400" /> Estimated Project Cost
           </span>
           <p className="text-lg font-black text-cyan-300">
             {projectCost ? formatCurrencyINR(projectCost) : (
-              <span className="text-xs font-normal text-slate-400">Not available from current analysis</span>
+              <span className="text-xs font-normal text-[#B7D4C4]">Not available from current analysis</span>
             )}
           </p>
-          <p className="text-[11px] text-slate-400">
+          <p className="text-[11px] text-[#B7D4C4]">
             {projectCost ? 'Sized via 90/10 SIH financing framework' : 'Requires margin capital input'}
           </p>
         </div>
 
         {/* 5. Indicative Debt Requirement */}
         <div className="p-4 rounded-2xl bg-[#071913] border border-[#18533e] space-y-1.5">
-          <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider flex items-center gap-1.5">
+          <span className="text-[11px] font-bold text-[#6EE7B7] uppercase tracking-wider flex items-center gap-1.5">
             <IndianRupee className="w-3.5 h-3.5 text-emerald-400" /> Indicative Loan Requirement
           </span>
           <p className="text-lg font-black text-emerald-300">
             {loanAmount ? formatCurrencyINR(loanAmount) : (
-              <span className="text-xs font-normal text-slate-400">Not available from current analysis</span>
+              <span className="text-xs font-normal text-[#B7D4C4]">Not available from current analysis</span>
             )}
           </p>
-          <p className="text-[11px] text-slate-400">
+          <p className="text-[11px] text-[#B7D4C4]">
             {loanAmount ? '90% indicative debt allocation' : 'Requires project cost sizing'}
           </p>
         </div>
 
         {/* 6. Financing Track */}
         <div className="p-4 rounded-2xl bg-[#071913] border border-[#18533e] space-y-1.5">
-          <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider flex items-center gap-1.5">
+          <span className="text-[11px] font-bold text-[#6EE7B7] uppercase tracking-wider flex items-center gap-1.5">
             <Briefcase className="w-3.5 h-3.5 text-orange-400" /> Prototype Financing Track
           </span>
           <p className="text-sm font-bold text-orange-300 leading-snug">
             {financingTrack || 'Not available from current analysis'}
           </p>
-          <p className="text-[11px] text-slate-400">
+          <p className="text-[11px] text-[#B7D4C4]">
             {financingTrack ? 'Subject to official bank verification' : 'Requires scheme routing'}
           </p>
         </div>

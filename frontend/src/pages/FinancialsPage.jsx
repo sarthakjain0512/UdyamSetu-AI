@@ -104,19 +104,19 @@ export function FinancialsPage() {
   if (!hasValidSession) {
     return (
       <div className="max-w-3xl mx-auto py-12 px-4 space-y-8">
-        <div className="bg-[#0c241b] rounded-3xl p-8 sm:p-12 border border-[#18533e] text-center space-y-6 shadow-2xl">
-          <div className="w-16 h-16 rounded-2xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-amber-400 mx-auto">
+        <div className="bg-white rounded-3xl p-8 sm:p-12 border border-[#DDE5DD] text-center space-y-6 shadow-sm">
+          <div className="w-16 h-16 rounded-2xl bg-amber-50 border border-amber-200 flex items-center justify-center text-[#C87512] mx-auto">
             <Compass className="w-8 h-8" />
           </div>
 
           <div className="space-y-2 max-w-lg mx-auto">
-            <span className="text-xs font-semibold px-3 py-1 rounded-full bg-emerald-950 text-emerald-300 border border-emerald-800">
+            <span className="text-xs font-semibold px-3 py-1 rounded-full bg-emerald-50 text-[#14532D] border border-emerald-200">
               Session Required
             </span>
-            <h1 className="text-2xl sm:text-3xl font-black text-white tracking-tight">
+            <h1 className="text-2xl sm:text-3xl font-black text-[#17211B] tracking-tight">
               Start a business analysis first.
             </h1>
-            <p className="text-sm text-emerald-100/70 leading-relaxed">
+            <p className="text-sm text-[#647067] leading-relaxed">
               Financial planning requires an active business profile (location, business idea, and available margin capital) to size project costs and structure debt repayments.
             </p>
           </div>
@@ -124,7 +124,7 @@ export function FinancialsPage() {
           <div className="pt-2">
             <Link
               to="/new-analysis"
-              className="inline-flex items-center gap-2 py-3.5 px-8 rounded-2xl bg-gradient-to-r from-orange-600 via-amber-600 to-emerald-700 hover:from-orange-500 hover:via-amber-500 hover:to-emerald-600 text-white font-bold text-sm shadow-xl shadow-orange-950/40 transition-all transform hover:-translate-y-0.5"
+              className="inline-flex items-center gap-2 py-3.5 px-8 rounded-2xl bg-gradient-to-r from-orange-600 via-amber-600 to-emerald-700 hover:from-orange-500 hover:via-amber-500 hover:to-emerald-600 text-white font-bold text-sm shadow-sm transition-all transform hover:-translate-y-0.5"
             >
               <span>Create New Analysis</span>
               <ArrowRight className="w-4 h-4" />
@@ -139,19 +139,19 @@ export function FinancialsPage() {
   if (!hasValidMargin) {
     return (
       <div className="max-w-3xl mx-auto py-12 px-4 space-y-8">
-        <div className="bg-[#0c241b] rounded-3xl p-8 sm:p-12 border border-[#18533e] text-center space-y-6 shadow-2xl">
-          <div className="w-16 h-16 rounded-2xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-amber-400 mx-auto">
+        <div className="bg-white rounded-3xl p-8 sm:p-12 border border-[#DDE5DD] text-center space-y-6 shadow-sm">
+          <div className="w-16 h-16 rounded-2xl bg-amber-50 border border-amber-200 flex items-center justify-center text-[#C87512] mx-auto">
             <IndianRupee className="w-8 h-8" />
           </div>
 
           <div className="space-y-2 max-w-lg mx-auto">
-            <span className="text-xs font-semibold px-3 py-1 rounded-full bg-amber-950 text-amber-300 border border-amber-800">
+            <span className="text-xs font-semibold px-3 py-1 rounded-full bg-amber-50 text-[#C87512] border border-amber-200">
               Margin Capital Required
             </span>
-            <h1 className="text-2xl sm:text-3xl font-black text-white tracking-tight">
+            <h1 className="text-2xl sm:text-3xl font-black text-[#17211B] tracking-tight">
               Margin capital is required to generate the financial plan.
             </h1>
-            <p className="text-sm text-emerald-100/70 leading-relaxed">
+            <p className="text-sm text-[#647067] leading-relaxed">
               A valid equity contribution amount is required to calculate project scale, borrowing requirements, EMI schedules, and DSCR coverage. No default or fabricated financial amounts are assumed.
             </p>
           </div>
@@ -159,7 +159,7 @@ export function FinancialsPage() {
           <div className="pt-2">
             <Link
               to="/new-analysis"
-              className="inline-flex items-center gap-2 py-3.5 px-8 rounded-2xl bg-gradient-to-r from-orange-600 via-amber-600 to-emerald-700 hover:from-orange-500 hover:via-amber-500 hover:to-emerald-600 text-white font-bold text-sm shadow-xl shadow-orange-950/40 transition-all transform hover:-translate-y-0.5"
+              className="inline-flex items-center gap-2 py-3.5 px-8 rounded-2xl bg-gradient-to-r from-orange-600 via-amber-600 to-emerald-700 hover:from-orange-500 hover:via-amber-500 hover:to-emerald-600 text-white font-bold text-sm shadow-sm transition-all transform hover:-translate-y-0.5"
             >
               <span>Complete Analysis Inputs</span>
               <ArrowRight className="w-4 h-4" />
@@ -186,63 +186,63 @@ export function FinancialsPage() {
       )}
 
       {/* PAGE HEADER */}
-      <div className="border-b border-[#18533e]/50 pb-6 flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div className="border-b border-[#DDE5DD] pb-6 flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <div className="inline-flex items-center gap-2 text-xs font-semibold px-3 py-1 rounded-full bg-emerald-950 text-emerald-300 border border-emerald-800 mb-2">
+          <div className="inline-flex items-center gap-2 text-xs font-semibold px-3 py-1 rounded-full bg-emerald-50 text-[#14532D] border border-emerald-200 mb-2">
             <Calculator className="w-3.5 h-3.5" /> Stage 3: Financial Structuring Engine
           </div>
-          <h1 className="text-2xl sm:text-3xl font-black text-white tracking-tight">
+          <h1 className="text-2xl sm:text-3xl font-black text-[#17211B] tracking-tight">
             Financial Planning & Debt Structuring
           </h1>
-          <p className="text-xs sm:text-sm text-emerald-100/70 mt-1">
+          <p className="text-xs sm:text-sm text-[#647067] mt-1">
             Transform equity inputs into bankable capital sizing, reducing-balance EMI schedules, and debt-service coverage.
           </p>
         </div>
 
         <div className="flex items-center gap-2 self-start md:self-auto">
-          <span className="text-[11px] font-mono text-emerald-300/80 bg-[#0c241b] px-3 py-1.5 rounded-xl border border-[#18533e]">
+          <span className="text-[11px] font-mono text-[#14532D] bg-white px-3 py-1.5 rounded-xl border border-[#DDE5DD] shadow-sm">
             SIH 26091 Financial Framework
           </span>
         </div>
       </div>
 
       {/* FINANCIAL PLANNING CONTEXT (Step 1) */}
-      <div className="bg-[#0c241b] rounded-2xl p-5 border border-[#18533e] shadow-lg flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <div className="bg-white rounded-2xl p-5 border border-[#DDE5DD] shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 flex-1">
           <div>
-            <span className="text-[10px] text-emerald-300/60 uppercase tracking-wider font-semibold block">
+            <span className="text-[10px] text-[#647067] uppercase tracking-wider font-semibold block">
               Business Idea
             </span>
-            <div className="text-xs font-bold text-white mt-0.5 truncate" title={displayIdea}>
+            <div className="text-xs font-bold text-[#17211B] mt-0.5 truncate" title={displayIdea}>
               {displayIdea}
             </div>
           </div>
 
           <div>
-            <span className="text-[10px] text-emerald-300/60 uppercase tracking-wider font-semibold block">
+            <span className="text-[10px] text-[#647067] uppercase tracking-wider font-semibold block">
               Location
             </span>
-            <div className="flex items-center gap-1.5 text-xs font-bold text-white mt-0.5">
-              <MapPin className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
+            <div className="flex items-center gap-1.5 text-xs font-bold text-[#17211B] mt-0.5">
+              <MapPin className="w-3.5 h-3.5 text-[#0F766E] shrink-0" />
               <span className="truncate">{displayLocation}</span>
             </div>
           </div>
 
           <div>
-            <span className="text-[10px] text-emerald-300/60 uppercase tracking-wider font-semibold block">
+            <span className="text-[10px] text-[#647067] uppercase tracking-wider font-semibold block">
               Margin Capital
             </span>
-            <div className="flex items-center gap-1 text-xs font-bold text-emerald-300 mt-0.5">
-              <IndianRupee className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
+            <div className="flex items-center gap-1 text-xs font-bold text-[#14532D] mt-0.5 font-mono">
+              <IndianRupee className="w-3.5 h-3.5 text-[#14532D] shrink-0" />
               <span>{formatCurrencyINR(marginCapital)}</span>
             </div>
           </div>
 
           <div>
-            <span className="text-[10px] text-emerald-300/60 uppercase tracking-wider font-semibold block">
+            <span className="text-[10px] text-[#647067] uppercase tracking-wider font-semibold block">
               Est. Project Cost
             </span>
-            <div className="text-xs font-bold text-amber-300 mt-0.5">
+            <div className="text-xs font-bold text-[#C87512] mt-0.5 font-mono">
               {formatCurrencyINR(Math.round(marginCapital / 0.10))}
             </div>
           </div>
@@ -250,9 +250,9 @@ export function FinancialsPage() {
 
         <Link
           to="/new-analysis"
-          className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-[#071913] hover:bg-[#12382b] text-emerald-300 text-xs font-semibold border border-[#18533e] transition-colors shrink-0 self-start sm:self-auto"
+          className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-white hover:bg-stone-50 text-[#14532D] text-xs font-semibold border border-[#DDE5DD] shadow-sm transition-colors shrink-0 self-start sm:self-auto"
         >
-          <Edit3 className="w-3.5 h-3.5" />
+          <Edit3 className="w-3.5 h-3.5 text-[#0F766E]" />
           <span>Edit Analysis Inputs</span>
         </Link>
       </div>
@@ -354,11 +354,11 @@ export function FinancialsPage() {
           </div>
 
           {/* 11. NEXT STEP & NAVIGATION FOOTER (Step 25) */}
-          <div className="pt-6 border-t border-[#18533e]/50 flex flex-col sm:flex-row items-center justify-between gap-4">
+          <div className="pt-6 border-t border-[#DDE5DD] flex flex-col sm:flex-row items-center justify-between gap-4">
             <Link
               to="/feasibility"
               state={{ session: activeSession }}
-              className="inline-flex items-center gap-2 px-5 py-3 rounded-xl bg-[#0c241b] hover:bg-[#12382b] text-emerald-300 text-xs font-semibold border border-[#18533e] transition-colors w-full sm:w-auto justify-center"
+              className="inline-flex items-center gap-2 px-5 py-3 rounded-xl bg-white hover:bg-stone-50 text-[#14532D] text-xs font-semibold border border-[#DDE5DD] shadow-sm transition-colors w-full sm:w-auto justify-center"
             >
               <ArrowLeft className="w-4 h-4" />
               <span>Back to Feasibility</span>

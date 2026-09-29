@@ -68,50 +68,26 @@
   border: 1px solid #14532D;
 }
 
-/* Global Government-Tech Palette Adapter for nested legacy components */
-.bg-\[\#0c241b\],
-.bg-\[\#0a1e16\],
-.bg-\[\#081812\],
-.bg-\[\#061a12\],
-.bg-\[\#064e3b\] {
-  background-color: #FFFFFF !important;
-  color: #17211B !important;
-  border-color: #DDE5DD !important;
-  box-shadow: 0 1px 3px 0 rgba(20, 83, 45, 0.05), 0 1px 2px -1px rgba(20, 83, 45, 0.05) !important;
+/* Surface-Aware Typography Rules for Dark Cards:
+   Background: #052E23 / existing dark green surfaces
+   Headings: #FFFFFF
+   Body: #E7F3EC
+   Secondary: #B7D4C4
+   Labels: #6EE7B7 or bright accents
+   IMPORTANT: NEVER use #17211B or other dark text on dark cards.
+*/
+.dark-card-text {
+  color: #E7F3EC;
 }
 
-.bg-\[\#12382b\],
-.bg-\[\#144333\],
-.bg-\[\#0e2a20\],
-.bg-\[\#0b2b1f\] {
-  background-color: #F7F5EF !important;
-  color: #17211B !important;
-  border-color: #DDE5DD !important;
+.dark-card-heading {
+  color: #FFFFFF;
 }
 
-.border-\[\#18533e\],
-.border-\[\#1b4332\],
-.border-\[\#235c45\],
-.border-\[\#103527\],
-.border-\[\#154030\] {
-  border-color: #DDE5DD !important;
+.dark-card-secondary {
+  color: #B7D4C4;
 }
 
-/* Ensure text readability on light surfaces */
-.bg-\[\#0c241b\] .text-white,
-.bg-\[\#0a1e16\] .text-white,
-.bg-\[\#081812\] .text-white,
-.bg-\[\#12382b\] .text-white {
-  color: #17211B !important;
-}
-
-.bg-\[\#0c241b\] h1,
-.bg-\[\#0c241b\] h2,
-.bg-\[\#0c241b\] h3,
-.bg-\[\#0c241b\] h4,
-.bg-\[\#0a1e16\] h1,
-.bg-\[\#0a1e16\] h2,
-.bg-\[\#0a1e16\] h3,
-.bg-\[\#0a1e16\] h4 {
-  color: #14532D !important;
+.dark-card-label {
+  color: #6EE7B7;
 }

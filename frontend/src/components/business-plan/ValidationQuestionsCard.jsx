@@ -91,8 +91,8 @@ export default function ValidationQuestionsCard({ questionsData }) {
                         </div>
 
                         {q.whyItMatters && (
-                          <p className="text-[11px] text-emerald-200/70 leading-relaxed pl-6">
-                            <strong>Why it matters:</strong> {q.whyItMatters}
+                          <p className="text-[11px] text-[#E7F3EC] leading-relaxed pl-6">
+                            <strong className="text-[#6EE7B7]">Why it matters:</strong> {q.whyItMatters}
                           </p>
                         )}
                       </div>
@@ -124,7 +124,7 @@ export default function ValidationQuestionsCard({ questionsData }) {
                       <h4 className="text-xs font-bold text-white leading-snug">{q.question}</h4>
                     </div>
                     {q.whyItMatters && (
-                      <p className="text-[11px] text-emerald-200/70 leading-relaxed pl-6">{q.whyItMatters}</p>
+                      <p className="text-[11px] text-[#E7F3EC] leading-relaxed pl-6">{q.whyItMatters}</p>
                     )}
                   </div>
                 ))}

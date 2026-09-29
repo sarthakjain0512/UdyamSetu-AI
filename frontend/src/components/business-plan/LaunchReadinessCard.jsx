@@ -174,16 +174,16 @@ export default function LaunchReadinessCard({ readiness, coverage }) {
         </div>
 
         {/* Column 3: Information Still Missing */}
-        <div className="p-5 rounded-2xl bg-[#071913] border border-slate-800 space-y-3">
-          <div className="flex items-center gap-2 text-xs font-bold text-slate-400 uppercase tracking-wider border-b border-slate-800 pb-2.5">
-            <HelpCircle className="w-4 h-4 text-slate-400" />
+        <div className="p-5 rounded-2xl bg-[#071913] border border-[#18533e] space-y-3">
+          <div className="flex items-center gap-2 text-xs font-bold text-[#B7D4C4] uppercase tracking-wider border-b border-[#144233] pb-2.5">
+            <HelpCircle className="w-4 h-4 text-[#6EE7B7]" />
             <span>Information Missing ({informationMissing.length})</span>
           </div>
           {informationMissing.length > 0 ? (
-            <ul className="space-y-2 text-xs text-slate-300 leading-relaxed">
+            <ul className="space-y-2 text-xs text-[#E7F3EC] leading-relaxed">
               {informationMissing.map((item, idx) => (
                 <li key={idx} className="flex items-start gap-2">
-                  <span className="text-slate-500 font-bold shrink-0 mt-0.5">○</span>
+                  <span className="text-[#6EE7B7] font-bold shrink-0 mt-0.5">○</span>
                   <span>{item}</span>
                 </li>
               ))}
@@ -197,10 +197,10 @@ export default function LaunchReadinessCard({ readiness, coverage }) {
 
       </div>
 
-      <div className="p-3.5 rounded-xl bg-slate-900/70 border border-slate-800 text-xs text-slate-400 flex items-start gap-2">
+      <div className="p-3.5 rounded-xl bg-[#041913] border border-[#144233] text-xs text-[#B7D4C4] flex items-start gap-2">
         <Clock className="w-4 h-4 text-amber-400 shrink-0 mt-0.5" />
         <span>
-          <strong>Transparency Notice:</strong> Launch readiness in UdyamSetu AI represents an audit of available upstream inputs and ground-validation prerequisites, rather than an automated green light or approval guarantee.
+          <strong className="text-white">Transparency Notice:</strong> Launch readiness in UdyamSetu AI represents an audit of available upstream inputs and ground-validation prerequisites, rather than an automated green light or approval guarantee.
         </span>
       </div>
 

@@ -71,16 +71,16 @@ export default function LaunchSequence({ sequence }) {
                   {stage.title}
                 </h3>
 
-                <p className="text-xs text-emerald-200/70 leading-relaxed">
+                <p className="text-xs text-[#E7F3EC] leading-relaxed">
                   {stage.description}
                 </p>
               </div>
 
               <div className="pt-2 border-t border-[#144233] space-y-1">
-                <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">
+                <span className="text-[10px] font-bold text-[#6EE7B7] uppercase tracking-wider block">
                   Focus Actions:
                 </span>
-                <ul className="space-y-1 text-[11px] text-slate-300">
+                <ul className="space-y-1 text-[11px] text-[#E7F3EC]">
                   {stage.actions.map((act, idx) => (
                     <li key={idx} className="flex items-start gap-1.5 leading-snug">
                       <span className="text-amber-400 shrink-0 mt-0.5">•</span>

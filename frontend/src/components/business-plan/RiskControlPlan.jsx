@@ -50,7 +50,7 @@ export default function RiskControlPlan({ plan }) {
                   <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded bg-rose-950/60 text-rose-300 border border-rose-800/60 uppercase">
                     {item.category}
                   </span>
-                  <span className="text-[10px] font-semibold text-slate-400 italic">
+                  <span className="text-[10px] font-semibold text-[#B7D4C4] italic">
                     Source: {item.source}
                   </span>
                 </div>
@@ -58,7 +58,7 @@ export default function RiskControlPlan({ plan }) {
                 <div className="flex items-start gap-2">
                   <ShieldAlert className="w-4 h-4 text-rose-400 shrink-0 mt-0.5" />
                   <div>
-                    <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">
+                    <span className="text-[10px] font-bold text-[#6EE7B7] uppercase tracking-wider block">
                       Identified Risk:
                     </span>
                     <p className="text-xs font-bold text-white leading-snug">
@@ -68,12 +68,12 @@ export default function RiskControlPlan({ plan }) {
                 </div>
               </div>
 
-              <div className="p-3.5 rounded-xl bg-black/40 border border-[#144233] space-y-1">
-                <div className="flex items-center gap-1.5 text-[10px] font-bold text-emerald-400 uppercase tracking-wider">
+              <div className="p-3.5 rounded-xl bg-[#041913] border border-[#144233] space-y-1">
+                <div className="flex items-center gap-1.5 text-[10px] font-bold text-[#6EE7B7] uppercase tracking-wider">
                   <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
                   <span>Mitigation & Control Action:</span>
                 </div>
-                <p className="text-xs text-emerald-200/90 leading-relaxed">
+                <p className="text-xs text-[#E7F3EC] leading-relaxed">
                   {item.control}
                 </p>
               </div>

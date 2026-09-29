@@ -118,7 +118,7 @@ export default function LaunchChecklist({ checklist }) {
                     <h3 className="text-sm font-bold text-white leading-tight">
                       {section.title}
                     </h3>
-                    <p className="text-[11px] text-emerald-200/60 mt-0.5">
+                    <p className="text-[11px] text-[#B7D4C4] mt-0.5">
                       {section.subtitle}
                     </p>
                   </div>
@@ -172,7 +172,7 @@ export default function LaunchChecklist({ checklist }) {
                             <p className={`text-xs font-bold leading-snug ${isChecked ? 'line-through opacity-70' : 'text-white'}`}>
                               {item.title}
                             </p>
-                            <p className="text-[11px] text-emerald-200/70 leading-relaxed">
+                            <p className="text-[11px] text-[#E7F3EC] leading-relaxed">
                               {item.action}
                             </p>
                             {item.status && (

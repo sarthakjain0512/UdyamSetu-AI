@@ -22,7 +22,7 @@ export default function NodalSchemesSection({ contextualSchemes }) {
               Relevant National Schemes Reference
             </h3>
           </div>
-          <p className="text-xs text-emerald-200/70 mt-1">
+          <p className="text-xs text-[#E7F3EC] mt-1">
             Complementary central & state schemes potentially applicable to your enterprise sector
           </p>
         </div>
@@ -61,13 +61,13 @@ export default function NodalSchemesSection({ contextualSchemes }) {
               {/* Specs */}
               <div className="grid grid-cols-2 gap-2 bg-[#0a241b] p-3 rounded-xl border border-[#164736] text-xs">
                 <div>
-                  <span className="text-[10px] text-emerald-300/60 uppercase block">Capital Subsidy</span>
+                  <span className="text-[10px] text-[#6EE7B7] uppercase block font-semibold">Capital Subsidy</span>
                   <strong className="text-emerald-400 font-mono text-xs block mt-0.5">
                     {sch.subsidy_rate_pct}% ({formatCurrencyINR(sch.max_subsidy_amount)})
                   </strong>
                 </div>
                 <div>
-                  <span className="text-[10px] text-emerald-300/60 uppercase block">Max Loan Ceiling</span>
+                  <span className="text-[10px] text-[#6EE7B7] uppercase block font-semibold">Max Loan Ceiling</span>
                   <strong className="text-white font-mono text-xs block mt-0.5">
                     {formatCurrencyINR(sch.max_loan_limit)}
                   </strong>
@@ -80,7 +80,7 @@ export default function NodalSchemesSection({ contextualSchemes }) {
                   <span className="text-[11px] font-bold text-emerald-300 uppercase tracking-wider block">
                     Core Provisions:
                   </span>
-                  <ul className="text-[11px] text-emerald-200/70 space-y-1 pl-4 list-disc">
+                  <ul className="text-[11px] text-[#E7F3EC] space-y-1 pl-4 list-disc">
                     {sch.key_benefits.map((b, bIdx) => (
                       <li key={bIdx}>{b}</li>
                     ))}

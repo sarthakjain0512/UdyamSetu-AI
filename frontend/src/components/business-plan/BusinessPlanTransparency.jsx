@@ -56,18 +56,18 @@ export default function BusinessPlanTransparency({ transparency }) {
                   <span className="text-xs font-bold text-white block">
                     {item.label}
                   </span>
-                  <span className="text-[10px] text-slate-400">
+                  <span className="text-[10px] text-[#B7D4C4]">
                     Source: {item.source}
                   </span>
                 </div>
 
                 <div className="shrink-0">
                   {item.available ? (
-                    <span className="inline-flex items-center gap-1 text-[11px] font-bold text-emerald-400 bg-emerald-950/80 px-2 py-0.5 rounded-md border border-emerald-800">
+                    <span className="inline-flex items-center gap-1 text-[11px] font-bold text-emerald-300 bg-emerald-950/80 px-2 py-0.5 rounded-md border border-emerald-800">
                       <Check className="w-3 h-3" /> Available
                     </span>
                   ) : (
-                    <span className="inline-flex items-center gap-1 text-[11px] font-bold text-slate-400 bg-slate-800 px-2 py-0.5 rounded-md border border-slate-700">
+                    <span className="inline-flex items-center gap-1 text-[11px] font-bold text-slate-300 bg-slate-800 px-2 py-0.5 rounded-md border border-slate-700">
                       <X className="w-3 h-3" /> Not available
                     </span>
                   )}
@@ -85,7 +85,7 @@ export default function BusinessPlanTransparency({ transparency }) {
           <span>Prototype Governance & Transparency Guidelines</span>
         </h3>
 
-        <ul className="space-y-2 text-xs text-emerald-200/80 leading-relaxed">
+        <ul className="space-y-2 text-xs text-[#E7F3EC] leading-relaxed">
           {prototypeDisclosures && prototypeDisclosures.map((disc, idx) => (
             <li key={idx} className="flex items-start gap-2">
               <span className="text-amber-400 font-bold shrink-0 mt-0.5">•</span>
@@ -95,8 +95,8 @@ export default function BusinessPlanTransparency({ transparency }) {
         </ul>
 
         {methodology && (
-          <p className="text-[11px] text-slate-400 pt-2 border-t border-[#144233] leading-relaxed">
-            <strong>Methodology Note:</strong> {methodology}
+          <p className="text-[11px] text-[#B7D4C4] pt-2 border-t border-[#144233] leading-relaxed">
+            <strong className="text-white">Methodology Note:</strong> {methodology}
           </p>
         )}
       </div>

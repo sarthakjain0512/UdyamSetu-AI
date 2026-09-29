@@ -30,21 +30,21 @@ export function FullAdvisoryPage() {
     <div className="space-y-8">
       
       {/* Action Bar */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-800 pb-6 print:hidden">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-[#DDE5DD] pb-6 print:hidden">
         <div>
-          <div className="inline-flex items-center gap-2 text-xs font-semibold px-3 py-1 rounded-full bg-gradient-to-r from-cyan-950 to-indigo-950 text-cyan-300 border border-cyan-800 mb-2">
-            <Sparkles className="w-3.5 h-3.5 text-cyan-400" /> Module 5: Comprehensive Advisory Blueprint Generator
+          <div className="inline-flex items-center gap-2 text-xs font-semibold px-3 py-1 rounded-full bg-emerald-50 text-[#14532D] border border-emerald-200 mb-2">
+            <Sparkles className="w-3.5 h-3.5 text-[#E58A24]" /> Module 5: Comprehensive Advisory Blueprint Generator
           </div>
-          <h1 className="text-2xl sm:text-3xl font-extrabold text-white">Full Bankable Enterprise Blueprint</h1>
-          <p className="text-xs text-slate-400">Integrated report for Gramin Bank loan application & Gram Panchayat submission</p>
+          <h1 className="text-2xl sm:text-3xl font-extrabold text-[#17211B]">Full Bankable Enterprise Blueprint</h1>
+          <p className="text-xs text-[#647067]">Integrated report for Gramin Bank loan application & Gram Panchayat submission</p>
         </div>
 
         <div className="flex items-center gap-3">
           <button
             onClick={handlePrint}
-            className="px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 text-xs font-bold flex items-center gap-2"
+            className="px-4 py-2 rounded-xl bg-white hover:bg-stone-50 text-[#14532D] border border-[#DDE5DD] text-xs font-bold flex items-center gap-2 shadow-sm"
           >
-            <Printer className="w-4 h-4" /> Print / Export PDF
+            <Printer className="w-4 h-4 text-[#14532D]" /> Print / Export PDF
           </button>
         </div>
       </div>

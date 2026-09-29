@@ -17,7 +17,7 @@ export default function AdvisoryRisksSection({ risks = [] }) {
               Identified Operational & Financial Risks
             </h3>
           </div>
-          <p className="text-xs text-emerald-200/70 mt-1">
+          <p className="text-xs text-[#E7F3EC] mt-1">
             Vulnerabilities identified from feasibility, financing, and market intelligence
           </p>
         </div>
@@ -36,7 +36,7 @@ export default function AdvisoryRisksSection({ risks = [] }) {
           >
             <div className="space-y-2">
               <div className="flex items-center justify-between gap-2">
-                <span className="text-[10px] font-bold uppercase tracking-wider text-amber-400/90 bg-amber-950 px-2 py-0.5 rounded border border-amber-800">
+                <span className="text-[10px] font-bold uppercase tracking-wider text-amber-300 bg-amber-950 px-2 py-0.5 rounded border border-amber-800">
                   {item.source}
                 </span>
                 <AlertTriangle className="w-4 h-4 text-amber-400 shrink-0" />
@@ -47,20 +47,20 @@ export default function AdvisoryRisksSection({ risks = [] }) {
               </h4>
 
               <div className="space-y-1 text-xs">
-                <span className="text-[10px] uppercase font-bold text-rose-300/80 block">
+                <span className="text-[10px] uppercase font-bold text-rose-300 block">
                   Why it matters:
                 </span>
-                <p className="text-emerald-200/80 leading-relaxed font-sans text-xs">
+                <p className="text-[#E7F3EC] leading-relaxed font-sans text-xs">
                   {item.why}
                 </p>
               </div>
             </div>
 
             <div className="p-3 rounded-xl bg-[#0a2018] border border-[#164434] space-y-1 text-xs">
-              <span className="text-[10px] uppercase font-bold text-emerald-300 block flex items-center gap-1">
+              <span className="text-[10px] uppercase font-bold text-[#6EE7B7] block flex items-center gap-1">
                 Suggested Mitigation Action:
               </span>
-              <p className="text-emerald-100 text-[11px] leading-relaxed">
+              <p className="text-white text-xs leading-relaxed font-medium">
                 {item.mitigation}
               </p>
             </div>

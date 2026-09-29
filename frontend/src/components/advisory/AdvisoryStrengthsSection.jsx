@@ -17,7 +17,7 @@ export default function AdvisoryStrengthsSection({ strengths = [] }) {
               Identified Enterprise Strengths
             </h3>
           </div>
-          <p className="text-xs text-emerald-200/70 mt-1">
+          <p className="text-xs text-[#E7F3EC] mt-1">
             Core positive viability factors evidenced by the multi-module analysis
           </p>
         </div>
@@ -36,7 +36,7 @@ export default function AdvisoryStrengthsSection({ strengths = [] }) {
           >
             <div className="space-y-2">
               <div className="flex items-center justify-between gap-2">
-                <span className="text-[10px] font-bold uppercase tracking-wider text-emerald-400/80 bg-emerald-950 px-2 py-0.5 rounded border border-emerald-800">
+                <span className="text-[10px] font-bold uppercase tracking-wider text-[#6EE7B7] bg-emerald-950 px-2 py-0.5 rounded border border-emerald-800">
                   {item.source}
                 </span>
                 <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
@@ -46,7 +46,7 @@ export default function AdvisoryStrengthsSection({ strengths = [] }) {
                 {item.title}
               </h4>
 
-              <p className="text-xs text-emerald-200/80 leading-relaxed font-sans">
+              <p className="text-xs text-[#E7F3EC] leading-relaxed font-sans">
                 {item.detail}
               </p>
             </div>

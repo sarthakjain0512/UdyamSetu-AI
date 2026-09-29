@@ -28,7 +28,7 @@ export default function SchemeTaxonomyPanel({ taxonomy }) {
             <h3 className="font-serif text-lg font-bold text-white">
               Data Provenance & Scheme Routing Taxonomy
             </h3>
-            <p className="text-xs text-emerald-200/70">
+            <p className="text-xs text-[#E7F3EC]">
               Clear classification distinguishing user input, statutory SIH parameters, mathematical estimates, and prototype heuristics
             </p>
           </div>
@@ -40,24 +40,24 @@ export default function SchemeTaxonomyPanel({ taxonomy }) {
       </button>
 
       {isOpen && (
-        <div className="p-6 pt-0 border-t border-[#144233] space-y-6 text-xs text-emerald-100/80">
+        <div className="p-6 pt-0 border-t border-[#144233] space-y-6 text-xs text-[#E7F3EC]">
           
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 pt-2">
             
             {/* 1. User Input */}
             <div className="p-4 rounded-2xl bg-[#071913] border border-emerald-800/60 space-y-3">
               <div>
-                <span className="text-[10px] font-bold text-emerald-400 uppercase tracking-wider block">
+                <span className="text-[10px] font-bold text-[#6EE7B7] uppercase tracking-wider block">
                   1. User Input
                 </span>
-                <p className="text-[11px] text-emerald-200/60 mt-0.5">
+                <p className="text-[11px] text-[#B7D4C4] mt-0.5">
                   Parameters entered directly by the entrepreneur in Step 1 intake.
                 </p>
               </div>
               <div className="space-y-2 pt-2 border-t border-[#144233]">
                 {userInput.map((item, idx) => (
                   <div key={idx} className="space-y-0.5">
-                    <span className="text-[10px] text-emerald-300/60 block">{item.label}:</span>
+                    <span className="text-[10px] text-[#6EE7B7] block font-semibold">{item.label}:</span>
                     <strong className="text-white text-xs block">{item.value}</strong>
                   </div>
                 ))}
@@ -70,14 +70,14 @@ export default function SchemeTaxonomyPanel({ taxonomy }) {
                 <span className="text-[10px] font-bold text-purple-300 uppercase tracking-wider block">
                   2. SIH 26091 Parameter
                 </span>
-                <p className="text-[11px] text-emerald-200/60 mt-0.5">
+                <p className="text-[11px] text-[#B7D4C4] mt-0.5">
                   Statutory boundaries documented in the challenge specifications.
                 </p>
               </div>
               <div className="space-y-2 pt-2 border-t border-[#144233]">
                 {sihParameters.map((item, idx) => (
                   <div key={idx} className="space-y-0.5">
-                    <span className="text-[10px] text-purple-300/60 block">{item.label}:</span>
+                    <span className="text-[10px] text-purple-300 block font-semibold">{item.label}:</span>
                     <strong className="text-white text-xs block">{item.value}</strong>
                   </div>
                 ))}
@@ -90,14 +90,14 @@ export default function SchemeTaxonomyPanel({ taxonomy }) {
                 <span className="text-[10px] font-bold text-cyan-300 uppercase tracking-wider block">
                   3. Calculated Estimate
                 </span>
-                <p className="text-[11px] text-emerald-200/60 mt-0.5">
+                <p className="text-[11px] text-[#B7D4C4] mt-0.5">
                   Deterministic mathematical derivations from the sizing equation.
                 </p>
               </div>
               <div className="space-y-2 pt-2 border-t border-[#144233]">
                 {calculatedEstimates.map((item, idx) => (
                   <div key={idx} className="space-y-0.5">
-                    <span className="text-[10px] text-cyan-300/60 block">{item.label}:</span>
+                    <span className="text-[10px] text-cyan-300 block font-semibold">{item.label}:</span>
                     <strong className="text-white text-xs block">{item.value}</strong>
                     <span className="text-[10px] text-cyan-400 font-mono block">{item.formula}</span>
                   </div>
@@ -111,16 +111,16 @@ export default function SchemeTaxonomyPanel({ taxonomy }) {
                 <span className="text-[10px] font-bold text-amber-300 uppercase tracking-wider block">
                   4. Prototype Assumption
                 </span>
-                <p className="text-[11px] text-emerald-200/60 mt-0.5">
+                <p className="text-[11px] text-[#B7D4C4] mt-0.5">
                   Rule matches and status labels for prototype decision support.
                 </p>
               </div>
               <div className="space-y-2 pt-2 border-t border-[#144233]">
                 {prototypeAssumptions.map((item, idx) => (
                   <div key={idx} className="space-y-0.5">
-                    <span className="text-[10px] text-amber-300/60 block">{item.label}:</span>
+                    <span className="text-[10px] text-amber-300 block font-semibold">{item.label}:</span>
                     <strong className="text-white text-xs block">{item.value}</strong>
-                    <span className="text-[10px] text-emerald-200/50 block">{item.note}</span>
+                    <span className="text-[10px] text-[#B7D4C4] block">{item.note}</span>
                   </div>
                 ))}
               </div>
@@ -129,7 +129,7 @@ export default function SchemeTaxonomyPanel({ taxonomy }) {
           </div>
 
           {/* Non-Government Decision Note */}
-          <div className="p-3.5 rounded-xl bg-[#071913] border border-[#18533e] text-xs text-emerald-200/80 flex items-start gap-2.5">
+          <div className="p-3.5 rounded-xl bg-[#071913] border border-[#18533e] text-xs text-[#E7F3EC] flex items-start gap-2.5">
             <ShieldCheck className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
             <p className="leading-relaxed text-[11px]">
               <strong>Classification Assurance:</strong> The scheme routing result is labeled as <em>"Potentially Applicable"</em> based on deterministic mathematical boundary matching. It is NOT an official government loan sanction, subsidy guarantee, or statutory approval.

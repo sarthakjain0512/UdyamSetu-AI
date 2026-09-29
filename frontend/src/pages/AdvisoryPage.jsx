@@ -90,19 +90,19 @@ export function AdvisoryPage() {
   if (!hasValidSession) {
     return (
       <div className="max-w-3xl mx-auto py-12 px-4 space-y-8">
-        <div className="bg-[#0c241b] rounded-3xl p-8 sm:p-12 border border-[#18533e] text-center space-y-6 shadow-2xl">
-          <div className="w-16 h-16 rounded-2xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-amber-400 mx-auto">
+        <div className="bg-white rounded-3xl p-8 sm:p-12 border border-[#DDE5DD] text-center space-y-6 shadow-sm">
+          <div className="w-16 h-16 rounded-2xl bg-amber-50 border border-amber-200 flex items-center justify-center text-[#C87512] mx-auto">
             <Compass className="w-8 h-8" />
           </div>
 
           <div className="space-y-2 max-w-lg mx-auto">
-            <span className="text-xs font-semibold px-3 py-1 rounded-full bg-emerald-950 text-emerald-300 border border-emerald-800">
+            <span className="text-xs font-semibold px-3 py-1 rounded-full bg-emerald-50 text-[#14532D] border border-emerald-200">
               Module 5 • Business Advisory
             </span>
-            <h2 className="text-2xl font-bold text-white font-serif">
+            <h2 className="text-2xl font-bold text-[#17211B] font-serif">
               Start a business analysis first.
             </h2>
-            <p className="text-xs sm:text-sm text-emerald-200/70 leading-relaxed">
+            <p className="text-xs sm:text-sm text-[#647067] leading-relaxed">
               Business advisory synthesizes your target market, feasibility analysis, capital structure, and scheme guidance into actionable recommendations.
             </p>
           </div>
@@ -110,7 +110,7 @@ export function AdvisoryPage() {
           <div className="pt-2">
             <Link
               to="/new-analysis"
-              className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-orange-600 to-amber-600 hover:from-orange-500 hover:to-amber-500 text-white font-bold text-xs uppercase tracking-wider shadow-lg shadow-orange-950/40 transition-all"
+              className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-orange-600 to-amber-600 hover:from-orange-500 hover:to-amber-500 text-white font-bold text-xs uppercase tracking-wider shadow-sm transition-all"
             >
               <span>Initialize Business Intake</span>
               <ArrowRight className="w-4 h-4" />
@@ -125,19 +125,19 @@ export function AdvisoryPage() {
   if (!hasValidMargin) {
     return (
       <div className="max-w-3xl mx-auto py-12 px-4 space-y-8">
-        <div className="bg-[#0c241b] rounded-3xl p-8 sm:p-12 border border-amber-800/60 text-center space-y-6 shadow-2xl">
-          <div className="w-16 h-16 rounded-2xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-amber-400 mx-auto">
+        <div className="bg-white rounded-3xl p-8 sm:p-12 border border-[#DDE5DD] text-center space-y-6 shadow-sm">
+          <div className="w-16 h-16 rounded-2xl bg-amber-50 border border-amber-200 flex items-center justify-center text-[#C87512] mx-auto">
             <IndianRupee className="w-8 h-8" />
           </div>
 
           <div className="space-y-2 max-w-lg mx-auto">
-            <span className="text-xs font-semibold px-3 py-1 rounded-full bg-amber-950 text-amber-300 border border-amber-800">
+            <span className="text-xs font-semibold px-3 py-1 rounded-full bg-amber-50 text-[#C87512] border border-amber-200">
               Equity Parameter Required
             </span>
-            <h2 className="text-2xl font-bold text-white font-serif">
+            <h2 className="text-2xl font-bold text-[#17211B] font-serif">
               Margin capital is required for business advisory.
             </h2>
-            <p className="text-xs sm:text-sm text-emerald-200/70 leading-relaxed">
+            <p className="text-xs sm:text-sm text-[#647067] leading-relaxed">
               Advisory debt sizing, financial risk exposure, and repayment mitigations depend directly on your available promoter equity.
             </p>
           </div>
@@ -145,7 +145,7 @@ export function AdvisoryPage() {
           <div className="pt-2">
             <Link
               to="/new-analysis"
-              className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-orange-600 to-amber-600 hover:from-orange-500 hover:to-amber-500 text-white font-bold text-xs uppercase tracking-wider shadow-lg shadow-orange-950/40 transition-all"
+              className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-orange-600 to-amber-600 hover:from-orange-500 hover:to-amber-500 text-white font-bold text-xs uppercase tracking-wider shadow-sm transition-all"
             >
               <span>Provide Margin Capital</span>
               <ArrowRight className="w-4 h-4" />
@@ -172,16 +172,16 @@ export function AdvisoryPage() {
       )}
 
       {/* 1. Header */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-[#18533e] pb-6">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-[#DDE5DD] pb-6">
         <div>
-          <div className="inline-flex items-center gap-2 text-xs font-semibold px-3 py-1 rounded-full bg-amber-950 text-amber-300 border border-amber-800 mb-2">
+          <div className="inline-flex items-center gap-2 text-xs font-semibold px-3 py-1 rounded-full bg-amber-50 text-[#C87512] border border-amber-200 mb-2">
             <Sparkles className="w-3.5 h-3.5" />
             <span>Module 5: AI-Assisted Business Advisory Layer</span>
           </div>
-          <h1 className="text-2xl sm:text-4xl font-extrabold text-white tracking-tight font-serif">
+          <h1 className="text-2xl sm:text-4xl font-extrabold text-[#17211B] tracking-tight font-serif">
             Strategic Business Advisory & Next Steps
           </h1>
-          <p className="text-xs sm:text-sm text-emerald-200/80 mt-1 max-w-2xl">
+          <p className="text-xs sm:text-sm text-[#647067] mt-1 max-w-2xl">
             Synthesized multi-module intelligence providing explainable recommendations, risk mitigations, validation questions, and a phased execution roadmap.
           </p>
         </div>
@@ -190,7 +190,7 @@ export function AdvisoryPage() {
           <Link
             to="/scheme-router"
             state={{ session: activeSession }}
-            className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-[#0c241b] hover:bg-[#12382b] text-emerald-300 text-xs font-semibold border border-[#18533e] transition-colors"
+            className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-white hover:bg-stone-50 text-[#14532D] text-xs font-semibold border border-[#DDE5DD] shadow-sm transition-colors"
           >
             <ArrowLeft className="w-3.5 h-3.5" />
             <span>Review Schemes</span>
@@ -199,13 +199,13 @@ export function AdvisoryPage() {
       </div>
 
       {/* Prototype Advisory Notice Banner (Section 15) */}
-      <div className="p-4 rounded-2xl bg-[#071913] border border-amber-800/80 flex items-start gap-3 text-xs text-emerald-200/90 shadow-md">
+      <div className="p-4 rounded-2xl bg-[#052E23] border border-amber-500/40 flex items-start gap-3 text-xs shadow-sm">
         <Cpu className="w-4 h-4 text-amber-400 shrink-0 mt-0.5" />
         <div className="space-y-1">
-          <strong className="text-amber-300 uppercase tracking-wider text-[11px] block">
+          <strong className="text-amber-300 uppercase tracking-wider text-[11px] block font-bold">
             Prototype Advisory Engine • AI Transparency Notice
           </strong>
-          <p className="text-[11px] leading-relaxed text-emerald-100/90">
+          <p className="text-[11px] leading-relaxed text-[#E7F3EC]">
             Recommendations are generated from deterministic prototype rules using available analysis outputs. No real-time AI model or live government decision engine is used in this prototype. Future production architecture can connect this advisory layer to an authorized LLM/NLP service.
           </p>
         </div>
@@ -213,12 +213,12 @@ export function AdvisoryPage() {
 
       {/* Loading State */}
       {loading && (
-        <div className="bg-[#0c241b] rounded-3xl p-12 border border-[#18533e] text-center space-y-4 shadow-xl">
-          <RefreshCw className="w-8 h-8 text-amber-400 mx-auto animate-spin" />
-          <p className="text-sm font-semibold text-white">
+        <div className="bg-white rounded-3xl p-12 border border-[#DDE5DD] text-center space-y-4 shadow-sm">
+          <RefreshCw className="w-8 h-8 text-[#E58A24] mx-auto animate-spin" />
+          <p className="text-sm font-semibold text-[#17211B]">
             Synthesizing multi-module advisory roadmap...
           </p>
-          <span className="text-xs text-emerald-300/60 block">
+          <span className="text-xs text-[#647067] block">
             Evaluating feasibility, debt metrics, and scheme track parameters
           </span>
         </div>
@@ -226,10 +226,10 @@ export function AdvisoryPage() {
 
       {/* Error State */}
       {error && !loading && (
-        <div className="bg-rose-950/40 rounded-3xl p-8 border border-rose-800 text-center space-y-4">
-          <AlertCircle className="w-8 h-8 text-rose-400 mx-auto" />
-          <h3 className="text-base font-bold text-white">Advisory Synthesis Interrupted</h3>
-          <p className="text-xs text-rose-200/80 max-w-md mx-auto">{error}</p>
+        <div className="bg-rose-50 rounded-3xl p-8 border border-rose-200 text-center space-y-4">
+          <AlertCircle className="w-8 h-8 text-[#C2413A] mx-auto" />
+          <h3 className="text-base font-bold text-[#C2413A]">Advisory Synthesis Interrupted</h3>
+          <p className="text-xs text-[#647067] max-w-md mx-auto">{error}</p>
         </div>
       )}
 
@@ -291,11 +291,11 @@ export function AdvisoryPage() {
           />
 
           {/* 12. Navigation Controls */}
-          <div className="pt-6 border-t border-[#18533e]/50 flex flex-col sm:flex-row items-center justify-between gap-4">
+          <div className="pt-6 border-t border-[#DDE5DD] flex flex-col sm:flex-row items-center justify-between gap-4">
             <Link
               to="/scheme-router"
               state={{ session: activeSession }}
-              className="inline-flex items-center gap-2 px-5 py-3 rounded-xl bg-[#0c241b] hover:bg-[#12382b] text-emerald-300 text-xs font-semibold border border-[#18533e] transition-colors w-full sm:w-auto justify-center"
+              className="inline-flex items-center gap-2 px-5 py-3 rounded-xl bg-white hover:bg-stone-50 text-[#14532D] text-xs font-semibold border border-[#DDE5DD] shadow-sm transition-colors w-full sm:w-auto justify-center"
             >
               <ArrowLeft className="w-4 h-4" />
               <span>Back to Scheme Guidance</span>

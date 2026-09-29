@@ -22,13 +22,13 @@ export default function LaunchRecommendations({ recommendations }) {
           <h2 className="text-2xl sm:text-3xl font-black text-white tracking-tight font-serif">
             Recommended Before Launch
           </h2>
-          <p className="text-xs text-emerald-200/70">
+          <p className="text-xs text-[#E7F3EC]">
             High-priority diagnostic actions surfaced from the AI Advisory layer to de-risk commercial launch
           </p>
         </div>
 
         <div className="shrink-0 text-right">
-          <span className="text-[11px] text-slate-400 block">
+          <span className="text-[11px] text-[#B7D4C4] block">
             Priority represents internal workflow order, not official government ranking
           </span>
         </div>
@@ -63,13 +63,13 @@ export default function LaunchRecommendations({ recommendations }) {
               >
                 <div className="space-y-2">
                   <div className="flex items-center justify-between gap-2">
-                    <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded bg-emerald-950 text-emerald-300 border border-emerald-800/80 uppercase">
+                    <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded bg-emerald-900/60 text-[#6EE7B7] border border-emerald-700/60 uppercase">
                       {rec.category}
                     </span>
                     <span className={`text-[10px] font-bold px-2.5 py-0.5 rounded-full border ${
                       isHigh 
-                        ? 'bg-rose-950/80 text-rose-300 border-rose-800' 
-                        : (isMed ? 'bg-amber-950/80 text-amber-300 border-amber-800' : 'bg-slate-900 text-slate-400 border-slate-700')
+                        ? 'bg-rose-900/70 text-rose-200 border-rose-600' 
+                        : (isMed ? 'bg-amber-900/70 text-amber-200 border-amber-600' : 'bg-emerald-900/70 text-emerald-200 border-emerald-600')
                     }`}>
                       {rec.priority} Priority
                     </span>
@@ -79,11 +79,11 @@ export default function LaunchRecommendations({ recommendations }) {
                     {rec.title}
                   </h3>
 
-                  <div className="p-3 rounded-xl bg-black/30 border border-[#144233] space-y-1">
-                    <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">
+                  <div className="p-3 rounded-xl bg-[#041913] border border-[#144233] space-y-1">
+                    <span className="text-[10px] font-bold text-[#6EE7B7] uppercase tracking-wider block">
                       Diagnostic Reason (Why):
                     </span>
-                    <p className="text-xs text-emerald-200/90 leading-relaxed">
+                    <p className="text-xs text-[#E7F3EC] leading-relaxed">
                       {rec.why}
                     </p>
                   </div>
@@ -102,7 +102,7 @@ export default function LaunchRecommendations({ recommendations }) {
                     </div>
                   </div>
 
-                  <span className="text-[10px] text-slate-400 block pt-1 italic">
+                  <span className="text-[10px] text-[#B7D4C4] block pt-1 font-medium">
                     Source: {rec.source}
                   </span>
                 </div>
