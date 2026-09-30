@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { NavLink, Link } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { NavLink, Link, useLocation } from 'react-router-dom';
 import { 
   Building2, LayoutDashboard, PlusCircle, TrendingUp, ShieldCheck, 
   Calculator, Landmark, FileText, Mic, Menu, X, Globe, Award, Sparkles 
@@ -10,6 +10,13 @@ export function Navbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [voiceModalOpen, setVoiceModalOpen] = useState(false);
   const [lang, setLang] = useState('hi');
+  const location = useLocation();
+
+  // Close voice modal and mobile menu whenever user navigates to another route
+  useEffect(() => {
+    setVoiceModalOpen(false);
+    setMobileMenuOpen(false);
+  }, [location.pathname]);
 
   const navItems = [
     { label: 'Dashboard', path: '/', icon: LayoutDashboard },
